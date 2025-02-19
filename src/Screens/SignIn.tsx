@@ -1,0 +1,344 @@
+import React, {useRef, useState} from 'react';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  ScrollView,
+  ActivityIndicator,
+  Image,
+  TextInput,
+  Modal,
+  Platform,
+} from 'react-native';
+import {
+  responsiveFontSize,
+  responsiveHeight,
+  responsiveWidth,
+} from 'react-native-responsive-dimensions';
+import {RootStackParamList} from '../Components/Type';
+import {useNavigation} from '@react-navigation/native';
+import TextImport from '../Components/TextImport';
+import {StackNavigationProp} from '@react-navigation/stack';
+import {useTranslation} from 'react-i18next';
+import WrapperContainer from '../Components/WrapperContainer';
+import {useSignINMutation} from '../store/Api/Auth';
+import {useDispatch} from 'react-redux';
+import {setUser} from '../store/slices/authSlice';
+import ToastMessage from '../hooks/ToastMessage.js';
+type props = StackNavigationProp<RootStackParamList, 'SignIn'>;
+type SignInProps = {
+  setbool: (value: boolean) => void;
+  changeLanguage: (langCode: string | null) => void;
+};
+const SignIn = ({setbool, changeLanguage}: SignInProps) => {
+  const {t} = useTranslation();
+  const navigation = useNavigation<props>();
+  // const [email, setEmail] = useState('meganwess93@gmail.com');
+  const [email, setEmail] = useState('');
+  // const [password, setPassword] = useState('123456789');
+  const [password, setPassword] = useState('');
+  const [passwordVisible, setPasswordVisible] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [signIN] = useSignINMutation();
+  const dispatch = useDispatch();
+  const emailRef = useRef<TextInput>(null);
+  const passwordRef = useRef<TextInput>(null);
+  const [modalVisible, setModalVisible] = useState(false);
+  const {Toasts} = ToastMessage();
+  const [showModal, setShowModal] = useState(false);
+  const Signin = async () => {
+    let payload = {
+      email: email,
+      password: password,
+    };
+    setLoading(true);
+    try {
+      const res = await signIN(payload).unwrap();
+      console.log('response====>', res);
+      if (res?.data?.user?.subscriptionID === '635bd8fdcb397b3a044d9867') {
+        dispatch(setUser(res));
+        Toasts('Info', 'Loged in successfully!', 'success');
+        console.log('RES', res.data);
+      } else {
+        Toasts('Info', 'Please Buy Premium Subsription', 'info');
+        setShowModal(true);
+      }
+    } catch (error) {
+      console.log('Error', error);
+      Toasts('Error', error.data.message, 'error');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <WrapperContainer barstatus={true} style={{flex: 1}} bgColor="#1c1508">
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <View
+          style={{
+            flex: 1,
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: responsiveWidth(8),
+            marginTop:
+              Platform.OS === 'android'
+                ? responsiveHeight(10)
+                : responsiveHeight(5),
+          }}>
+          <View style={styles.maimHeading}>
+            <Text style={styles.ianText}>IAN</Text>
+            <Text style={styles.logo}> MULDER</Text>
+          </View>
+          <Text style={styles.welcomeBack}>{t('Welcome Back')}</Text>
+          <Text style={styles.loginText}>{t('Login with your account')}</Text>
+
+          <View style={styles.inputContainer}>
+            <TextImport
+              ref={emailRef}
+              imageSource={require('../../Assets/images/emalIMG.png')}
+              placeholder="Email"
+              initialValue={email}
+              onChangeText={setEmail}
+              editable={!loading}
+              returnKeyType="next"
+              onSubmitEditing={() => passwordRef.current?.focus()}
+            />
+          </View>
+          <View style={styles.inputContainer}>
+            <TextImport
+              ref={passwordRef}
+              imageSource={require('../../Assets/images/password.png')}
+              placeholder="Password"
+              initialValue={password}
+              onChangeText={setPassword}
+              editable={!loading}
+              secureTextEntry={passwordVisible}
+              returnKeyType="done"
+              onSubmitEditing={Signin}
+            />
+          </View>
+          <TouchableOpacity
+            onPress={() => {
+              setPasswordVisible(!passwordVisible);
+            }}
+            style={{
+              width: '100%',
+              paddingHorizontal: responsiveWidth(3),
+              flexDirection: 'row',
+              justifyContent: 'flex-end',
+              alignItems: 'center',
+            }}>
+            <TouchableOpacity
+              onPress={() => {
+                setPasswordVisible(!passwordVisible);
+              }}
+              style={{
+                height: responsiveWidth(6),
+                width: responsiveWidth(6),
+                borderColor: '#fff',
+                borderWidth: responsiveWidth(0.2),
+                borderRadius: responsiveWidth(1),
+                flexDirection: 'row',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
+              {!passwordVisible ? (
+                <Image
+                  source={require('../../Assets/images/tick.png')}
+                  style={{
+                    height: responsiveWidth(4),
+                    width: responsiveWidth(4),
+                    tintColor: '#fff',
+                  }}
+                />
+              ) : null}
+            </TouchableOpacity>
+
+            <Text
+              style={{
+                color: '#fff',
+                fontSize: responsiveFontSize(1.6),
+                paddingLeft: responsiveWidth(1.5),
+              }}>
+              Show Password
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[styles.button, loading && styles.disabledButton]}
+            onPress={Signin}
+            disabled={loading}>
+            {loading ? (
+              <ActivityIndicator color="#fff" size={responsiveHeight(4)} />
+            ) : (
+              <Text style={styles.buttonText}>{t('Sign In')}</Text>
+            )}
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.forgotPassword}
+            onPress={() => navigation.navigate('ForgotPassword')}
+            disabled={loading}>
+            <Text style={styles.forgotPasswordText}>
+              {t('Forgot Password?')}
+            </Text>
+          </TouchableOpacity>
+          <Text style={styles.signupText}>
+            {t("Don't have an account?")}{' '}
+            <Text
+              style={styles.signupLink}
+              onPress={() => navigation.navigate('SignUp')}
+              disabled={loading}>
+              {t('Sign Up Here')}
+            </Text>
+          </Text>
+        </View>
+      </ScrollView>
+    </WrapperContainer>
+  );
+};
+
+const styles = StyleSheet.create({
+  modalOverlay: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  heading: {
+    fontSize: responsiveFontSize(2.2),
+    fontWeight: 'bold',
+
+    color: '#fff',
+  },
+  container: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  maimHeading: {
+    flexDirection: 'row',
+
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  logo: {
+    fontSize: responsiveFontSize(6),
+    fontWeight: '900',
+    marginBottom: responsiveHeight(2),
+    color: '#FFF7D6',
+  },
+  ianText: {
+    fontWeight: '900',
+    color: '#FFF7D6',
+    fontSize: responsiveFontSize(2.5),
+    textAlign: 'center',
+    transform: [{rotate: '-90deg'}],
+    marginBottom: responsiveHeight(1.5),
+    marginRight: -responsiveWidth(5),
+  },
+  welcomeBack: {
+    fontSize: responsiveFontSize(3.5),
+    color: '#f0f0f0',
+    marginBottom: responsiveHeight(1),
+    fontWeight: 'thin',
+  },
+  loginText: {
+    fontSize: responsiveFontSize(2),
+    color: '#f0f0f0',
+    marginBottom: responsiveHeight(4),
+    fontWeight: 'thin',
+  },
+  inputContainer: {
+    width: responsiveWidth(80),
+    height: responsiveHeight(3),
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginVertical: responsiveHeight(4),
+    flexDirection: 'column',
+    zIndex: 10,
+  },
+  button: {
+    height: responsiveHeight(6),
+    backgroundColor: '#CCAA6B',
+    borderRadius: responsiveWidth(6),
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: responsiveWidth(50),
+    marginVertical: responsiveHeight(4),
+  },
+
+  forgotPassword: {
+    alignSelf: 'flex-end',
+    marginBottom: responsiveHeight(2),
+  },
+  forgotPasswordText: {
+    color: '#CCAA6B',
+    fontSize: responsiveFontSize(1.5),
+  },
+  signupLink: {
+    color: '#CCAA6B',
+    fontWeight: 'bold',
+  },
+  signupText: {
+    fontSize: responsiveFontSize(1.7),
+    color: '#f0f0f0',
+    textAlign: 'center',
+    marginVertical: responsiveHeight(4),
+  },
+  disabledButton: {
+    backgroundColor: '#CCAA6B',
+  },
+
+  modalContainer: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    width: '80%',
+    backgroundColor: '#CCAA6B',
+    borderRadius: 10,
+    padding: 20,
+    alignItems: 'center',
+  },
+  title: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 10,
+    color: 'white',
+  },
+  subtitle: {
+    fontSize: 14,
+    textAlign: 'center',
+    marginBottom: 20,
+    color: 'white',
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+  },
+  continueButton: {
+    flex: 1,
+    backgroundColor: '#1c1508',
+    padding: 10,
+    borderRadius: 5,
+    marginRight: 10,
+    alignItems: 'center',
+  },
+  cancelButton: {
+    flex: 1,
+    backgroundColor: 'red',
+    padding: 10,
+    borderRadius: 5,
+    marginLeft: 10,
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: 'white',
+    fontWeight: 'bold',
+  },
+});
+
+export default SignIn;
