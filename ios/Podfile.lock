@@ -1259,6 +1259,8 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
+  - react-native-splash-screen (3.3.0):
+    - React-Core
   - react-native-track-player (4.1.1):
     - React-Core
     - SwiftAudioEx (= 1.1.0)
@@ -1577,7 +1579,7 @@ PODS:
     - React
   - RNCPicker (2.11.0):
     - React-Core
-  - RNGestureHandler (2.23.1):
+  - RNGestureHandler (2.24.0):
     - DoubleConversion
     - glog
     - RCT-Folly (= 2024.01.01.00)
@@ -1761,6 +1763,7 @@ DEPENDENCIES:
   - react-native-mmkv (from `../node_modules/react-native-mmkv`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - "react-native-slider (from `../node_modules/@react-native-community/slider`)"
+  - react-native-splash-screen (from `../node_modules/react-native-splash-screen`)
   - react-native-track-player (from `../node_modules/react-native-track-player`)
   - react-native-video (from `../node_modules/react-native-video`)
   - react-native-webview (from `../node_modules/react-native-webview`)
@@ -1885,6 +1888,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-safe-area-context"
   react-native-slider:
     :path: "../node_modules/@react-native-community/slider"
+  react-native-splash-screen:
+    :path: "../node_modules/react-native-splash-screen"
   react-native-track-player:
     :path: "../node_modules/react-native-track-player"
   react-native-video:
@@ -2005,6 +2010,7 @@ SPEC CHECKSUMS:
   react-native-mmkv: a0c7fef73f11bed77432fe1d54178bbeb010bec8
   react-native-safe-area-context: 141eca0fd4e4191288dfc8b96a7c7e1c2983447a
   react-native-slider: 6eef81b38dcc2d69247ade50f575fdf2aa0677d1
+  react-native-splash-screen: 4312f786b13a81b5169ef346d76d33bc0c6dc457
   react-native-track-player: 82ef1756ffeea61140fea17519ecd6d64ec3cf3e
   react-native-video: d1b845e86725e51bb599073f054a6f0b16e9c545
   react-native-webview: 32f87691c9746d5ed8ce984cc2bc3d774727dab1
@@ -2037,7 +2043,7 @@ SPEC CHECKSUMS:
   RNCAsyncStorage: 03861ec2e1e46b20e51963c62c51dc288beb7c43
   RNCMaskedView: 0e1bc4bfa8365eba5fbbb71e07fbdc0555249489
   RNCPicker: 4f6d5e8d107064be32dfc8f1bcb5a3741135db0b
-  RNGestureHandler: ac27a597102ac578273f98e5475016543ca7724d
+  RNGestureHandler: 6869f833f337aef36f0f13bdb75c9f25d6687aa4
   RNLocalize: 06991b9c31e7a898a9fa6ddb204ce0f53a967248
   RNReanimated: 6c19bf97681e0564bf3201daf3d2aaf88a3322b4
   RNScreens: c992c58460a05b17de3eb5e4767a63a2568bf64d

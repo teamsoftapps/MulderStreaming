@@ -41,13 +41,15 @@
     "react-native-safe-area-context": "^4.11.0",
     "react-native-screens": "^3.34.0",
     "react-native-sound": "^0.11.2",
+    "react-native-splash-screen": "^3.3.0",
     "react-native-svg": "^15.10.1",
     "react-native-toast-message": "^2.2.1",
     "react-native-track-player": "^4.1.1",
     "react-native-video": "latest",
     "react-native-webview": "^13.13.1",
     "react-redux": "^9.1.2",
-    "redux-persist": "^6.0.0"
+    "redux-persist": "^6.0.0",
+    "yargs": "^17.7.2"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
@@ -69,5 +71,7 @@
   },
   "engines": {
     "node": ">=18"
+  },"resolutions": {
+    "wrap-ansi": "7.0.0"
   }
 }
