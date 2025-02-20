@@ -228,7 +228,7 @@
     js-tokens "^4.0.0"
     picocolors "^1.0.0"
 
-"@babel/parser@^7.1.0", "@babel/parser@^7.13.16", "@babel/parser@^7.14.7", "@babel/parser@^7.20.0", "@babel/parser@^7.20.7", "@babel/parser@^7.23.9", "@babel/parser@^7.26.9":
+"@babel/parser@^7.1.0", "@babel/parser@^7.13.16", "@babel/parser@^7.14.0", "@babel/parser@^7.14.7", "@babel/parser@^7.20.0", "@babel/parser@^7.20.7", "@babel/parser@^7.23.9", "@babel/parser@^7.26.9":
   version "7.26.9"
   resolved "https://registry.yarnpkg.com/@babel/parser/-/parser-7.26.9.tgz#d9e78bee6dc80f9efd8f2349dcfbbcdace280fd5"
   integrity sha512-81NWa1njQblgZbQHxWHpxxCzNsa3ZwvFqpUg7P+NNUU6f3UU2jBEg4OlF/J6rl8+PQGh1q6/zWScd001YwcA5A==
@@ -4347,6 +4347,11 @@ flow-parser@0.*:
   resolved "https://registry.yarnpkg.com/flow-parser/-/flow-parser-0.261.2.tgz#7db6ba059f3e8a972b5cd863c66a3ffc81aeb644"
   integrity sha512-RtunoakA3YjtpAxPSOBVW6lmP5NYmETwkpAfNkdr8Ovf86ENkbD3mtPWnswFTIUtRvjwv0i8ZSkHK+AzsUg1JA==
 
+flow-parser@^0.121.0:
+  version "0.121.0"
+  resolved "https://registry.yarnpkg.com/flow-parser/-/flow-parser-0.121.0.tgz#9f9898eaec91a9f7c323e9e992d81ab5c58e618f"
+  integrity sha512-1gIBiWJNR0tKUNv8gZuk7l9rVX06OuLzY9AoGio7y/JT4V1IZErEMEq2TJS+PFcw/y0RshZ1J/27VfK1UQzYVg==
+
 follow-redirects@^1.15.6:
   version "1.15.9"
   resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.15.9.tgz#a604fa10e443bf98ca94228d9eebcc2e8a2c8ee1"
@@ -7340,6 +7345,16 @@ react-native-bootsplash@^6.3.2:
     sharp "^0.32.6"
     ts-dedent "^2.2.0"
     xml-formatter "^3.6.3"
+
+react-native-codegen@^0.70.7:
+  version "0.70.7"
+  resolved "https://registry.yarnpkg.com/react-native-codegen/-/react-native-codegen-0.70.7.tgz#8f6b47a88740ae703209d57b7605538d86dacfa6"
+  integrity sha512-qXE8Jrhc9BmxDAnCmrHFDLJrzgjsE/mH57dtC4IO7K76AwagdXNCMRp5SA8XdHJzvvHWRaghpiFHEMl9TtOBcQ==
+  dependencies:
+    "@babel/parser" "^7.14.0"
+    flow-parser "^0.121.0"
+    jscodeshift "^0.14.0"
+    nullthrows "^1.1.1"
 
 react-native-dropdown-picker@^5.4.6:
   version "5.4.6"
