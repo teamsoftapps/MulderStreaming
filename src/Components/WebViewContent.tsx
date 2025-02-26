@@ -2,7 +2,7 @@ import React from 'react';
 import {View, StyleSheet} from 'react-native';
 import WebView from 'react-native-webview';
 
-const CustomWebViewComponent = () => {
+const WebViewContent = () => {
   return (
     <View style={styles.container}>
       <WebView
@@ -11,9 +11,7 @@ const CustomWebViewComponent = () => {
         //   html: '<h1>Custom WebView Content</h1><p>This is a custom message inside the WebView.</p>',
         // }}
         // source={{uri: 'https://app.janmulder.us/'}}
-        source={{
-          uri: 'https://music-app-final-theta.vercel.app/extend-subscription',
-        }}
+        source={{uri: 'https://mulder-exclusive-content.vercel.app/'}}
         style={styles.webView}
       />
     </View>
@@ -31,4 +29,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CustomWebViewComponent;
+export default WebViewContent;

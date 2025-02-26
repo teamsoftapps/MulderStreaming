@@ -396,7 +396,7 @@ const styles = StyleSheet.create({
   },
   videoThumbnailContainer: {
     position: 'relative',
-    height: responsiveHeight(22),
+    height: responsiveHeight(25),
     width: responsiveWidth(87),
     borderRadius: responsiveWidth(3),
     overflow: 'hidden',
@@ -405,7 +405,7 @@ const styles = StyleSheet.create({
   videoThumbnail: {
     height: '100%',
     width: '100%',
-    objectFit: 'cover',
+    objectFit: 'fill',
     borderRadius: responsiveWidth(3),
   },
   playIcon: {

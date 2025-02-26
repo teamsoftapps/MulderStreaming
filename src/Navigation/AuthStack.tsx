@@ -5,6 +5,7 @@ import SignUp from '../Screens/SignUp';
 import ForgotPassword from '../Screens/ForgotPassword';
 import MakeSelectonForgotPassword from '../Screens/MakeSelectonForgotPassword';
 import CheckSubscriptionCode from '../Screens/CheckSubscriptionCode';
+import CustomWebViewComponent from '../Components/CustomWebView';
 
 type AuthStackProps = {
   setbool: (value: boolean) => void;
@@ -30,6 +31,10 @@ const AuthStack = ({setbool, changeLanguage}: AuthStackProps) => (
     <Stack.Screen
       name="MakeSelectionForgotPassword"
       component={MakeSelectonForgotPassword}
+    />
+    <Stack.Screen
+      name="CustomWebViewContent"
+      component={CustomWebViewComponent}
     />
   </Stack.Navigator>
 );

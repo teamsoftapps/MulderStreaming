@@ -26,6 +26,9 @@ import {useSignINMutation} from '../store/Api/Auth';
 import {useDispatch} from 'react-redux';
 import {setUser} from '../store/slices/authSlice';
 import ToastMessage from '../hooks/ToastMessage.js';
+import PayPalPayment from '../Components/PaypalPayment';
+import WebView from 'react-native-webview';
+import CustomWebViewComponent from '../Components/CustomWebView';
 type props = StackNavigationProp<RootStackParamList, 'SignIn'>;
 type SignInProps = {
   setbool: (value: boolean) => void;
@@ -37,6 +40,18 @@ const SignIn = ({setbool, changeLanguage}: SignInProps) => {
   // const [email, setEmail] = useState('meganwess93@gmail.com');
   const [email, setEmail] = useState('');
   // const [password, setPassword] = useState('123456789');
+  // const initiatePayment = async () => {
+  //   // Your existing payment initiation logic
+  //   try {
+  //     const response = await fetch(
+  //       'https://mulder-backend-team-soft-apps.vercel.app/payPayment?price=17.99',
+  //     );
+  //     const data = await response.json();
+  //     console.log('data', data);
+  //   } catch (error) {
+  //     console.error('Payment initiation failed:', error);
+  //   }
+  // };
   const [password, setPassword] = useState('');
   const [passwordVisible, setPasswordVisible] = useState(true);
   const [loading, setLoading] = useState(false);
@@ -47,9 +62,10 @@ const SignIn = ({setbool, changeLanguage}: SignInProps) => {
   const [modalVisible, setModalVisible] = useState(false);
   const {Toasts} = ToastMessage();
   const [showModal, setShowModal] = useState(false);
+
   const Signin = async () => {
     let payload = {
-      email: email,
+      email: email.toLowerCase(),
       password: password,
     };
     setLoading(true);
@@ -67,6 +83,9 @@ const SignIn = ({setbool, changeLanguage}: SignInProps) => {
     } catch (error) {
       console.log('Error', error);
       Toasts('Error', error.data.message, 'error');
+      if (error.data.message === 'Your subscription has been expired!') {
+        setModalVisible(true);
+      }
     } finally {
       setLoading(false);
     }
@@ -192,6 +211,64 @@ const SignIn = ({setbool, changeLanguage}: SignInProps) => {
               {t('Sign Up Here')}
             </Text>
           </Text>
+
+          <Modal
+            animationType="slide"
+            transparent={true}
+            visible={modalVisible}
+            onRequestClose={() => setModalVisible(false)}>
+            <View style={styles.modalOverlay}>
+              <View style={styles.modalContainer}>
+                <Text style={styles.heading}>
+                  Do you want to renew Subscription?
+                </Text>
+
+                <View
+                  style={[
+                    styles.buttonContainer,
+                    {marginTop: responsiveHeight(2)},
+                  ]}>
+                  <TouchableOpacity
+                    onPress={() => setModalVisible(false)}
+                    style={{
+                      flex: 1,
+                      backgroundColor: '#1c1508',
+                      height: responsiveHeight(4),
+                      justifyContent: 'center',
+                      borderRadius: responsiveWidth(1.1),
+                    }}>
+                    <Text style={{textAlign: 'center', color: '#fff'}}>No</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={async () => {
+                      // setModalVisible(false);
+                      // setLoadingmodalVisible(true);
+                      // setLoaderLoading(true);
+                      try {
+                        // setLoadingmodalVisible(false);
+                        // initiatePayment();
+                        navigation.navigate('CustomWebViewContent');
+                        setModalVisible(false);
+                      } catch (error) {
+                        // setLoadingmodalVisible(false);
+                        console.error('Error deleting playlist:', error);
+                      }
+                    }}
+                    style={{
+                      flex: 1,
+                      backgroundColor: '#1c1508',
+                      height: responsiveHeight(4),
+                      justifyContent: 'center',
+                      borderRadius: responsiveWidth(1.1),
+                    }}>
+                    <Text style={{textAlign: 'center', color: '#fff'}}>
+                      Yes
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </View>
+          </Modal>
         </View>
       </ScrollView>
     </WrapperContainer>
@@ -205,11 +282,23 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
+  modalContainer: {
+    width: '90%',
+    padding: 20,
+    backgroundColor: '#9D824F',
+    borderRadius: 10,
+    alignItems: 'center',
+  },
   heading: {
-    fontSize: responsiveFontSize(2.2),
+    fontSize: responsiveFontSize(2),
     fontWeight: 'bold',
 
     color: '#fff',
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    gap: responsiveWidth(4),
+    width: '100%',
   },
   container: {
     justifyContent: 'center',
@@ -289,19 +378,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#CCAA6B',
   },
 
-  modalContainer: {
-    flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  modalContent: {
-    width: '80%',
-    backgroundColor: '#CCAA6B',
-    borderRadius: 10,
-    padding: 20,
-    alignItems: 'center',
-  },
   title: {
     fontSize: 18,
     fontWeight: 'bold',
@@ -314,11 +390,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     color: 'white',
   },
-  buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '100%',
-  },
+
   continueButton: {
     flex: 1,
     backgroundColor: '#1c1508',

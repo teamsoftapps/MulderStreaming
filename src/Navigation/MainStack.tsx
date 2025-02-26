@@ -8,7 +8,8 @@ import MusicPlayer from '../Components/MusicPlayer';
 import {StatusBar} from 'react-native';
 import PlaylistDetails from '../Screens/PlaylistDetails';
 import AllSongs from '../Screens/AllSongs';
-import CustomWebView from '../Components/CustomWebView';
+
+import WebViewContent from '../Components/WebViewContent';
 
 type MainStackProps = {
   language: string;
@@ -30,7 +31,7 @@ const MainStack = ({language, changeLanguage}: MainStackProps) => (
       <Stack.Screen name="PlaylistDetails" component={PlaylistDetails} />
       <Stack.Screen name="AllSongs" component={AllSongs} />
       <Stack.Screen name="MusicPlayer" component={MusicPlayer} />
-      <Stack.Screen name="CustomWebView" component={CustomWebView} />
+      <Stack.Screen name="WebViewContent" component={WebViewContent} />
     </Stack.Navigator>
   </>
 );

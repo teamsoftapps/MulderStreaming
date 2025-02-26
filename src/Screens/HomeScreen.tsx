@@ -107,6 +107,10 @@ const HomeScreen = () => {
     }, 500);
   };
 
+  const handleExclusiveContentWebView = () => {
+    navigation.navigate('WebViewContent');
+  };
+
   const handleForward = async () => {
     console.log('songs from redux', playlist);
     const trackList = playlist.map(song => ({
@@ -289,7 +293,7 @@ const HomeScreen = () => {
             alignItems: 'center',
             marginVertical: responsiveHeight(1),
           }}>
-          <ExclusiveContent />
+          {/* <ExclusiveContent /> */}
         </View>
         <View
           style={{
@@ -423,6 +427,29 @@ const HomeScreen = () => {
             )}
           </View>
         </TouchableOpacity>
+        <TouchableOpacity onPress={handleExclusiveContentWebView}>
+          <View
+            style={[
+              styles.createBTNview,
+              {
+                marginBottom: persistCurrentSong
+                  ? responsiveHeight(14)
+                  : responsiveHeight(2),
+                paddingVertical: responsiveHeight(2.4),
+              },
+            ]}>
+            {loading ? (
+              <ActivityIndicator size="large" color="#000" />
+            ) : (
+              <>
+                <Text style={styles.createBTNTxt}>
+                  {t('Exclusive Content')}
+                </Text>
+              </>
+            )}
+          </View>
+        </TouchableOpacity>
+
         <Modal
           animationType="slide"
           transparent={true}
