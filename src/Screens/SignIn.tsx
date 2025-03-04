@@ -26,9 +26,6 @@ import {useSignINMutation} from '../store/Api/Auth';
 import {useDispatch} from 'react-redux';
 import {setUser} from '../store/slices/authSlice';
 import ToastMessage from '../hooks/ToastMessage.js';
-import PayPalPayment from '../Components/PaypalPayment';
-import WebView from 'react-native-webview';
-import CustomWebViewComponent from '../Components/CustomWebView';
 type props = StackNavigationProp<RootStackParamList, 'SignIn'>;
 type SignInProps = {
   setbool: (value: boolean) => void;
@@ -37,21 +34,7 @@ type SignInProps = {
 const SignIn = ({setbool, changeLanguage}: SignInProps) => {
   const {t} = useTranslation();
   const navigation = useNavigation<props>();
-  // const [email, setEmail] = useState('meganwess93@gmail.com');
   const [email, setEmail] = useState('');
-  // const [password, setPassword] = useState('123456789');
-  // const initiatePayment = async () => {
-  //   // Your existing payment initiation logic
-  //   try {
-  //     const response = await fetch(
-  //       'https://mulder-backend-team-soft-apps.vercel.app/payPayment?price=17.99',
-  //     );
-  //     const data = await response.json();
-  //     console.log('data', data);
-  //   } catch (error) {
-  //     console.error('Payment initiation failed:', error);
-  //   }
-  // };
   const [password, setPassword] = useState('');
   const [passwordVisible, setPasswordVisible] = useState(true);
   const [loading, setLoading] = useState(false);
@@ -72,7 +55,7 @@ const SignIn = ({setbool, changeLanguage}: SignInProps) => {
     try {
       const res = await signIN(payload).unwrap();
       console.log('response====>', res);
-      if (res?.data?.user?.subscriptionID === '635bd8fdcb397b3a044d9867') {
+      if (res?.data) {
         dispatch(setUser(res));
         Toasts('Info', 'Loged in successfully!', 'success');
         console.log('RES', res.data);
@@ -241,16 +224,10 @@ const SignIn = ({setbool, changeLanguage}: SignInProps) => {
                   </TouchableOpacity>
                   <TouchableOpacity
                     onPress={async () => {
-                      // setModalVisible(false);
-                      // setLoadingmodalVisible(true);
-                      // setLoaderLoading(true);
                       try {
-                        // setLoadingmodalVisible(false);
-                        // initiatePayment();
                         navigation.navigate('CustomWebViewContent');
                         setModalVisible(false);
                       } catch (error) {
-                        // setLoadingmodalVisible(false);
                         console.error('Error deleting playlist:', error);
                       }
                     }}

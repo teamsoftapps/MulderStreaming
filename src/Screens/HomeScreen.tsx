@@ -45,6 +45,15 @@ type HomeScreenNavigationProp = StackNavigationProp<
   'AlbumScreen',
   'PlaylistDetails'
 >;
+interface Album {
+  Album_Name: string;
+  Album_Image: string;
+  [key: string]: any; // Add any additional properties the album object may have
+}
+
+interface ApiResponse {
+  data: Album[]; // Assuming the API returns an array of albums
+}
 
 const HomeScreen = () => {
   const {t} = useTranslation();
@@ -55,6 +64,7 @@ const HomeScreen = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [modalVisible2, setModalVisible2] = useState(false);
   console.log('suth data:', AuthData);
+  const subcscriptionId = AuthData.subscriptionID;
   const [dataSlice, setDataSlice] = useState([]);
   const [fetchAllPlaylists, {isLoading: playlistLoading}] =
     useGetAllUserPlaylistMutation();
@@ -64,6 +74,7 @@ const HomeScreen = () => {
   const [loaderloading, setLoaderLoading] = useState(false);
   const [LoadingmodalVisible, setLoadingmodalVisible] = useState(false);
   const [isDeleteItemId, setDeletedItemID] = useState('');
+  const [trialAlbum, setTrialAlbum] = useState([]);
   const dispatch = useDispatch();
   const {persistCurrentSong, playlist, playingSongIndex} = useSelector(
     (state: RootState) => state.musicPlayer,
@@ -89,13 +100,44 @@ const HomeScreen = () => {
       console.log('Error:', error);
     }
   };
-  const getAlbums = async () => {
+  // const getAlbums = async () => {
+  //   try {
+  //     const res = await data();
+  //     if (subcscriptionId === '635bcf0612d32838b423b227') {
+  //       const trailAlbum = res.data[10];
+  //       setAllAlbums([trailAlbum]);
+  //     } else {
+  //       setAllAlbums(res.data);
+  //     }
+  //     console.log('zxzxzxzxzxzx', res.data[6]);
+  //     console.log('albums a gai:', res);
+  //   } catch (error) {
+  //     console.log('Errorr in albumsssssssssssssssss', error);
+  //   }
+  // };
+
+  const getAlbums = async (): Promise<void> => {
     try {
-      const res = await data();
-      setAllAlbums(res.data);
-      console.log('albums a gai:', res);
+      // Assuming `data` is a function that fetches the albums data and returns an ApiResponse
+      const res: ApiResponse = await data();
+
+      if (subcscriptionId === '635bcf0612d32838b423b227') {
+        // Check if there are at least 11 albums before trying to access index 10
+        const trailAlbum = res?.data[10];
+        if (trailAlbum) {
+          setAllAlbums([trailAlbum]);
+          console.log('trail album:', trailAlbum);
+        } else {
+          console.log('Trail album does not exist at index 10');
+          setAllAlbums([]); // Or handle this case as needed
+        }
+      } else {
+        setAllAlbums(res?.data);
+        console.log('All Albums:', res?.data);
+      }
     } catch (error) {
-      console.log('Errorr in albumsssssssssssssssss', error);
+      console.error('Error in fetching albums:', error);
+      setAllAlbums([]); // Set to empty array in case of error
     }
   };
 
@@ -311,30 +353,31 @@ const HomeScreen = () => {
             }}>
             {t('Albums')}
           </Text>
-
-          <TouchableOpacity
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}
-            onPress={() => {
-              navigation.navigate('PlaylistScreen');
-            }}>
-            <Text
+          {subcscriptionId !== '635bcf0612d32838b423b227' ? (
+            <TouchableOpacity
               style={{
-                fontSize: responsiveFontSize(2),
-                color: '#f0f0f0',
-              }}>
-              {t('See All')}
-            </Text>
-            <Image
-              source={require('../../Assets/images/BackButton.png')}
-              style={{
-                marginLeft: responsiveWidth(2.5),
+                flexDirection: 'row',
+                justifyContent: 'center',
+                alignItems: 'center',
               }}
-            />
-          </TouchableOpacity>
+              onPress={() => {
+                navigation.navigate('PlaylistScreen');
+              }}>
+              <Text
+                style={{
+                  fontSize: responsiveFontSize(2),
+                  color: '#f0f0f0',
+                }}>
+                {t('See All')}
+              </Text>
+              <Image
+                source={require('../../Assets/images/BackButton.png')}
+                style={{
+                  marginLeft: responsiveWidth(2.5),
+                }}
+              />
+            </TouchableOpacity>
+          ) : null}
         </View>
         <FlatList
           horizontal
@@ -438,15 +481,7 @@ const HomeScreen = () => {
                 paddingVertical: responsiveHeight(2.4),
               },
             ]}>
-            {loading ? (
-              <ActivityIndicator size="large" color="#000" />
-            ) : (
-              <>
-                <Text style={styles.createBTNTxt}>
-                  {t('Exclusive Content')}
-                </Text>
-              </>
-            )}
+            <Text style={styles.createBTNTxt}>{t('Exclusive Content')}</Text>
           </View>
         </TouchableOpacity>
 

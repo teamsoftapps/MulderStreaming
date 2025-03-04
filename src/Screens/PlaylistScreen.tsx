@@ -40,11 +40,13 @@ interface AlbumScreenProps {
 }
 const PlaylistScreen: React.FC = () => {
   const {t} = useTranslation();
+  const AuthData = useSelector(state => state?.auth?.token?.data?.user);
   const navigation = useNavigation<AlbumScreenProps>();
   const [isAlbums, setAllAlbums] = useState([]);
   const [data, {isLoading}] = useGetAlbumsMutation();
   const [currentSongIndex, setCurrentSongIndex] = useState(0);
   const dispatch = useDispatch();
+  const subcscriptionId = AuthData.subscriptionID;
   const {persistCurrentSong, playlist, playingSongIndex} = useSelector(
     (state: RootState) => state.musicPlayer,
   );
@@ -55,16 +57,35 @@ const PlaylistScreen: React.FC = () => {
     }, [data]),
   );
 
-  const getAlbums = async () => {
+  const getAlbums = async (): Promise<void> => {
     try {
-      const res = await data();
-      console.log(
-        'getting albums --------------------------------------------:',
-        res.data,
-      );
-      setAllAlbums(res?.data);
+      // Assuming `data` is a function that fetches the albums data and returns an ApiResponse
+      const res: ApiResponse = await data();
+
+      if (subcscriptionId === '635bcf0612d32838b423b227') {
+        // Check if there are at least 11 albums before trying to access index 10
+        const trailAlbum = res.data[10];
+        if (trailAlbum) {
+          setAllAlbums([trailAlbum]);
+        } else {
+          console.log('Trail album does not exist at index 10');
+          setAllAlbums([]); // Or handle this case as needed
+        }
+      } else {
+        setAllAlbums(res.data);
+      }
+
+      // Safe check for the 7th element
+      if (res.data.length > 6) {
+        console.log('7th album:', res.data[6]);
+      } else {
+        console.log('Not enough albums for 7th element');
+      }
+
+      console.log('Albums fetched:', res);
     } catch (error) {
-      console.log('Errorr', error);
+      console.error('Error in fetching albums:', error);
+      setAllAlbums([]); // Set to empty array in case of error
     }
   };
 

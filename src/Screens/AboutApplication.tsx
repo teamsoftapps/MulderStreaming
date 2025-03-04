@@ -1,13 +1,7 @@
 import {useNavigation} from '@react-navigation/native';
 import React from 'react';
 import {ImageBackground, TouchableOpacity} from 'react-native';
-import {
-  Text,
-  View,
-  StyleSheet,
-  Image,
-  ScrollView,
-} from 'react-native';
+import {Text, View, StyleSheet, Image, ScrollView} from 'react-native';
 import {
   responsiveFontSize,
   responsiveHeight,

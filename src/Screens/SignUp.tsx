@@ -1,5 +1,5 @@
 import {StackNavigationProp} from '@react-navigation/stack';
-import React, {useState} from 'react';
+import React, {useRef, useState} from 'react';
 import {
   View,
   Text,
@@ -8,6 +8,7 @@ import {
   ScrollView,
   ActivityIndicator,
   Platform,
+  TextInput,
 } from 'react-native';
 import {
   responsiveFontSize,
@@ -35,6 +36,10 @@ const SignUp = () => {
   const {Toasts} = ToastMessage();
   const {t} = useTranslation();
   const [signUp, {isLoading}] = useSignUPMutation();
+  const emailRef = useRef<TextInput>(null);
+  const passwordRef = useRef<TextInput>(null);
+  const confirmPasswordRef = useRef<TextInput>(null);
+  const accessCodeRef = useRef<TextInput>(null);
   const handleSignUp = async () => {
     console.log('Access Code:', accessCode);
     console.log('Email:', email);
@@ -51,7 +56,7 @@ const SignUp = () => {
     const payload = {
       email: email,
       password: password,
-      code: accessCode,
+      code: accessCode.toUpperCase(),
     };
     try {
       const result = await signUp(payload);
@@ -96,9 +101,12 @@ const SignUp = () => {
           <Text style={styles.loginText}>{t('Create an account')}</Text>
           <View style={styles.inputContainer}>
             <TextImport
+              ref={emailRef}
               imageSource={require('../../Assets/images/emalIMG.png')}
               placeholder={t('Email')}
               initialValue={email}
+              returnKeyType="next"
+              onSubmitEditing={() => passwordRef.current?.focus()}
               onChangeText={value => {
                 setEmail(value);
                 console.log('Access Code:', value);
@@ -107,9 +115,12 @@ const SignUp = () => {
           </View>
           <View style={styles.inputContainer}>
             <PasswordInput
+              ref={passwordRef}
               imageSource={require('../../Assets/images/password.png')}
               placeholder={t('Password')}
               initialValue={password}
+              returnKeyType="next"
+              onSubmitEditing={() => confirmPasswordRef.current?.focus()}
               onChangeText={value => {
                 setPassword(value);
                 console.log('Access Code:', value);
@@ -118,9 +129,12 @@ const SignUp = () => {
           </View>
           <View style={styles.inputContainer}>
             <PasswordInput
+              ref={confirmPasswordRef}
               imageSource={require('../../Assets/images/password.png')}
               placeholder={t('Confrim password')}
               initialValue={confirmPassword}
+              returnKeyType="next"
+              onSubmitEditing={() => accessCodeRef.current?.focus()}
               onChangeText={value => {
                 setConfirmPassword(value);
                 console.log('Access Code:', value);
@@ -129,8 +143,11 @@ const SignUp = () => {
           </View>
           <View style={styles.inputContainer}>
             <TextImport
+              ref={accessCodeRef}
               imageSource={require('../../Assets/images/key.png')}
               placeholder={t('Access key code')}
+              returnKeyType="done"
+              onSubmitEditing={handleSignUp}
               initialValue={accessCode}
               onChangeText={value => {
                 setAccessCode(value);

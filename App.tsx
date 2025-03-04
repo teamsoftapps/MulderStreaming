@@ -77,7 +77,7 @@ function App(): React.JSX.Element {
 
   return (
     <NavigationContainer>
-      {token && subscriptionId == '635bd8fdcb397b3a044d9867' ? (
+      {token ? (
         <MainStack language={language} changeLanguage={changeLanguage} />
       ) : (
         <AuthStack
