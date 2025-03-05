@@ -7,6 +7,8 @@ import {
   FlatList,
   TouchableOpacity,
   ActivityIndicator,
+  ScrollView,
+  RefreshControl,
 } from 'react-native';
 import {
   responsiveFontSize,
@@ -53,17 +55,18 @@ const WishListScreen: React.FC = () => {
   const dispatch = useDispatch();
   const [handleFavorite] = useHandleFavoriteMutation();
   const [trackList, setTrackList] = useState([]);
-
+  const [refreshing, setRefreshing] = useState(false);
   const {persistCurrentSong, isPlaying, playingSongIndex} = useSelector(
     (state: RootState) => state.musicPlayer,
   );
-  const fetchFavourites = async () => {
+
+  const onRefresh = async () => {
+    setRefreshing(true);
     try {
       const res = await getFavourites({});
       setFavorites(res?.data?.favourites);
       console.log('responce for favourites in wishlist:', res);
       dispatch(setPlaylist(res?.data?.favourites));
-      // dispatch(setPlayingSongIndex(null));
       setIsLoading(false);
       const trackList = res?.data?.favourites.map(song => ({
         id: song._id,
@@ -73,10 +76,28 @@ const WishListScreen: React.FC = () => {
         artwork: `https://musicfilesforheroku.s3.us-west-1.amazonaws.com/uploads/${song.Album_Image}`,
         duration: parseFloat(song.Song_Length),
       }));
-      // await TrackPlayer.add(trackList);
-      // if (!isPlaying) {
-      //   dispatch(setCurrentSongg(res?.data?.favourites[0]));
-      // }
+      setTrackList(trackList);
+    } catch (error) {
+      console.log('error while fetvhing favourites songs:', error);
+    } finally {
+      setRefreshing(false);
+    }
+  };
+  const fetchFavourites = async () => {
+    try {
+      const res = await getFavourites({});
+      setFavorites(res?.data?.favourites);
+      console.log('responce for favourites in wishlist:', res);
+      dispatch(setPlaylist(res?.data?.favourites));
+      setIsLoading(false);
+      const trackList = res?.data?.favourites.map(song => ({
+        id: song._id,
+        url: `https://musicfilesforheroku.s3.us-west-1.amazonaws.com/uploads/${song.Song_File}`,
+        title: song.Song_Name,
+        artist: 'Mulder',
+        artwork: `https://musicfilesforheroku.s3.us-west-1.amazonaws.com/uploads/${song.Album_Image}`,
+        duration: parseFloat(song.Song_Length),
+      }));
       setTrackList(trackList);
     } catch (error) {
       console.log('error while fetvhing favourites songs:', error);
@@ -92,13 +113,6 @@ const WishListScreen: React.FC = () => {
   const handleForward = async () => {
     await TrackPlayer.reset();
     await TrackPlayer.add(trackList);
-    // if (playingSongIndex!==currentSongIndex) {
-    //   await TrackPlayer.skip(0);
-    //   await TrackPlayer.play();
-    //   dispatch(setCurrentSongg(favorites[0]));
-    //   dispatch(setPlayingSongIndex(currentSongIndex));
-    //   dispatch(togglePlaying(true));
-    // } else
     if (currentSongIndex < favorites.length - 1) {
       const nextIndex = currentSongIndex + 1;
       const nextSong = favorites[nextIndex];
@@ -189,7 +203,6 @@ const WishListScreen: React.FC = () => {
         {isLoading ? (
           <ActivityIndicator size={responsiveHeight(5)} color={'#9D824F'} />
         ) : (
-          // <ActivityIndicator size={responsiveHeight(5)} color={'#9D824F'} />
           <Text style={{color: '#fff', fontFamily: 'Roboto-Medium'}}>
             No Liked Songs!!
           </Text>
@@ -254,23 +267,30 @@ const WishListScreen: React.FC = () => {
   return (
     <WrapperContainer style={styles.container}>
       <TopNavigationBar title={t('Liked')} showBackButton={true} />
-      <FlatList
-        style={{
-          marginBottom: persistCurrentSong ? responsiveHeight(12) : 0,
-        }}
-        data={favorites}
-        renderItem={renderPlaylistItem}
-        keyExtractor={item => item?._id}
-        showsVerticalScrollIndicator={false}
-        ListEmptyComponent={listemptyComp}
-      />
+
+      <ScrollView
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            colors={['#1C1508']}
+            progressBackgroundColor={'#9D824F'}
+          />
+        }
+        contentContainerStyle={styles.scrollViewContent}>
+        <FlatList
+          style={{
+            marginBottom: persistCurrentSong ? responsiveHeight(12) : 0,
+          }}
+          data={favorites}
+          renderItem={renderPlaylistItem}
+          keyExtractor={item => item?._id}
+          showsVerticalScrollIndicator={false}
+          ListEmptyComponent={listemptyComp}
+        />
+      </ScrollView>
       {persistCurrentSong && (
-        <View
-          style={
-            {
-              // marginVertical: responsiveHeight(1),
-            }
-          }>
+        <View>
           <BackgroundMusicPlayer
             paddingtop={responsiveHeight(9)}
             imageSource={`https://musicfilesforheroku.s3.us-west-1.amazonaws.com/uploads/${persistCurrentSong.Album_Image}`}
@@ -327,7 +347,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginVertical: responsiveHeight(1.5),
-    // marginHorizontal: responsiveWidth(3),
   },
   playlistImage: {
     width: responsiveWidth(15),
@@ -342,7 +361,6 @@ const styles = StyleSheet.create({
   },
   musicInfo: {
     flexDirection: 'column',
-    // marginRight: responsiveWidth(10),
   },
   songTitle: {
     color: '#f0f0f0',
@@ -375,6 +393,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+  },
+  scrollViewContent: {
+    flexGrow: 1,
   },
 });
 

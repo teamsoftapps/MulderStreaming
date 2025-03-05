@@ -7,6 +7,8 @@ import {
   FlatList,
   TouchableOpacity,
   ActivityIndicator,
+  ScrollView,
+  RefreshControl,
 } from 'react-native';
 import {
   responsiveFontSize,
@@ -64,6 +66,7 @@ const AlbumScreen: React.FC<AlbumScreenProps> = ({route}) => {
   const dispatch = useDispatch();
   const [trackList, setTrackList] = useState([]);
   const [currentSongIndex, setCurrentSongIndex] = useState(0);
+  const [refreshing, setRefreshing] = useState(false);
   const {persistCurrentSong, isPlaying, playingSongIndex} = useSelector(
     (state: RootState) => state.musicPlayer,
   );
@@ -73,6 +76,39 @@ const AlbumScreen: React.FC<AlbumScreenProps> = ({route}) => {
   );
 
   const albumName = route?.params?.data?.Album_Name || '';
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    if (!albumName) return;
+
+    try {
+      const res = await getAlbumsSongs(albumName);
+      const liked = await favoriteSongs();
+      setIsLikedSong(liked?.data?.favourites);
+      if (res?.data) {
+        const songs = res?.data[0] || [];
+        setAlbumImage(songs[0]?.Album_Image || '');
+
+        setAlbumSongs(songs);
+        setIsDataLoading(false);
+        dispatch(setPlaylist(songs));
+        const trackList = songs.map(song => ({
+          id: song._id,
+          url: `https://musicfilesforheroku.s3.us-west-1.amazonaws.com/uploads/${song.Song_File}`,
+          title: song.Song_Name,
+          artist: 'Mulder',
+          artwork: `https://musicfilesforheroku.s3.us-west-1.amazonaws.com/uploads/${song.Album_Image}`,
+          duration: parseFloat(song.Song_Length),
+        }));
+
+        setTrackList(trackList);
+      }
+    } catch (err) {
+      console.error('Error fetching songs:', err);
+    } finally {
+      setRefreshing(false);
+    }
+  };
 
   const getSongs = async () => {
     if (!albumName) return;
@@ -88,7 +124,6 @@ const AlbumScreen: React.FC<AlbumScreenProps> = ({route}) => {
         setAlbumSongs(songs);
         setIsDataLoading(false);
         dispatch(setPlaylist(songs));
-        // dispatch(setPlayingSongIndex(null));
         const trackList = songs.map(song => ({
           id: song._id,
           url: `https://musicfilesforheroku.s3.us-west-1.amazonaws.com/uploads/${song.Song_File}`,
@@ -133,13 +168,6 @@ const AlbumScreen: React.FC<AlbumScreenProps> = ({route}) => {
   const handleForward = async () => {
     await TrackPlayer.reset();
     await TrackPlayer.add(trackList);
-    // if (playingSongIndex!==currentSongIndex) {
-    //   await TrackPlayer.skip(0);
-    //   await TrackPlayer.play();
-    //   dispatch(setCurrentSongg(albumSongs[0]));
-    //   dispatch(setPlayingSongIndex(currentSongIndex));
-    //   dispatch(togglePlaying(true));
-    // } else
     if (currentSongIndex < albumSongs.length - 2) {
       const nextIndex = currentSongIndex + 1;
       const nextSong = albumSongs[nextIndex];
@@ -280,43 +308,58 @@ const AlbumScreen: React.FC<AlbumScreenProps> = ({route}) => {
           <ActivityIndicator size={responsiveHeight(5)} color={'#9D824F'} />
         ) : (
           <>
-            <View>
-              <View style={{position: 'relative'}}>
-                <Image
-                  source={require('../../Assets/images/bannarHome.png')}
-                  style={styles.cardImage}
+            <ScrollView
+              refreshControl={
+                <RefreshControl
+                  refreshing={refreshing}
+                  onRefresh={onRefresh}
+                  colors={['#1C1508']}
+                  progressBackgroundColor={'#9D824F'}
                 />
-                <View style={styles.overlayContainer}>
+              }
+              contentContainerStyle={styles.scrollViewContent}>
+              <View>
+                <View style={{position: 'relative'}}>
                   <Image
-                    source={{
-                      uri: `https://musicfilesforheroku.s3.us-west-1.amazonaws.com/uploads/${albumImage}`,
-                    }}
-                    style={styles.overlayImage}
+                    source={require('../../Assets/images/bannarHome.png')}
+                    style={styles.cardImage}
                   />
-                  <Text
-                    style={[styles.overlayText, {width: responsiveWidth(40)}]}>
-                    {albumName || 'Album Name not found'}
-                    {'\n\n'}
-                    <Text style={{fontSize: responsiveFontSize(1.8)}}>
-                      By Mulder {'\n\n'}
-                      <Text style={{marginTop: responsiveHeight(1.8)}}>
-                        {albumSongs.length} songs
+                  <View style={styles.overlayContainer}>
+                    <Image
+                      source={{
+                        uri: `https://musicfilesforheroku.s3.us-west-1.amazonaws.com/uploads/${albumImage}`,
+                      }}
+                      style={styles.overlayImage}
+                    />
+                    <Text
+                      style={[
+                        styles.overlayText,
+                        {width: responsiveWidth(40)},
+                      ]}>
+                      {albumName || 'Album Name not found'}
+                      {'\n\n'}
+                      <Text style={{fontSize: responsiveFontSize(1.8)}}>
+                        By Mulder {'\n\n'}
+                        <Text style={{marginTop: responsiveHeight(1.8)}}>
+                          {albumSongs.length} songs
+                        </Text>
                       </Text>
                     </Text>
-                  </Text>
+                  </View>
                 </View>
               </View>
-            </View>
-            <FlatList
-              style={{
-                marginBottom: persistCurrentSong ? responsiveHeight(12) : 0,
-              }}
-              data={albumSongs}
-              renderItem={renderPlaylistItem}
-              ListEmptyComponent={listEmptyComp}
-              keyExtractor={item => item._id}
-              showsVerticalScrollIndicator={false}
-            />
+
+              <FlatList
+                style={{
+                  marginBottom: persistCurrentSong ? responsiveHeight(12) : 0,
+                }}
+                data={albumSongs}
+                renderItem={renderPlaylistItem}
+                ListEmptyComponent={listEmptyComp}
+                keyExtractor={item => item._id}
+                showsVerticalScrollIndicator={false}
+              />
+            </ScrollView>
             {persistCurrentSong && (
               <View style={{marginBottom: responsiveHeight(1)}}>
                 <BackgroundMusicPlayer
@@ -418,6 +461,9 @@ const styles = StyleSheet.create({
   emptyText: {
     color: '#9D824F',
     fontSize: responsiveFontSize(2),
+  },
+  scrollViewContent: {
+    flexGrow: 1,
   },
 });
 

@@ -8,6 +8,8 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   Alert,
+  RefreshControl,
+  ScrollView,
 } from 'react-native';
 import {
   responsiveFontSize,
@@ -67,6 +69,7 @@ const PlaylistDetails: React.FC<PlaylistDetailsProps> = ({route}) => {
   const [currentSongIndex, setCurrentSongIndex] = useState(0);
   const [handleFavorite] = useHandleFavoriteMutation();
   const [trackList, setTrackList] = useState([]);
+  const [refreshing, setRefreshing] = useState(false);
   const {persistCurrentSong, playlist, playingSongIndex} = useSelector(
     (state: RootState) => state.musicPlayer,
   );
@@ -107,7 +110,6 @@ const PlaylistDetails: React.FC<PlaylistDetailsProps> = ({route}) => {
         console.log('songsssssssssssssssssssssssssssssssssssssss', res);
         setplaylistSongs(res?.data?.favourites);
         dispatch(setPlaylist(res?.data?.favourites));
-        // dispatch(setPlayingSongIndex(null));
         setIsLoading(false);
         const trackList = res?.data?.favourites.map(song => ({
           id: song._id,
@@ -117,18 +119,52 @@ const PlaylistDetails: React.FC<PlaylistDetailsProps> = ({route}) => {
           artwork: `https://musicfilesforheroku.s3.us-west-1.amazonaws.com/uploads/${song.Album_Image}`,
           duration: parseFloat(song.Song_Length),
         }));
-        // await TrackPlayer.add(trackList);
 
         setTrackList(trackList);
-        // if (!isPlaying) {
-        //   dispatch(setCurrentSongg(res?.data?.favourites[0]));
-        // }
-        // await TrackPlayer.add(trackList);
       } catch (error) {}
     } else {
       getSongs();
     }
   };
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    if (!playlistId) return;
+    try {
+      const res = await getPlaylistSongs(playlistId);
+      console.log('Response--->', res);
+      const liked = await favoriteSongs();
+      setIsLikedSong(liked?.data?.favourites);
+
+      if (res?.data) {
+        const songs = res?.data?.songs;
+
+        setplaylistSongs(songs);
+
+        console.log('SongsPl--->', songs);
+        dispatch(setPlaylist(songs));
+        dispatch(setPlayingSongIndex(null));
+        setIsLoading(false);
+        const trackList = songs.map(song => ({
+          id: song._id,
+          url: `https://musicfilesforheroku.s3.us-west-1.amazonaws.com/uploads/${song.Song_File}`,
+          title: song.Song_Name,
+          artist: 'Mulder',
+          artwork: `https://musicfilesforheroku.s3.us-west-1.amazonaws.com/uploads/${song.Album_Image}`,
+          duration: parseFloat(song.Song_Length),
+        }));
+        setTrackList(trackList);
+
+        console.log('Traclklist----...->', trackList);
+        console.log('Added Track', trackList);
+      }
+    } catch (err) {
+      console.error('Error fetching songs:', err);
+    } finally {
+      setRefreshing(false);
+    }
+  };
+
   const getSongs = async () => {
     if (!playlistId) return;
     try {
@@ -146,25 +182,6 @@ const PlaylistDetails: React.FC<PlaylistDetailsProps> = ({route}) => {
         dispatch(setPlaylist(songs));
         dispatch(setPlayingSongIndex(null));
         setIsLoading(false);
-        // const persistSongFormatted = {
-        //   id: persistCurrentSong._id,
-        //   url: `https://musicfilesforheroku.s3.us-west-1.amazonaws.com/uploads/${persistCurrentSong.Song_File}`,
-        //   title: persistCurrentSong.Song_Name,
-        //   artist: 'Mulder',
-        //   artwork: `https://musicfilesforheroku.s3.us-west-1.amazonaws.com/uploads/${persistCurrentSong.Album_Image}`,
-        //   duration: parseFloat(persistCurrentSong.Song_Length),
-        // };
-        // const trackList = [
-        //   persistSongFormatted,
-        //   ...songs.map(song => ({
-        //     id: song._id,
-        //     url: `https://musicfilesforheroku.s3.us-west-1.amazonaws.com/uploads/${song.Song_File}`,
-        //     title: song.Song_Name,
-        //     artist: 'Mulder',
-        //     artwork: `https://musicfilesforheroku.s3.us-west-1.amazonaws.com/uploads/${song.Album_Image}`,
-        //     duration: parseFloat(song.Song_Length),
-        //   })),
-        // ];
         const trackList = songs.map(song => ({
           id: song._id,
           url: `https://musicfilesforheroku.s3.us-west-1.amazonaws.com/uploads/${song.Song_File}`,
@@ -176,11 +193,6 @@ const PlaylistDetails: React.FC<PlaylistDetailsProps> = ({route}) => {
         setTrackList(trackList);
 
         console.log('Traclklist----...->', trackList);
-        // if (!isPlaying) {
-        //   dispatch(setCurrentSongg(songs[0]));
-        // }
-        // await TrackPlayer.reset();
-        // await TrackPlayer.add(trackList);
         console.log('Added Track', trackList);
       }
     } catch (err) {
@@ -218,13 +230,6 @@ const PlaylistDetails: React.FC<PlaylistDetailsProps> = ({route}) => {
   const handleForward = async () => {
     await TrackPlayer.reset();
     await TrackPlayer.add(trackList);
-    // if (playingSongIndex!==currentSongIndex) {
-    //   await TrackPlayer.skip(0);
-    //   await TrackPlayer.play();
-    //   dispatch(setCurrentSongg(playlistSongs[0]));
-    //   dispatch(setPlayingSongIndex(currentSongIndex));
-    //   dispatch(togglePlaying(true));
-    // } else
     if (currentSongIndex < playlistSongs.length - 1) {
       const nextIndex = currentSongIndex + 1;
       const nextSong = playlistSongs[nextIndex];
@@ -294,7 +299,6 @@ const PlaylistDetails: React.FC<PlaylistDetailsProps> = ({route}) => {
     item: PlaylistItem;
     index: number;
   }) => {
-    // const isFavorite = favorites.includes(item._id);
     const isFavorite = islikedSong.some(obj => obj._id === item._id);
 
     const isPlaying = currentSong?._id === item._id;
@@ -363,7 +367,6 @@ const PlaylistDetails: React.FC<PlaylistDetailsProps> = ({route}) => {
   };
 
   useEffect(() => {
-    // getSongs();
     fetchFavorites();
   }, [playlistId]);
 
@@ -386,25 +389,28 @@ const PlaylistDetails: React.FC<PlaylistDetailsProps> = ({route}) => {
           title={route?.params?.data?.Playlist_Name}
           showBackButton={true}
         />
-        {/* <Text
-          style={{
-            fontSize: responsiveFontSize(2.8),
-            color: '#9D824F',
-            fontFamily: 'Roboto-Medium',
-            textAlign: 'center',
-          }}>
-          {route?.params?.data?.Playlist_Name}
-        </Text> */}
-        <FlatList
-          style={{
-            marginBottom: persistCurrentSong ? responsiveHeight(12) : 0,
-          }}
-          data={playlistSongs}
-          renderItem={renderPlaylistItem}
-          ListEmptyComponent={listEmptyComp}
-          keyExtractor={item => item._id}
-          showsVerticalScrollIndicator={false}
-        />
+
+        <ScrollView
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              colors={['#1C1508']}
+              progressBackgroundColor={'#9D824F'}
+            />
+          }
+          contentContainerStyle={styles.scrollViewContent}>
+          <FlatList
+            style={{
+              marginBottom: persistCurrentSong ? responsiveHeight(12) : 0,
+            }}
+            data={playlistSongs}
+            renderItem={renderPlaylistItem}
+            ListEmptyComponent={listEmptyComp}
+            keyExtractor={item => item._id}
+            showsVerticalScrollIndicator={false}
+          />
+        </ScrollView>
 
         {persistCurrentSong && (
           <View style={{marginBottom: responsiveHeight(1)}}>
@@ -417,7 +423,6 @@ const PlaylistDetails: React.FC<PlaylistDetailsProps> = ({route}) => {
               lyrics={persistCurrentSong.Song_Lyrics}
               functionForBackward={handleBackward}
               functionForForward={handleForward}
-              // trackList={trackList}
               togglePlayMusic={() =>
                 togglePlayMusic(persistCurrentSong, currentSongIndex)
               }
@@ -506,6 +511,9 @@ const styles = StyleSheet.create({
   emptyText: {
     color: '#9D824F',
     fontSize: responsiveFontSize(2),
+  },
+  scrollViewContent: {
+    flexGrow: 1,
   },
 });
 

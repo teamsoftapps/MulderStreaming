@@ -7,6 +7,8 @@ import {
   FlatList,
   TouchableOpacity,
   ActivityIndicator,
+  ScrollView,
+  RefreshControl,
 } from 'react-native';
 import {
   responsiveFontSize,
@@ -27,6 +29,7 @@ import {
   setPlayingSongIndex,
   togglePlaying,
 } from '../store/slices/songState';
+import {Colors} from 'react-native/Libraries/NewAppScreen';
 
 interface AlbumScreenProps {
   navigate: any;
@@ -43,8 +46,9 @@ const PlaylistScreen: React.FC = () => {
   const AuthData = useSelector(state => state?.auth?.token?.data?.user);
   const navigation = useNavigation<AlbumScreenProps>();
   const [isAlbums, setAllAlbums] = useState([]);
-  const [data, {isLoading}] = useGetAlbumsMutation();
+  const [data, {isLoading, refetch}] = useGetAlbumsMutation();
   const [currentSongIndex, setCurrentSongIndex] = useState(0);
+  const [refreshing, setRefreshing] = useState(false);
   const dispatch = useDispatch();
   const subcscriptionId = AuthData.subscriptionID;
   const {persistCurrentSong, playlist, playingSongIndex} = useSelector(
@@ -57,25 +61,23 @@ const PlaylistScreen: React.FC = () => {
     }, [data]),
   );
 
-  const getAlbums = async (): Promise<void> => {
+  const onRefresh = async () => {
+    setRefreshing(true);
     try {
-      // Assuming `data` is a function that fetches the albums data and returns an ApiResponse
       const res: ApiResponse = await data();
 
       if (subcscriptionId === '635bcf0612d32838b423b227') {
-        // Check if there are at least 11 albums before trying to access index 10
         const trailAlbum = res.data[10];
         if (trailAlbum) {
           setAllAlbums([trailAlbum]);
         } else {
           console.log('Trail album does not exist at index 10');
-          setAllAlbums([]); // Or handle this case as needed
+          setAllAlbums([]); //
         }
       } else {
         setAllAlbums(res.data);
       }
 
-      // Safe check for the 7th element
       if (res.data.length > 6) {
         console.log('7th album:', res.data[6]);
       } else {
@@ -85,7 +87,38 @@ const PlaylistScreen: React.FC = () => {
       console.log('Albums fetched:', res);
     } catch (error) {
       console.error('Error in fetching albums:', error);
-      setAllAlbums([]); // Set to empty array in case of error
+      setAllAlbums([]);
+    } finally {
+      setRefreshing(false);
+    }
+  };
+
+  const getAlbums = async (): Promise<void> => {
+    try {
+      const res: ApiResponse = await data();
+
+      if (subcscriptionId === '635bcf0612d32838b423b227') {
+        const trailAlbum = res.data[10];
+        if (trailAlbum) {
+          setAllAlbums([trailAlbum]);
+        } else {
+          console.log('Trail album does not exist at index 10');
+          setAllAlbums([]); //
+        }
+      } else {
+        setAllAlbums(res.data);
+      }
+
+      if (res.data.length > 6) {
+        console.log('7th album:', res.data[6]);
+      } else {
+        console.log('Not enough albums for 7th element');
+      }
+
+      console.log('Albums fetched:', res);
+    } catch (error) {
+      console.error('Error in fetching albums:', error);
+      setAllAlbums([]);
     }
   };
 
@@ -226,26 +259,29 @@ const PlaylistScreen: React.FC = () => {
     <WrapperContainer style={styles.container} bgColor="#1c1508">
       <TopNavigationBar title={t('Albums')} showBackButton={true} />
 
-      <FlatList
-        showsVerticalScrollIndicator={false}
-        data={isAlbums}
-        renderItem={renderedAlbums}
-        ListEmptyComponent={listemptyComp}
-        style={{
-          marginBottom: persistCurrentSong ? responsiveHeight(12) : 0,
-        }}
-      />
+      <ScrollView
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            colors={['#1C1508']}
+            progressBackgroundColor={'#9D824F'}
+          />
+        }
+        contentContainerStyle={styles.scrollViewContent}>
+        <FlatList
+          showsVerticalScrollIndicator={false}
+          data={isAlbums}
+          renderItem={renderedAlbums}
+          ListEmptyComponent={listemptyComp}
+          style={{
+            marginBottom: persistCurrentSong ? responsiveHeight(12) : 0,
+          }}
+        />
+      </ScrollView>
 
       {persistCurrentSong && (
-        <View
-          style={
-            {
-              // flex: 1,
-              // alignItems: 'center',
-              // justifyContent: 'center',
-              // bottom: responsiveHeight(6),
-            }
-          }>
+        <View>
           <BackgroundMusicPlayer
             paddingtop={responsiveHeight(9)}
             imageSource={`https://musicfilesforheroku.s3.us-west-1.amazonaws.com/uploads/${persistCurrentSong.Album_Image}`}
@@ -417,6 +453,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     marginVertical: responsiveHeight(1.5),
+  },
+  scrollViewContent: {
+    flexGrow: 1,
   },
 });
 export default PlaylistScreen;
