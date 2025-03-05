@@ -14,7 +14,7 @@ const WebViewContent = () => {
         style={{
           backgroundColor: '#111111',
           paddingHorizontal: responsiveWidth(5),
-          marginTop:
+          paddingTop:
             Platform.OS === 'ios' ? responsiveHeight(3) : responsiveHeight(0),
         }}>
         <TopNavigationBar title="" showBackButton={true} />
