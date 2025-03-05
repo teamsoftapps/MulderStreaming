@@ -445,31 +445,33 @@ const HomeScreen = () => {
           data={dataSlice}
           renderItem={renderedPlaylists}
         />
-        <TouchableOpacity onPress={handleCreateNewPlaylistPress}>
-          <View
-            style={[
-              styles.createBTNview,
-              {
-                marginBottom: persistCurrentSong
-                  ? responsiveHeight(14)
-                  : responsiveHeight(2),
-              },
-            ]}>
-            {loading ? (
-              <ActivityIndicator size="large" color="#000" />
-            ) : (
-              <>
-                <Text style={styles.createBTNTxt}>
-                  {t('Create New Playlist')}
-                </Text>
-                <Image
-                  source={require('../../Assets/images/plusIcon.png')}
-                  style={styles.Plusicon}
-                />
-              </>
-            )}
-          </View>
-        </TouchableOpacity>
+        {subcscriptionId !== '635bcf0612d32838b423b227' ? (
+          <TouchableOpacity onPress={handleCreateNewPlaylistPress}>
+            <View
+              style={[
+                styles.createBTNview,
+                {
+                  marginBottom: persistCurrentSong
+                    ? responsiveHeight(14)
+                    : responsiveHeight(2),
+                },
+              ]}>
+              {loading ? (
+                <ActivityIndicator size="large" color="#000" />
+              ) : (
+                <>
+                  <Text style={styles.createBTNTxt}>
+                    {t('Create New Playlist')}
+                  </Text>
+                  <Image
+                    source={require('../../Assets/images/plusIcon.png')}
+                    style={styles.Plusicon}
+                  />
+                </>
+              )}
+            </View>
+          </TouchableOpacity>
+        ) : null}
         <TouchableOpacity onPress={handleExclusiveContentWebView}>
           <View
             style={[
