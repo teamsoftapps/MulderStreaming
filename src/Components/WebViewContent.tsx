@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, StyleSheet} from 'react-native';
+import {View, StyleSheet, Platform} from 'react-native';
 import {
   responsiveHeight,
   responsiveWidth,
@@ -14,6 +14,8 @@ const WebViewContent = () => {
         style={{
           backgroundColor: '#111111',
           paddingHorizontal: responsiveWidth(5),
+          marginTop:
+            Platform.OS === 'ios' ? responsiveHeight(3) : responsiveHeight(0),
         }}>
         <TopNavigationBar title="" showBackButton={true} />
       </View>

@@ -64,7 +64,7 @@ const HomeScreen = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [modalVisible2, setModalVisible2] = useState(false);
   console.log('suth data:', AuthData);
-  const subcscriptionId = AuthData.subscriptionID;
+  const subcscriptionId = AuthData?.subscriptionID;
   const [dataSlice, setDataSlice] = useState([]);
   const [fetchAllPlaylists, {isLoading: playlistLoading}] =
     useGetAllUserPlaylistMutation();
