@@ -13,6 +13,7 @@ import {
   TextInput,
   Alert,
   Platform,
+  RefreshControl,
 } from 'react-native';
 import {
   responsiveFontSize,
@@ -40,6 +41,7 @@ import {
   setPlayingSongIndex,
   togglePlaying,
 } from '../store/slices/songState';
+
 type HomeScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
   'AlbumScreen',
@@ -74,6 +76,7 @@ const HomeScreen = () => {
   const [loaderloading, setLoaderLoading] = useState(false);
   const [LoadingmodalVisible, setLoadingmodalVisible] = useState(false);
   const [isDeleteItemId, setDeletedItemID] = useState('');
+  const [refreshing, setRefreshing] = useState(false);
   const dispatch = useDispatch();
   const {persistCurrentSong, playlist, playingSongIndex} = useSelector(
     (state: RootState) => state.musicPlayer,
@@ -114,6 +117,38 @@ const HomeScreen = () => {
   //     console.log('Errorr in albumsssssssssssssssss', error);
   //   }
   // };
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    try {
+      const res: ApiResponse = await data();
+
+      if (!res?.data) {
+        throw new Error('No data returned from API');
+      }
+
+      if (subcscriptionId === '635bcf0612d32838b423b227') {
+        if (res?.data.length > 10) {
+          const trailAlbum = res?.data[10];
+          if (trailAlbum) {
+            setAllAlbums([trailAlbum]);
+            console.log('Trail album:', trailAlbum);
+          }
+        } else {
+          console.log('Trail album does not exist at index 10');
+          setAllAlbums([]);
+        }
+      } else {
+        setAllAlbums(res?.data);
+        console.log('All Albums:', res?.data);
+      }
+    } catch (error) {
+      console.error('Error in fetching albums:', error);
+      setAllAlbums([]);
+    } finally {
+      setRefreshing(false);
+    }
+  };
 
   const getAlbums = async (): Promise<void> => {
     try {
@@ -382,49 +417,61 @@ const HomeScreen = () => {
             </TouchableOpacity>
           ) : null}
         </View>
-        <FlatList
-          horizontal
-          nestedScrollEnabled
-          showsHorizontalScrollIndicator={false}
-          ListEmptyComponent={listemptyComp}
-          data={isAlbums}
-          renderItem={({item}) => {
-            return (
-              <TouchableOpacity
-                onPress={() =>
-                  navigation.navigate('AlbumScreen', {data: item})
-                }>
-                <View
-                  style={{
-                    shadowRadius: responsiveHeight(3),
-                    width: responsiveWidth(28),
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}>
-                  <Image
-                    source={{
-                      uri: `https://musicfilesforheroku.s3.us-west-1.amazonaws.com/uploads/${item.Album_Image}`,
-                    }}
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              colors={['#1C1508']}
+              progressBackgroundColor={'#9D824F'}
+            />
+          }
+          contentContainerStyle={styles.scrollViewContent}>
+          <FlatList
+            horizontal
+            nestedScrollEnabled
+            showsHorizontalScrollIndicator={false}
+            ListEmptyComponent={listemptyComp}
+            data={isAlbums}
+            renderItem={({item}) => {
+              return (
+                <TouchableOpacity
+                  onPress={() =>
+                    navigation.navigate('AlbumScreen', {data: item})
+                  }>
+                  <View
                     style={{
-                      width: responsiveWidth(26),
-                      height: responsiveHeight(13),
-                      borderRadius: responsiveHeight(3),
-                      resizeMode: 'cover',
-                    }}
-                  />
-                  <Text
-                    style={{
-                      color: 'white',
-                      fontSize: responsiveFontSize(1.8),
-                      textAlign: 'center',
+                      shadowRadius: responsiveHeight(3),
+                      width: responsiveWidth(28),
+                      justifyContent: 'center',
+                      alignItems: 'center',
                     }}>
-                    {item.Album_Name}
-                  </Text>
-                </View>
-              </TouchableOpacity>
-            );
-          }}
-        />
+                    <Image
+                      source={{
+                        uri: `https://musicfilesforheroku.s3.us-west-1.amazonaws.com/uploads/${item.Album_Image}`,
+                      }}
+                      style={{
+                        width: responsiveWidth(26),
+                        height: responsiveHeight(13),
+                        borderRadius: responsiveHeight(3),
+                        resizeMode: 'cover',
+                      }}
+                    />
+                    <Text
+                      style={{
+                        color: 'white',
+                        fontSize: responsiveFontSize(1.8),
+                        textAlign: 'center',
+                      }}>
+                      {item.Album_Name}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              );
+            }}
+          />
+        </ScrollView>
         <View
           style={{
             flex: 1,
@@ -806,6 +853,9 @@ const styles = StyleSheet.create({
     height: responsiveHeight(5),
     resizeMode: 'contain',
     marginLeft: responsiveWidth(2),
+  },
+  scrollViewContent: {
+    flexGrow: 1,
   },
 });
 

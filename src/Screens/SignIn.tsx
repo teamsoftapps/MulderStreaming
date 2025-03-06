@@ -57,7 +57,7 @@ const SignIn = ({setbool, changeLanguage}: SignInProps) => {
       console.log('response====>', res);
       if (res?.data) {
         dispatch(setUser(res));
-        Toasts('Info', 'Loged in successfully!', 'success');
+        Toasts('Info', 'Logged in successfully!', 'success');
         console.log('RES', res.data);
       } else {
         Toasts('Info', 'Please Buy Premium Subsription', 'info');
@@ -66,7 +66,7 @@ const SignIn = ({setbool, changeLanguage}: SignInProps) => {
     } catch (error) {
       console.log('Error', error);
       Toasts('Error', error.data.message, 'error');
-      if (error.data.message === 'Your subscription has been expired!') {
+      if (error.data.message === 'Your subscription has expired!') {
         setModalVisible(true);
       }
     } finally {
