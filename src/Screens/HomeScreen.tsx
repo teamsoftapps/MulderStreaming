@@ -74,7 +74,6 @@ const HomeScreen = () => {
   const [loaderloading, setLoaderLoading] = useState(false);
   const [LoadingmodalVisible, setLoadingmodalVisible] = useState(false);
   const [isDeleteItemId, setDeletedItemID] = useState('');
-  const [trialAlbum, setTrialAlbum] = useState([]);
   const dispatch = useDispatch();
   const {persistCurrentSong, playlist, playingSongIndex} = useSelector(
     (state: RootState) => state.musicPlayer,
@@ -118,18 +117,22 @@ const HomeScreen = () => {
 
   const getAlbums = async (): Promise<void> => {
     try {
-      // Assuming `data` is a function that fetches the albums data and returns an ApiResponse
       const res: ApiResponse = await data();
 
+      if (!res?.data) {
+        throw new Error('No data returned from API');
+      }
+
       if (subcscriptionId === '635bcf0612d32838b423b227') {
-        // Check if there are at least 11 albums before trying to access index 10
-        const trailAlbum = res?.data[10];
-        if (trailAlbum) {
-          setAllAlbums([trailAlbum]);
-          console.log('trail album:', trailAlbum);
+        if (res?.data.length > 10) {
+          const trailAlbum = res?.data[10];
+          if (trailAlbum) {
+            setAllAlbums([trailAlbum]);
+            console.log('Trail album:', trailAlbum);
+          }
         } else {
           console.log('Trail album does not exist at index 10');
-          setAllAlbums([]); // Or handle this case as needed
+          setAllAlbums([]);
         }
       } else {
         setAllAlbums(res?.data);
@@ -137,7 +140,7 @@ const HomeScreen = () => {
       }
     } catch (error) {
       console.error('Error in fetching albums:', error);
-      setAllAlbums([]); // Set to empty array in case of error
+      setAllAlbums([]);
     }
   };
 

@@ -41,12 +41,21 @@ interface AlbumScreenProps {
     };
   };
 }
+
+interface Album {
+  Album_Name: string;
+  Album_Image: string;
+  [key: string]: any;
+}
+interface ApiResponse {
+  data: Album[];
+}
 const PlaylistScreen: React.FC = () => {
   const {t} = useTranslation();
   const AuthData = useSelector(state => state?.auth?.token?.data?.user);
   const navigation = useNavigation<AlbumScreenProps>();
   const [isAlbums, setAllAlbums] = useState([]);
-  const [data, {isLoading, refetch}] = useGetAlbumsMutation();
+  const [data, {isLoading}] = useGetAlbumsMutation();
   const [currentSongIndex, setCurrentSongIndex] = useState(0);
   const [refreshing, setRefreshing] = useState(false);
   const dispatch = useDispatch();
@@ -92,6 +101,19 @@ const PlaylistScreen: React.FC = () => {
       setRefreshing(false);
     }
   };
+
+  // const getAlbums = async () => {
+  //   try {
+  //     const res = await data();
+  //     console.log(
+  //       'getting albums --------------------------------------------:',
+  //       res.data,
+  //     );
+  //     setAllAlbums(res?.data);
+  //   } catch (error) {
+  //     console.log('Errorr', error);
+  //   }
+  // };
 
   const getAlbums = async (): Promise<void> => {
     try {
@@ -260,6 +282,7 @@ const PlaylistScreen: React.FC = () => {
       <TopNavigationBar title={t('Albums')} showBackButton={true} />
 
       <ScrollView
+        showsVerticalScrollIndicator={false}
         refreshControl={
           <RefreshControl
             refreshing={refreshing}

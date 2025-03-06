@@ -391,6 +391,7 @@ const PlaylistDetails: React.FC<PlaylistDetailsProps> = ({route}) => {
         />
 
         <ScrollView
+          showsVerticalScrollIndicator={false}
           refreshControl={
             <RefreshControl
               refreshing={refreshing}
