@@ -22,6 +22,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {togglePlaying} from '../store/slices/songState';
 import Slider from '@react-native-community/slider';
 import {Platform} from 'react-native';
+import {useTranslation} from 'react-i18next';
 
 interface Track {
   _id: string;
@@ -60,6 +61,7 @@ const BackgroundMusicPlayer: React.FC<BackgroundMusicPlayerProps> = ({
   const [isMusicPlaying, setIsMusicPlaying] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const dispatch = useDispatch();
+  const {t} = useTranslation();
   const animation = useRef(
     new Animated.Value(Dimensions.get('window').height * 0.1),
   ).current;
@@ -149,7 +151,7 @@ const BackgroundMusicPlayer: React.FC<BackgroundMusicPlayerProps> = ({
                     styles.headerTitle,
                     {marginLeft: responsiveWidth(4)},
                   ]}>
-                  Now Playing
+                  {t('Now Playing')}
                 </Text>
               </View>
               {imageSource ? (
