@@ -1,7 +1,15 @@
 import {useNavigation} from '@react-navigation/native';
 import React from 'react';
-import {ImageBackground, TouchableOpacity} from 'react-native';
-import {Text, View, StyleSheet, Image, ScrollView} from 'react-native';
+import {
+  ImageBackground,
+  TouchableOpacity,
+  Text,
+  View,
+  StyleSheet,
+  Image,
+  ScrollView,
+  Linking,
+} from 'react-native';
 import {
   responsiveFontSize,
   responsiveHeight,
@@ -115,6 +123,40 @@ const HelpScreen = () => {
                 "Thank you for choosing the IAN Mulder Music App. We hope this Help Center makes your app experience even more enjoyable. If you encounter any issues, have questions, or just want to say hello, we're here for you.",
               )}
             </Text>
+
+            <TouchableOpacity
+              activeOpacity={0.7}
+              style={{
+                height: responsiveHeight(7),
+                width: responsiveWidth(90),
+                borderRadius: responsiveWidth(10),
+                backgroundColor: '#ccaa6b',
+                flexDirection: 'row',
+                justifyContent: 'center',
+                alignItems: 'center',
+                marginVertical: responsiveHeight(2),
+              }}
+              onPress={() => {
+                const email = 'arshadt276@gmail.com'; // Email Address
+                const subject = 'Help Request'; // Default Subject
+                const body = ''; // Default Body
+
+                const mailtoURL = `mailto:${email}?subject=${encodeURIComponent(
+                  subject,
+                )}&body=${encodeURIComponent(body)}`;
+                Linking.openURL(mailtoURL).catch(err =>
+                  console.error('Error opening email app:', err),
+                );
+              }}>
+              <Text
+                style={{
+                  color: '#1c1508',
+                  fontSize: responsiveFontSize(2.5),
+                  fontWeight: '600',
+                }}>
+                Compose a mail
+              </Text>
+            </TouchableOpacity>
           </View>
         </ScrollView>
       </ImageBackground>

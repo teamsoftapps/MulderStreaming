@@ -11,7 +11,6 @@ import {
   ActivityIndicator,
   Modal,
   TextInput,
-  Alert,
   Platform,
   RefreshControl,
 } from 'react-native';
@@ -50,11 +49,11 @@ type HomeScreenNavigationProp = StackNavigationProp<
 interface Album {
   Album_Name: string;
   Album_Image: string;
-  [key: string]: any; // Add any additional properties the album object may have
+  [key: string]: any;
 }
 
 interface ApiResponse {
-  data: Album[]; // Assuming the API returns an array of albums
+  data: Album[];
 }
 
 const HomeScreen = () => {
@@ -93,10 +92,7 @@ const HomeScreen = () => {
     try {
       const userId = 'user-id';
       const res = await fetchAllPlaylists(userId);
-      console.log(
-        'playlists a gai----------------------------------:',
-        res.data.result,
-      );
+      console.log('playlists: ', res.data.result);
       setDataSlice(res.data.result);
     } catch (error) {
       console.log('Error:', error);
@@ -121,12 +117,7 @@ const HomeScreen = () => {
   const onRefresh = async () => {
     setRefreshing(true);
     try {
-      const res: ApiResponse = await data();
-
-      if (!res?.data) {
-        throw new Error('No data returned from API');
-      }
-
+      const res = await data();
       if (subcscriptionId === '635bcf0612d32838b423b227') {
         if (res?.data.length > 10) {
           const trailAlbum = res?.data[10];
@@ -135,7 +126,6 @@ const HomeScreen = () => {
             console.log('Trail album:', trailAlbum);
           }
         } else {
-          console.log('Trail album does not exist at index 10');
           setAllAlbums([]);
         }
       } else {
@@ -293,7 +283,7 @@ const HomeScreen = () => {
     );
   };
 
-  const renderedPlaylists = ({item, index}) => {
+  const renderedPlaylists = ({item}) => {
     return (
       <View
         style={{
@@ -302,6 +292,7 @@ const HomeScreen = () => {
           padding: responsiveWidth(2),
         }}>
         <TouchableOpacity
+          activeOpacity={0.7}
           onPress={() => navigation.navigate('PlaylistDetails', {data: item})}
           style={styles.playlistMusic}>
           <Image
@@ -437,6 +428,7 @@ const HomeScreen = () => {
             renderItem={({item}) => {
               return (
                 <TouchableOpacity
+                  activeOpacity={0.7}
                   onPress={() =>
                     navigation.navigate('AlbumScreen', {data: item})
                   }>
