@@ -137,7 +137,7 @@ const HelpScreen = () => {
                 marginVertical: responsiveHeight(2),
               }}
               onPress={() => {
-                const email = 'arshadt276@gmail.com'; // Email Address
+                const email = 'mail@janmulder.us'; // Email Address
                 const subject = 'Help Request'; // Default Subject
                 const body = ''; // Default Body
 
