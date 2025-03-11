@@ -131,7 +131,7 @@ const SignUp = () => {
             <PasswordInput
               ref={confirmPasswordRef}
               imageSource={require('../../Assets/images/password.png')}
-              placeholder={t('Confrim password')}
+              placeholder={t('Confirm password')}
               initialValue={confirmPassword}
               returnKeyType="next"
               onSubmitEditing={() => accessCodeRef.current?.focus()}

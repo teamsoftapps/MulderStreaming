@@ -59,7 +59,7 @@ const PlaylistScreen: React.FC = () => {
   const [currentSongIndex, setCurrentSongIndex] = useState(0);
   const [refreshing, setRefreshing] = useState(false);
   const dispatch = useDispatch();
-  const subcscriptionId = AuthData.subscriptionID;
+  const subscriptionId = AuthData.subscriptionID;
   const {persistCurrentSong, playlist, playingSongIndex} = useSelector(
     (state: RootState) => state.musicPlayer,
   );
@@ -73,76 +73,60 @@ const PlaylistScreen: React.FC = () => {
   const onRefresh = async () => {
     setRefreshing(true);
     try {
-      const res: ApiResponse = await data();
-
-      if (subcscriptionId === '635bcf0612d32838b423b227') {
-        const trailAlbum = res.data[10];
-        if (trailAlbum) {
-          setAllAlbums([trailAlbum]);
-        } else {
-          console.log('Trail album does not exist at index 10');
-          setAllAlbums([]); //
-        }
-      } else {
-        setAllAlbums(res.data);
-      }
-
-      if (res.data.length > 6) {
-        console.log('7th album:', res.data[6]);
-      } else {
-        console.log('Not enough albums for 7th element');
-      }
-
-      console.log('Albums fetched:', res);
+      const res = await data();
+      console.log(
+        'getting albums --------------------------------------------:',
+        res.data,
+      );
+      setAllAlbums(res?.data);
     } catch (error) {
-      console.error('Error in fetching albums:', error);
-      setAllAlbums([]);
+      console.log('Errorr', error);
     } finally {
       setRefreshing(false);
     }
   };
 
-  // const getAlbums = async () => {
-  //   try {
-  //     const res = await data();
-  //     console.log(
-  //       'getting albums --------------------------------------------:',
-  //       res.data,
-  //     );
-  //     setAllAlbums(res?.data);
-  //   } catch (error) {
-  //     console.log('Errorr', error);
-  //   }
-  // };
-
-  const getAlbums = async (): Promise<void> => {
+  const getAlbums = async () => {
     try {
-      const res: ApiResponse = await data();
-
-      if (subcscriptionId === '635bcf0612d32838b423b227') {
-        const trailAlbum = res.data[10];
-        if (trailAlbum) {
-          setAllAlbums([trailAlbum]);
-        } else {
-          console.log('Trail album does not exist at index 10');
-          setAllAlbums([]); //
-        }
-      } else {
-        setAllAlbums(res.data);
-      }
-
-      if (res.data.length > 6) {
-        console.log('7th album:', res.data[6]);
-      } else {
-        console.log('Not enough albums for 7th element');
-      }
-
-      console.log('Albums fetched:', res);
+      const res = await data();
+      console.log(
+        'getting albums --------------------------------------------:',
+        res.data,
+      );
+      setAllAlbums(res?.data);
     } catch (error) {
-      console.error('Error in fetching albums:', error);
-      setAllAlbums([]);
+      console.log('Errorr', error);
     }
   };
+
+  // const getAlbums = async (): Promise<void> => {
+  //   try {
+  //     const res: ApiResponse = await data();
+
+  //     if (subcscriptionId === '635bcf0612d32838b423b227') {
+  //       const trailAlbum = res.data[10];
+  //       if (trailAlbum) {
+  //         setAllAlbums([trailAlbum]);
+  //       } else {
+  //         console.log('Trail album does not exist at index 10');
+  //         setAllAlbums([]); //
+  //       }
+  //     } else {
+  //       setAllAlbums(res.data);
+  //     }
+
+  //     if (res.data.length > 6) {
+  //       console.log('7th album:', res.data[6]);
+  //     } else {
+  //       console.log('Not enough albums for 7th element');
+  //     }
+
+  //     console.log('Albums fetched:', res);
+  //   } catch (error) {
+  //     console.error('Error in fetching albums:', error);
+  //     setAllAlbums([]);
+  //   }
+  // };
 
   const handleForward = async () => {
     console.log('songs from redux', playlist);
@@ -224,21 +208,74 @@ const PlaylistScreen: React.FC = () => {
   };
 
   const renderedAlbums = ({item, index}) => {
+    const isLocked = subscriptionId === '635bcf0612d32838b423b227';
     return (
       <TouchableOpacity
-        onPress={() => navigation.navigate('AlbumScreen', {data: item})}
+        onPress={() => {
+          if (subscriptionId === '635bcf0612d32838b423b227' && index === 10) {
+            navigation.navigate('AlbumScreen', {data: item});
+          } else if (subscriptionId !== '635bcf0612d32838b423b227') {
+            navigation.navigate('AlbumScreen', {data: item});
+          }
+        }}
+        disabled={subscriptionId === '635bcf0612d32838b423b227' && index !== 10}
         style={styles.playlistMusic}>
-        <Image
-          source={{
-            uri: `https://musicfilesforheroku.s3.us-west-1.amazonaws.com/uploads/${item.Album_Image}`,
-          }}
-          style={{
-            width: responsiveWidth(15),
-            height: responsiveHeight(8),
-            resizeMode: 'cover',
-            marginRight: responsiveWidth(2.5),
-          }}
-        />
+        <View style={{position: 'relative'}}>
+          {/* Album Image */}
+          <Image
+            source={{
+              uri: `https://musicfilesforheroku.s3.us-west-1.amazonaws.com/uploads/${item.Album_Image}`,
+            }}
+            style={{
+              width: responsiveWidth(15),
+              height: responsiveHeight(8),
+              resizeMode: 'cover',
+              marginRight: responsiveWidth(2.5),
+            }}
+          />
+
+          {isLocked && index !== 10 && (
+            <View
+              style={{
+                position: 'absolute',
+                width: responsiveWidth(15),
+                height: responsiveHeight(8),
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                backgroundColor: 'rgba(0, 0, 0, 0.4)',
+              }}
+            />
+          )}
+
+          {/* Lock Icon */}
+          {isLocked && index !== 10 && (
+            <View
+              style={{
+                position: 'absolute',
+                top: '50%',
+                left: '50%',
+                transform: [
+                  {translateX: -responsiveWidth(5)},
+                  {translateY: -responsiveWidth(3)},
+                ],
+                zIndex: 10,
+              }}>
+              <Image
+                tintColor={'#fff'}
+                source={require('../../Assets/images/lock.png')} // Lock icon
+                style={{
+                  width: responsiveWidth(6),
+                  height: responsiveWidth(6),
+                  resizeMode: 'contain',
+                }}
+              />
+            </View>
+          )}
+        </View>
+
+        {/* Album Name and Singer Name */}
         <View
           style={{
             flexDirection: 'column',
@@ -258,6 +295,8 @@ const PlaylistScreen: React.FC = () => {
             {item.Singer_Name}
           </Text>
         </View>
+
+        {/* Play Button */}
         <View
           style={{
             flexDirection: 'row',

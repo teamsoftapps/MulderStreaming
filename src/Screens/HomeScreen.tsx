@@ -40,7 +40,7 @@ import {
   setPlayingSongIndex,
   togglePlaying,
 } from '../store/slices/songState';
-
+import Lock from '../../Assets/images/lock.png';
 type HomeScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
   'AlbumScreen',
@@ -98,76 +98,60 @@ const HomeScreen = () => {
       console.log('Error:', error);
     }
   };
-  // const getAlbums = async () => {
-  //   try {
-  //     const res = await data();
-  //     if (subcscriptionId === '635bcf0612d32838b423b227') {
-  //       const trailAlbum = res.data[10];
-  //       setAllAlbums([trailAlbum]);
-  //     } else {
-  //       setAllAlbums(res.data);
-  //     }
-  //     console.log('zxzxzxzxzxzx', res.data[6]);
-  //     console.log('albums a gai:', res);
-  //   } catch (error) {
-  //     console.log('Errorr in albumsssssssssssssssss', error);
-  //   }
-  // };
+  const getAlbums = async () => {
+    try {
+      const res = await data();
+      console.log(
+        'getting albums --------------------------------------------:',
+        res.data,
+      );
+      setAllAlbums(res?.data);
+    } catch (error) {
+      console.log('Errorr', error);
+    }
+  };
 
   const onRefresh = async () => {
     setRefreshing(true);
     try {
       const res = await data();
-      if (subcscriptionId === '635bcf0612d32838b423b227') {
-        if (res?.data.length > 10) {
-          const trailAlbum = res?.data[10];
-          if (trailAlbum) {
-            setAllAlbums([trailAlbum]);
-            console.log('Trail album:', trailAlbum);
-          }
-        } else {
-          setAllAlbums([]);
-        }
-      } else {
-        setAllAlbums(res?.data);
-        console.log('All Albums:', res?.data);
-      }
+      console.log('getting albums in home screen:', res.data);
+      setAllAlbums(res?.data);
     } catch (error) {
-      console.error('Error in fetching albums:', error);
-      setAllAlbums([]);
+      console.log('Errorr', error);
     } finally {
       setRefreshing(false);
     }
   };
 
-  const getAlbums = async (): Promise<void> => {
-    try {
-      const res: ApiResponse = await data();
+  // const getAlbums = async (): Promise<void> => {
+  //   try {
+  //     const res: ApiResponse = await data();
 
-      if (!res?.data) {
-        throw new Error('No data returned from API');
-      }
+  //     if (!res?.data) {
+  //       throw new Error('No data returned from API');
+  //     }
 
-      if (subcscriptionId === '635bcf0612d32838b423b227') {
-        if (res?.data.length > 10) {
-          const trailAlbum = res?.data[10];
-          if (trailAlbum) {
-            setAllAlbums([trailAlbum]);
-            console.log('Trail album:', trailAlbum);
-          }
-        } else {
-          console.log('Trail album does not exist at index 10');
-          setAllAlbums([]);
-        }
-      } else {
-        setAllAlbums(res?.data);
-        console.log('All Albums:', res?.data);
-      }
-    } catch (error) {
-      console.error('Error in fetching albums:', error);
-      setAllAlbums([]);
-    }
-  };
+  // if (subcscriptionId === '635bcf0612d32838b423b227') {
+  //       if (res?.data.length > 10) {
+  //         const trailAlbum = res?.data[10];
+  //         if (trailAlbum) {
+  //           setAllAlbums([trailAlbum]);
+  //           console.log('Trail album:', trailAlbum);
+  //         }
+  //       } else {
+  //         console.log('Trail album does not exist at index 10');
+  //         setAllAlbums([]);
+  //       }
+  //     } else {
+  //       setAllAlbums(res?.data);
+  //       console.log('All Albums:', res?.data);
+  //     }
+  //   } catch (error) {
+  //     console.error('Error in fetching albums:', error);
+  //     setAllAlbums([]);
+  //   }
+  // };
 
   const handleCreateNewPlaylistPress = () => {
     setLoading(true);
@@ -284,6 +268,7 @@ const HomeScreen = () => {
   };
 
   const renderedPlaylists = ({item}) => {
+    const isLocked = subcscriptionId === '635bcf0612d32838b423b227';
     return (
       <View
         style={{
@@ -293,19 +278,65 @@ const HomeScreen = () => {
         }}>
         <TouchableOpacity
           activeOpacity={0.7}
-          onPress={() => navigation.navigate('PlaylistDetails', {data: item})}
-          style={styles.playlistMusic}>
-          <Image
-            source={{
-              uri: item.Playlist_Image,
-            }}
-            style={{
-              width: responsiveWidth(15),
-              height: responsiveHeight(8),
-              resizeMode: 'cover',
-              marginRight: responsiveWidth(2.5),
-            }}
-          />
+          onPress={() => {
+            if (!isLocked) {
+              navigation.navigate('PlaylistDetails', {data: item});
+            }
+          }}
+          style={styles.playlistMusic}
+          disabled={isLocked}>
+          <View style={{position: 'relative'}}>
+            <Image
+              source={{
+                uri: item.Playlist_Image,
+              }}
+              style={{
+                width: responsiveWidth(15),
+                height: responsiveHeight(8),
+                resizeMode: 'cover',
+                marginRight: responsiveWidth(2.5),
+              }}
+            />
+
+            {isLocked && (
+              <View
+                style={{
+                  position: 'absolute',
+                  width: responsiveWidth(15),
+                  height: responsiveHeight(8),
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  backgroundColor: 'rgba(0, 0, 0, 0.4)',
+                }}
+              />
+            )}
+
+            {isLocked && (
+              <View
+                style={{
+                  position: 'absolute',
+                  top: '50%',
+                  left: '50%',
+                  transform: [
+                    {translateX: -responsiveWidth(5)},
+                    {translateY: -responsiveWidth(3)},
+                  ],
+                  zIndex: 10,
+                }}>
+                <Image
+                  tintColor={'#fff'}
+                  source={require('../../Assets/images/lock.png')}
+                  style={{
+                    width: responsiveWidth(6),
+                    height: responsiveWidth(6),
+                    resizeMode: 'contain',
+                  }}
+                />
+              </View>
+            )}
+          </View>
 
           <View
             style={{
@@ -425,12 +456,28 @@ const HomeScreen = () => {
             showsHorizontalScrollIndicator={false}
             ListEmptyComponent={listemptyComp}
             data={isAlbums}
-            renderItem={({item}) => {
+            renderItem={({item, index}) => {
               return (
                 <TouchableOpacity
+                  style={{
+                    width: responsiveWidth(28),
+                    paddingRight: responsiveWidth(2),
+                  }}
+                  key={index}
                   activeOpacity={0.7}
-                  onPress={() =>
-                    navigation.navigate('AlbumScreen', {data: item})
+                  onPress={() => {
+                    if (
+                      subcscriptionId === '635bcf0612d32838b423b227' &&
+                      index === 10
+                    ) {
+                      navigation.navigate('AlbumScreen', {data: item});
+                    } else if (subcscriptionId !== '635bcf0612d32838b423b227') {
+                      navigation.navigate('AlbumScreen', {data: item});
+                    }
+                  }}
+                  disabled={
+                    subcscriptionId === '635bcf0612d32838b423b227' &&
+                    index !== 10
                   }>
                   <View
                     style={{
@@ -438,6 +485,7 @@ const HomeScreen = () => {
                       width: responsiveWidth(28),
                       justifyContent: 'center',
                       alignItems: 'center',
+                      position: 'relative',
                     }}>
                     <Image
                       source={{
@@ -450,15 +498,53 @@ const HomeScreen = () => {
                         resizeMode: 'cover',
                       }}
                     />
-                    <Text
-                      style={{
-                        color: 'white',
-                        fontSize: responsiveFontSize(1.8),
-                        textAlign: 'center',
-                      }}>
-                      {item.Album_Name}
-                    </Text>
+
+                    {index !== 10 &&
+                      subcscriptionId === '635bcf0612d32838b423b227' && (
+                        <View
+                          style={{
+                            position: 'absolute',
+                            width: responsiveWidth(26),
+                            height: responsiveHeight(13),
+                            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                            borderRadius: responsiveHeight(3),
+                          }}
+                        />
+                      )}
+
+                    {index !== 10 &&
+                      subcscriptionId === '635bcf0612d32838b423b227' && (
+                        <View
+                          style={{
+                            position: 'absolute',
+                            top: '50%',
+                            left: '50%',
+                            transform: [
+                              {translateX: -responsiveWidth(3)},
+                              {translateY: -responsiveHeight(3)},
+                            ],
+                            zIndex: 10,
+                          }}>
+                          <Image
+                            tintColor={'#fff'}
+                            source={Lock}
+                            style={{
+                              width: responsiveWidth(6),
+                              height: responsiveWidth(6),
+                              resizeMode: 'contain',
+                            }}
+                          />
+                        </View>
+                      )}
                   </View>
+                  <Text
+                    style={{
+                      color: 'white',
+                      fontSize: responsiveFontSize(1.8),
+                      textAlign: 'center',
+                    }}>
+                    {item.Album_Name}
+                  </Text>
                 </TouchableOpacity>
               );
             }}
