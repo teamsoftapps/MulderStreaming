@@ -10,6 +10,7 @@ import {
   ScrollView,
   StyleProp,
   ViewStyle,
+  Button,
 } from 'react-native';
 
 import {
@@ -23,7 +24,7 @@ import {togglePlaying} from '../store/slices/songState';
 import Slider from '@react-native-community/slider';
 import {Platform} from 'react-native';
 import {useTranslation} from 'react-i18next';
-
+import AirPlay from 'react-native-airplay';
 interface Track {
   _id: string;
   Song_Name: string;
@@ -114,6 +115,16 @@ const BackgroundMusicPlayer: React.FC<BackgroundMusicPlayerProps> = ({
     }
   };
 
+  const onAirPlayPress = () => {
+    AirPlay.showAirPlayPicker()
+      .then(() => {
+        console.log('AirPlay Picker is shown');
+      })
+      .catch(error => {
+        console.error('AirPlay Error:', error);
+      });
+  };
+
   return (
     <Animated.View
       style={[
@@ -194,6 +205,7 @@ const BackgroundMusicPlayer: React.FC<BackgroundMusicPlayerProps> = ({
                   <Text style={styles.timeText}>{formatTime(position)}</Text>
                   <Text style={styles.timeText}>{Song_Length}</Text>
                 </View>
+                <Button title="Show AirPlay Picker" onPress={onAirPlayPress} />
               </View>
             </View>
           ) : (

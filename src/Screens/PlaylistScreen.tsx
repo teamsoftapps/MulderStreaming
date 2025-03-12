@@ -249,7 +249,6 @@ const PlaylistScreen: React.FC = () => {
             />
           )}
 
-          {/* Lock Icon */}
           {isLocked && index !== 10 && (
             <View
               style={{
