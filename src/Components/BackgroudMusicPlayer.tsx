@@ -26,9 +26,9 @@ import Slider from '@react-native-community/slider';
 import {Platform} from 'react-native';
 import {useTranslation} from 'react-i18next';
 
-const {AirPlayModule} = NativeModules;
+const {RNAirPlayModule} = NativeModules;
 
-console.log('dsdsdsd', AirPlayModule);
+console.log('dsdsdsd', RNAirPlayModule);
 interface Track {
   _id: string;
   Song_Name: string;
@@ -119,11 +119,12 @@ const BackgroundMusicPlayer: React.FC<BackgroundMusicPlayerProps> = ({
     }
   };
 
-  const handleAirPlayPress = () => {
-    if (AirPlayModule) {
-      AirPlayModule.showAirPlayPicker(); // Call the native method
+  const showAirPlayPicker = () => {
+    if (RNAirPlayModule) {
+      RNAirPlayModule.showAirPlayPicker();
     } else {
-      console.log('AirPlayModule is null or undefined');
+      console.error('❌ AirPlay module is not available.');
+      console.log('Available Native Modules:', NativeModules);
     }
   };
 
@@ -207,9 +208,7 @@ const BackgroundMusicPlayer: React.FC<BackgroundMusicPlayerProps> = ({
                   <Text style={styles.timeText}>{formatTime(position)}</Text>
                   <Text style={styles.timeText}>{Song_Length}</Text>
                 </View>
-                <TouchableOpacity onPress={handleAirPlayPress}>
-                  <Text style={{fontSize: 20, color: 'blue'}}>AirPlay</Text>
-                </TouchableOpacity>
+                <Button title="Start AirPlay" onPress={showAirPlayPicker} />
               </View>
             </View>
           ) : (
