@@ -1,6 +1,5 @@
 import React, {useRef, useState} from 'react';
 import {
-  NativeModules,
   View,
   StyleSheet,
   Text,
@@ -13,7 +12,13 @@ import {
   ViewStyle,
   Button,
 } from 'react-native';
-
+import {
+  AirplayButton,
+  showRoutePicker,
+  useAirplayConnectivity,
+  useExternalPlaybackAvailability,
+  useAvAudioSessionRoutes,
+} from 'react-airplay';
 import {
   responsiveHeight,
   responsiveWidth,
@@ -25,10 +30,6 @@ import {togglePlaying} from '../store/slices/songState';
 import Slider from '@react-native-community/slider';
 import {Platform} from 'react-native';
 import {useTranslation} from 'react-i18next';
-
-const {RNAirPlayModule} = NativeModules;
-
-console.log('dsdsdsd', RNAirPlayModule);
 interface Track {
   _id: string;
   Song_Name: string;
@@ -67,6 +68,10 @@ const BackgroundMusicPlayer: React.FC<BackgroundMusicPlayerProps> = ({
   const [isExpanded, setIsExpanded] = useState(false);
   const dispatch = useDispatch();
   const {t} = useTranslation();
+
+  const isAirplayConnected = useAirplayConnectivity();
+  const isExternalPlaybackAvailable = useExternalPlaybackAvailability();
+  const routes = useAvAudioSessionRoutes();
   const animation = useRef(
     new Animated.Value(Dimensions.get('window').height * 0.1),
   ).current;
@@ -118,16 +123,6 @@ const BackgroundMusicPlayer: React.FC<BackgroundMusicPlayerProps> = ({
       dispatch(togglePlaying(true));
     }
   };
-
-  const showAirPlayPicker = () => {
-    if (RNAirPlayModule) {
-      RNAirPlayModule.showAirPlayPicker();
-    } else {
-      console.error('❌ AirPlay module is not available.');
-      console.log('Available Native Modules:', NativeModules);
-    }
-  };
-
   return (
     <Animated.View
       style={[
@@ -185,11 +180,33 @@ const BackgroundMusicPlayer: React.FC<BackgroundMusicPlayerProps> = ({
                 </View>
               )}
               <View
-                style={{width: '100%', marginVertical: responsiveHeight(2)}}>
-                <Text numberOfLines={1} style={styles.titleExpanded}>
-                  {title}
-                </Text>
-                <Text style={styles.subtitleExpanded}>{subtitle}</Text>
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                }}>
+                <View
+                  style={{width: '70%', marginVertical: responsiveHeight(2)}}>
+                  <Text numberOfLines={1} style={styles.titleExpanded}>
+                    {title}
+                  </Text>
+                  <Text style={styles.subtitleExpanded}>{subtitle}</Text>
+                </View>
+                {Platform.OS === 'ios' && (
+                  <View>
+                    {isExternalPlaybackAvailable && (
+                      <AirplayButton
+                        prioritizesVideoDevices={false}
+                        tintColor={'#fff'}
+                        activeTintColor={'blue'}
+                        style={{
+                          width: 24,
+                          height: 24,
+                        }}
+                      />
+                    )}
+                  </View>
+                )}
               </View>
               <Slider
                 style={{width: '100%'}}
@@ -208,7 +225,6 @@ const BackgroundMusicPlayer: React.FC<BackgroundMusicPlayerProps> = ({
                   <Text style={styles.timeText}>{formatTime(position)}</Text>
                   <Text style={styles.timeText}>{Song_Length}</Text>
                 </View>
-                <Button title="Start AirPlay" onPress={showAirPlayPicker} />
               </View>
             </View>
           ) : (

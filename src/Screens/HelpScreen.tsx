@@ -1,5 +1,6 @@
 import {useNavigation} from '@react-navigation/native';
 import React from 'react';
+import * as RNLocalize from 'react-native-localize';
 import {
   ImageBackground,
   TouchableOpacity,
@@ -21,6 +22,27 @@ import WrapperContainer from '../Components/WrapperContainer';
 const HelpScreen = () => {
   const {t} = useTranslation();
   const navigation = useNavigation();
+
+  const handleEmailPress = () => {
+    // Get the device's default language
+    const deviceLanguage = RNLocalize.getLocales()[0].languageCode;
+
+    // Choose email based on language
+    const email =
+      deviceLanguage === 'nl' ? 'app@ianmulder.us' : 'app@janmulder.us';
+    const subject = 'Help Request';
+    const body = '';
+
+    // Create mailto URL
+    const mailtoURL = `mailto:${email}?subject=${encodeURIComponent(
+      subject,
+    )}&body=${encodeURIComponent(body)}`;
+
+    // Open email app
+    Linking.openURL(mailtoURL).catch(err =>
+      console.error('Error opening email app:', err),
+    );
+  };
   return (
     <WrapperContainer style={styles.container}>
       <ImageBackground source={require('../../Assets/images/background.png')}>
@@ -136,18 +158,7 @@ const HelpScreen = () => {
                 alignItems: 'center',
                 marginVertical: responsiveHeight(2),
               }}
-              onPress={() => {
-                const email = 'mail@janmulder.us'; // Email Address
-                const subject = 'Help Request'; // Default Subject
-                const body = ''; // Default Body
-
-                const mailtoURL = `mailto:${email}?subject=${encodeURIComponent(
-                  subject,
-                )}&body=${encodeURIComponent(body)}`;
-                Linking.openURL(mailtoURL).catch(err =>
-                  console.error('Error opening email app:', err),
-                );
-              }}>
+              onPress={handleEmailPress}>
               <Text
                 style={{
                   color: '#1c1508',

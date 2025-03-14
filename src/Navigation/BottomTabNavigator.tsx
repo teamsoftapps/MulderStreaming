@@ -85,11 +85,13 @@ const BottomTabNavigator: React.FC = () => {
                     source={focused ? activeIcon : inactiveIcon}
                     style={{
                       width:
-                        name === 'MusicScreen' || name === 'PlaylistScreen'
+                        name === 'MusicScreen'
                           ? responsiveWidth(6)
                           : name === 'WishListScreen' ||
                             name === 'SettingScreen'
                           ? responsiveWidth(7)
+                          : name === 'PlaylistScreen'
+                          ? responsiveWidth(5)
                           : responsiveWidth(7),
                       height: responsiveHeight(6),
                       marginBottom:

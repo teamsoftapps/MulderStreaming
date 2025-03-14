@@ -1,16 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Workspace
    version = "1.0">
-   <Group
-      location = "container:"
-      name = "NativeModules">
-      <FileRef
-         location = "group:/Users/shabbirsaifuddin/Desktop/MulderStreaming/ios/RNAirPlayModule.swift">
-      </FileRef>
-      <FileRef
-         location = "group:RNAirPlayModule.m">
-      </FileRef>
-   </Group>
    <FileRef
       location = "group:MulderStreaming.xcodeproj">
    </FileRef>

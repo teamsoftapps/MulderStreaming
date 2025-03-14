@@ -7278,6 +7278,11 @@ rc@^1.2.7:
     minimist "^1.2.0"
     strip-json-comments "~2.0.1"
 
+react-airplay@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/react-airplay/-/react-airplay-1.2.0.tgz#be277858656fa815d2f4f51020bc46babcdfcd71"
+  integrity sha512-Rt/c5PgqtGVQNhsamt7ldvykqXjaS3U0C3Q294I5D5ej8j9Mj1j7p6pyMYs2g2OR7ovX2A8PPcjadp9Q9UGSmQ==
+
 react-devtools-core@^5.3.1:
   version "5.3.2"
   resolved "https://registry.yarnpkg.com/react-devtools-core/-/react-devtools-core-5.3.2.tgz#d5df92f8ef2a587986d094ef2c47d84cf4ae46ec"
@@ -7375,7 +7380,7 @@ react-native-linear-gradient@^2.8.3:
   resolved "https://registry.yarnpkg.com/react-native-linear-gradient/-/react-native-linear-gradient-2.8.3.tgz#9a116649f86d74747304ee13db325e20b21e564f"
   integrity sha512-KflAXZcEg54PXkLyflaSZQ3PJp4uC4whM7nT/Uot9m0e/qxFV3p6uor1983D1YOBJbJN7rrWdqIjq0T42jOJyA==
 
-react-native-localize@^3.2.1:
+react-native-localize@^3.4.1:
   version "3.4.1"
   resolved "https://registry.yarnpkg.com/react-native-localize/-/react-native-localize-3.4.1.tgz#df07c13231b4e8cc949e68513b124105f861229c"
   integrity sha512-NJqJGBUpHtD/MpLCCkrNiqNZ+xFwbHCivxaoN1Oeb8tBAiZr/IqgP3E+MgnqmmdTMOJ33llUfiW3EM6pEIb33w==

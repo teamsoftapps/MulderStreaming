@@ -22,8 +22,8 @@ import TextImport from '../Components/TextImport';
 import {useTranslation} from 'react-i18next';
 import {useForgetPasswordMutation} from '../store/Api/Auth';
 import ToastMessage from '../hooks/ToastMessage.js';
-import TopNavigationBar from '../Components/TopNavigationBar';
 import WrapperContainer from '../Components/WrapperContainer';
+
 type ForgotPasswordScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
   'ForgotPassword'
@@ -69,10 +69,11 @@ const ForgotPassword = () => {
             alignItems: 'center',
           }}>
           <Image
+            tintColor={'#ccaa6b'}
             source={require('../../Assets/images/lock.png')}
             style={{
               width: responsiveWidth(30),
-              height: responsiveHeight(30),
+              height: responsiveHeight(40),
               resizeMode: 'contain',
             }}
           />

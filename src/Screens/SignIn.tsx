@@ -66,7 +66,7 @@ const SignIn = ({setbool, changeLanguage}: SignInProps) => {
     } catch (error) {
       console.log('Error', error);
       Toasts('Error', error.data.message, 'error');
-      if (error.data.message === 'Your subscription has expired!') {
+      if (error.data.message === 'Your subscription hpired!') {
         setModalVisible(true);
       }
     } finally {
@@ -283,18 +283,17 @@ const styles = StyleSheet.create({
   },
   maimHeading: {
     flexDirection: 'row',
-
     justifyContent: 'center',
     alignItems: 'center',
   },
   logo: {
     fontSize: responsiveFontSize(6),
-    fontWeight: '900',
+    fontWeight: '700',
     marginBottom: responsiveHeight(2),
     color: '#FFF7D6',
   },
   ianText: {
-    fontWeight: '900',
+    fontWeight: '700',
     color: '#FFF7D6',
     fontSize: responsiveFontSize(2.5),
     textAlign: 'center',
