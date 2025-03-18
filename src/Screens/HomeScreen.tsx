@@ -61,6 +61,8 @@ const HomeScreen = () => {
   const navigation = useNavigation<HomeScreenNavigationProp>();
   const AuthData = useSelector(state => state?.auth?.token?.data?.user);
   const [isAlbums, setAllAlbums] = useState([]);
+  const [sortedAlbums, setsortedAlbums] = useState([]);
+
   const [data, {isLoading}] = useGetAlbumsMutation();
   const [modalVisible, setModalVisible] = useState(false);
   const [modalVisible2, setModalVisible2] = useState(false);
@@ -92,7 +94,9 @@ const HomeScreen = () => {
     try {
       const userId = 'user-id';
       const res = await fetchAllPlaylists(userId);
+
       console.log('playlists: ', res.data.result);
+
       setDataSlice(res.data.result);
     } catch (error) {
       console.log('Error:', error);
@@ -106,6 +110,14 @@ const HomeScreen = () => {
         res.data,
       );
       setAllAlbums(res?.data);
+      const targetAlbum = res?.data.find(
+        album => album._id === '61710878ef45b9107c721284',
+      );
+      const remainingItems = res?.data.filter(
+        album => album._id !== '61710878ef45b9107c721284',
+      );
+      const updatedAlbums = [targetAlbum, ...remainingItems];
+      setsortedAlbums(updatedAlbums);
     } catch (error) {
       console.log('Errorr', error);
     }
@@ -116,7 +128,16 @@ const HomeScreen = () => {
     try {
       const res = await data();
       console.log('getting albums in home screen:', res.data);
+
       setAllAlbums(res?.data);
+      const targetAlbum = res?.data.find(
+        album => album._id === '61710878ef45b9107c721284',
+      );
+      const remainingItems = res?.data.filter(
+        album => album._id !== '61710878ef45b9107c721284',
+      );
+      const updatedAlbums = [targetAlbum, ...remainingItems];
+      setsortedAlbums(updatedAlbums);
     } catch (error) {
       console.log('Errorr', error);
     } finally {
@@ -455,7 +476,7 @@ const HomeScreen = () => {
             nestedScrollEnabled
             showsHorizontalScrollIndicator={false}
             ListEmptyComponent={listemptyComp}
-            data={isAlbums}
+            data={sortedAlbums}
             renderItem={({item, index}) => {
               return (
                 <TouchableOpacity
@@ -468,7 +489,7 @@ const HomeScreen = () => {
                   onPress={() => {
                     if (
                       subcscriptionId === '635bcf0612d32838b423b227' &&
-                      index === 10
+                      index === 0
                     ) {
                       navigation.navigate('AlbumScreen', {data: item});
                     } else if (subcscriptionId !== '635bcf0612d32838b423b227') {
@@ -477,7 +498,7 @@ const HomeScreen = () => {
                   }}
                   disabled={
                     subcscriptionId === '635bcf0612d32838b423b227' &&
-                    index !== 10
+                    index !== 0
                   }>
                   <View
                     style={{
@@ -499,7 +520,7 @@ const HomeScreen = () => {
                       }}
                     />
 
-                    {index !== 10 &&
+                    {index !== 0 &&
                       subcscriptionId === '635bcf0612d32838b423b227' && (
                         <View
                           style={{
@@ -512,7 +533,7 @@ const HomeScreen = () => {
                         />
                       )}
 
-                    {index !== 10 &&
+                    {index !== 0 &&
                       subcscriptionId === '635bcf0612d32838b423b227' && (
                         <View
                           style={{

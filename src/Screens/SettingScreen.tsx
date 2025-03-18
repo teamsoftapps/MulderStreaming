@@ -1,4 +1,6 @@
 import React, {useState} from 'react';
+import * as RNLocalize from 'react-native-localize';
+
 import {View, Text, StyleSheet, TouchableOpacity, Linking} from 'react-native';
 import {
   responsiveFontSize,
@@ -40,7 +42,26 @@ const SettingScreen = () => {
     {code: 'en', label: 'English'},
     {code: 'nl', label: 'Dutch'},
   ];
+  const handleEmailPress = () => {
+    // Get the device's default language
+    const deviceLanguage = RNLocalize.getLocales()[0].languageCode;
 
+    // Choose email based on language
+    const email =
+      deviceLanguage === 'nl' ? 'app@ianmulder.us' : 'app@janmulder.us';
+    const subject = 'Help Request';
+    const body = '';
+
+    // Create mailto URL
+    const mailtoURL = `mailto:${email}?subject=${encodeURIComponent(
+      subject,
+    )}&body=${encodeURIComponent(body)}`;
+
+    // Open email app
+    Linking.openURL(mailtoURL).catch(err =>
+      console.error('Error opening email app:', err),
+    );
+  };
   const changeLanguage = (langCode: string): void => {
     i18n.changeLanguage(langCode);
     const selectedLang = availableLanguages.find(
@@ -88,9 +109,7 @@ const SettingScreen = () => {
         />
       </TouchableOpacity>
 
-      <TouchableOpacity
-        activeOpacity={0.8}
-        onPress={() => navigation.navigate('HelpScreen')}>
+      <TouchableOpacity activeOpacity={0.8} onPress={handleEmailPress}>
         <SettingMenu
           imageSource={require('../../Assets/images/help.png')}
           mainText={t('Help')}
