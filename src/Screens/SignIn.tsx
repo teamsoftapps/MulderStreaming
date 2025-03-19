@@ -90,6 +90,12 @@ const SignIn = ({setbool, changeLanguage}: SignInProps) => {
           }}>
           <View style={styles.maimHeading}>
             <Text style={styles.ianText}>IAN</Text>
+            {/* <Text style={[styles.ianText, {fontFamily: 'TrajanPro-Regular'}]}>
+              IAN
+            </Text> */}
+            {/* <Text style={[styles.logo, {fontFamily: 'TrajanPro-Regular'}]}>
+              MULDER
+            </Text> */}
             <Text style={styles.logo}> MULDER</Text>
           </View>
           <Text style={styles.welcomeBack}>{t('Welcome Back')}</Text>
@@ -288,18 +294,18 @@ const styles = StyleSheet.create({
   },
   logo: {
     fontSize: responsiveFontSize(6),
-    fontWeight: '700',
-    marginBottom: responsiveHeight(2),
+    marginBottom: responsiveHeight(1),
     color: '#FFF7D6',
+    fontFamily: 'TrajanPro-Bold',
   },
   ianText: {
-    fontWeight: '700',
     color: '#FFF7D6',
     fontSize: responsiveFontSize(2.5),
     textAlign: 'center',
     transform: [{rotate: '-90deg'}],
-    marginBottom: responsiveHeight(1.5),
-    marginRight: -responsiveWidth(5),
+    marginBottom: responsiveHeight(1),
+    marginRight: -responsiveWidth(6.5),
+    fontFamily: 'TrajanPro-Bold',
   },
   welcomeBack: {
     fontSize: responsiveFontSize(3.5),
