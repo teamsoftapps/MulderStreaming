@@ -12,6 +12,8 @@ import {
   ViewStyle,
   Button,
 } from 'react-native';
+import {CastButton, useRemoteMediaClient} from 'react-native-google-cast';
+
 import {
   AirplayButton,
   showRoutePicker,
@@ -63,7 +65,21 @@ const BackgroundMusicPlayer: React.FC<BackgroundMusicPlayerProps> = ({
   functionForForward,
   togglePlayMusic,
   paddingtop,
+  song_file = '',
 }) => {
+  const client = useRemoteMediaClient();
+  if (client) {
+    // Send the media to your Cast device as soon as we connect to a device
+    // (though you'll probably want to call this later once user clicks on a video or something)
+    client.loadMedia({
+      mediaInfo: {
+        contentUrl:
+          'https://musicfilesforheroku.s3.us-west-1.amazonaws.com/uploads/audio/AsTheDeerPantsAir.mp3',
+        contentType: 'audio/mpeg',
+      },
+      autoplay: true,
+    });
+  }
   const [isMusicPlaying, setIsMusicPlaying] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const dispatch = useDispatch();
@@ -205,6 +221,13 @@ const BackgroundMusicPlayer: React.FC<BackgroundMusicPlayerProps> = ({
                         }}
                       />
                     )}
+                  </View>
+                )}
+                {Platform.OS === 'android' && (
+                  <View>
+                    <CastButton
+                      style={{width: 24, height: 24, tintColor: 'white'}}
+                    />
                   </View>
                 )}
               </View>

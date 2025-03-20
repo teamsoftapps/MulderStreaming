@@ -115,6 +115,14 @@ const SettingScreen = () => {
           mainText={t('Help')}
         />
       </TouchableOpacity>
+      {/* <TouchableOpacity
+        activeOpacity={0.8}
+        onPress={() => navigation.navigate('Test')}>
+        <SettingMenu
+          imageSource={require('../../Assets/images/help.png')}
+          mainText={t('Test')}
+        />
+      </TouchableOpacity> */}
       <TouchableOpacity
         activeOpacity={0.8}
         onPress={async () => {
