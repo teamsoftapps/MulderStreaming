@@ -67,7 +67,7 @@ const AlbumScreen: React.FC<AlbumScreenProps> = ({route}) => {
   const [trackList, setTrackList] = useState([]);
   const [currentSongIndex, setCurrentSongIndex] = useState(0);
   const [refreshing, setRefreshing] = useState(false);
-  const {persistCurrentSong, isPlaying, playingSongIndex} = useSelector(
+  const {persistCurrentSong} = useSelector(
     (state: RootState) => state.musicPlayer,
   );
 
@@ -342,7 +342,7 @@ const AlbumScreen: React.FC<AlbumScreenProps> = ({route}) => {
                       <Text style={{fontSize: responsiveFontSize(1.8)}}>
                         By Mulder {'\n\n'}
                         <Text style={{marginTop: responsiveHeight(1.8)}}>
-                          {albumSongs.length} songs
+                          {albumSongs.length - 1} songs
                         </Text>
                       </Text>
                     </Text>

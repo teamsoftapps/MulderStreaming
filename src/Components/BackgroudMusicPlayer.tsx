@@ -68,18 +68,7 @@ const BackgroundMusicPlayer: React.FC<BackgroundMusicPlayerProps> = ({
   song_file = '',
 }) => {
   const client = useRemoteMediaClient();
-  if (client) {
-    // Send the media to your Cast device as soon as we connect to a device
-    // (though you'll probably want to call this later once user clicks on a video or something)
-    client.loadMedia({
-      mediaInfo: {
-        contentUrl:
-          'https://musicfilesforheroku.s3.us-west-1.amazonaws.com/uploads/audio/AsTheDeerPantsAir.mp3',
-        contentType: 'audio/mpeg',
-      },
-      autoplay: true,
-    });
-  }
+
   const [isMusicPlaying, setIsMusicPlaying] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const dispatch = useDispatch();
@@ -99,8 +88,23 @@ const BackgroundMusicPlayer: React.FC<BackgroundMusicPlayerProps> = ({
     outputRange: ['#9D824F', '#1c1508'],
   });
 
-  const {isPlaying} = useSelector((state: RootState) => state.musicPlayer);
+  const {isPlaying, persistCurrentSong} = useSelector(
+    (state: RootState) => state.musicPlayer,
+  );
+  console.log('persistSong===>', persistCurrentSong);
 
+  if (client) {
+    console.log('persistSong===>', persistCurrentSong);
+    // Send the media to your Cast device as soon as we connect to a device
+    // (though you'll probably want to call this later once user clicks on a video or something)
+    client.loadMedia({
+      mediaInfo: {
+        contentUrl: `https://musicfilesforheroku.s3.us-west-1.amazonaws.com/uploads/${persistCurrentSong.Song_File}`,
+        contentType: 'audio/mpeg',
+      },
+      autoplay: true,
+    });
+  }
   const toggleModalSize = () => {
     Animated.timing(animation, {
       toValue: isExpanded
