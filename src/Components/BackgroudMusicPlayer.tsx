@@ -1,4 +1,4 @@
-import React, {useRef, useState} from 'react';
+import React, {useRef, useState, useEffect} from 'react';
 import {
   View,
   StyleSheet,
@@ -91,15 +91,13 @@ const BackgroundMusicPlayer: React.FC<BackgroundMusicPlayerProps> = ({
   const {isPlaying, persistCurrentSong} = useSelector(
     (state: RootState) => state.musicPlayer,
   );
-  console.log('persistSong===>', persistCurrentSong);
 
   if (client) {
-    console.log('persistSong===>', persistCurrentSong);
     // Send the media to your Cast device as soon as we connect to a device
     // (though you'll probably want to call this later once user clicks on a video or something)
     client.loadMedia({
       mediaInfo: {
-        contentUrl: `https://musicfilesforheroku.s3.us-west-1.amazonaws.com/uploads/${persistCurrentSong.Song_File}`,
+        contentUrl: `<url id="cve4t987dlcfgnka047g" type="url" status="failed" title="" wc="0">https://musicfilesforheroku.s3.us-west-1.amazonaws.com/uploads/</url> ${persistCurrentSong.Song_File}`,
         contentType: 'audio/mpeg',
       },
       autoplay: true,
@@ -119,6 +117,7 @@ const BackgroundMusicPlayer: React.FC<BackgroundMusicPlayerProps> = ({
 
   const {position} = useProgress(500);
   const SongDuration = convertTimeToSeconds(Song_Length);
+
   function convertTimeToSeconds(time) {
     const [minutes, seconds] = time.split(':').map(Number);
     return minutes * 60 + seconds;
@@ -143,6 +142,17 @@ const BackgroundMusicPlayer: React.FC<BackgroundMusicPlayerProps> = ({
       dispatch(togglePlaying(true));
     }
   };
+
+  useEffect(() => {
+    const checkSongCompletion = async () => {
+      if (position >= SongDuration && functionForForward) {
+        await functionForForward();
+      }
+    };
+
+    checkSongCompletion();
+  }, [position, SongDuration, functionForForward]);
+
   return (
     <Animated.View
       style={[

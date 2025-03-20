@@ -50,11 +50,7 @@ const CheckSubscriptionCode = () => {
 
     try {
       const response = await confirmUser(email);
-      console.log('Response FromConfirmUser==>', response);
-      console.log(
-        'Response EndDate==>',
-        response?.data?.data?.user?.subscriptionEndDate,
-      );
+
       const subscriptionEndDate = new Date(
         response?.data?.data?.user?.subscriptionEndDate,
       );

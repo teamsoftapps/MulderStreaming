@@ -36,7 +36,6 @@ const SettingScreen = () => {
   const [alertVisible, setAlertVisible] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState('English');
   const AuthData = useSelector(state => state?.auth?.token?.data?.user);
-  console.log('first', AuthData);
   const dispatch = useDispatch();
   const availableLanguages: LanguageOption[] = [
     {code: 'en', label: 'English'},
@@ -115,14 +114,7 @@ const SettingScreen = () => {
           mainText={t('Help')}
         />
       </TouchableOpacity>
-      {/* <TouchableOpacity
-        activeOpacity={0.8}
-        onPress={() => navigation.navigate('Test')}>
-        <SettingMenu
-          imageSource={require('../../Assets/images/help.png')}
-          mainText={t('Test')}
-        />
-      </TouchableOpacity> */}
+
       <TouchableOpacity
         activeOpacity={0.8}
         onPress={async () => {

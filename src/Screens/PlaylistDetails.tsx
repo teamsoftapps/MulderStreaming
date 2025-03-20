@@ -86,7 +86,6 @@ const PlaylistDetails: React.FC<PlaylistDetailsProps> = ({route}) => {
           style: 'destructive',
           onPress: async () => {
             const response = await removeSong({playlistId, body});
-            console.log('Response from remove-->', response);
             await getSongs();
           },
         },
@@ -99,15 +98,11 @@ const PlaylistDetails: React.FC<PlaylistDetailsProps> = ({route}) => {
   );
 
   const playlistId = route?.params?.data?._id || '';
-  console.log('routes-->', route);
 
   const fetchFavorites = async () => {
     if (route?.params?.data?.Playlist_Name == 'Your Favorites') {
-      console.log('Current Song==>', persistCurrentSong);
-
       try {
         const res = await favoriteSongs();
-        console.log('songsssssssssssssssssssssssssssssssssssssss', res);
         setplaylistSongs(res?.data?.favourites);
         dispatch(setPlaylist(res?.data?.favourites));
         setIsLoading(false);
@@ -132,7 +127,6 @@ const PlaylistDetails: React.FC<PlaylistDetailsProps> = ({route}) => {
     if (!playlistId) return;
     try {
       const res = await getPlaylistSongs(playlistId);
-      console.log('Response--->', res);
       const liked = await favoriteSongs();
       setIsLikedSong(liked?.data?.favourites);
 
@@ -141,7 +135,6 @@ const PlaylistDetails: React.FC<PlaylistDetailsProps> = ({route}) => {
 
         setplaylistSongs(songs);
 
-        console.log('SongsPl--->', songs);
         dispatch(setPlaylist(songs));
         dispatch(setPlayingSongIndex(null));
         setIsLoading(false);
@@ -154,9 +147,6 @@ const PlaylistDetails: React.FC<PlaylistDetailsProps> = ({route}) => {
           duration: parseFloat(song.Song_Length),
         }));
         setTrackList(trackList);
-
-        console.log('Traclklist----...->', trackList);
-        console.log('Added Track', trackList);
       }
     } catch (err) {
       console.error('Error fetching songs:', err);
@@ -169,7 +159,6 @@ const PlaylistDetails: React.FC<PlaylistDetailsProps> = ({route}) => {
     if (!playlistId) return;
     try {
       const res = await getPlaylistSongs(playlistId);
-      console.log('Response--->', res);
       const liked = await favoriteSongs();
       setIsLikedSong(liked?.data?.favourites);
 
@@ -178,7 +167,6 @@ const PlaylistDetails: React.FC<PlaylistDetailsProps> = ({route}) => {
 
         setplaylistSongs(songs);
 
-        console.log('SongsPl--->', songs);
         dispatch(setPlaylist(songs));
         dispatch(setPlayingSongIndex(null));
         setIsLoading(false);
@@ -191,9 +179,6 @@ const PlaylistDetails: React.FC<PlaylistDetailsProps> = ({route}) => {
           duration: parseFloat(song.Song_Length),
         }));
         setTrackList(trackList);
-
-        console.log('Traclklist----...->', trackList);
-        console.log('Added Track', trackList);
       }
     } catch (err) {
       console.error('Error fetching songs:', err);
@@ -241,12 +226,10 @@ const PlaylistDetails: React.FC<PlaylistDetailsProps> = ({route}) => {
         dispatch(setCurrentSongg(nextSong));
         dispatch(setPlayingSongIndex(nextIndex));
         dispatch(togglePlaying(true));
-        console.log('current playing from F funtion', nextSong);
       } catch (error) {
         console.error('Error skipping to next song:', error);
       }
     } else {
-      console.log('You are at the last song in the playlist.');
       await TrackPlayer.skip(0);
       await TrackPlayer.play();
       dispatch(togglePlaying(true));
@@ -270,7 +253,6 @@ const PlaylistDetails: React.FC<PlaylistDetailsProps> = ({route}) => {
         dispatch(setCurrentSongg(prevSong));
         dispatch(setPlayingSongIndex(prevIndex));
         dispatch(togglePlaying(true));
-        console.log('current playing from B funtion', prevSong);
       } catch (error) {
         console.error('Error skipping to previous song:', error);
       }
@@ -282,7 +264,6 @@ const PlaylistDetails: React.FC<PlaylistDetailsProps> = ({route}) => {
   const toggleFavoriteHandler = async (id: string) => {
     try {
       const result = await handleFavorite(id);
-      console.log('favouriteeeeeeeeeeeeeeee', result);
 
       fetchFavorites();
 
@@ -302,8 +283,6 @@ const PlaylistDetails: React.FC<PlaylistDetailsProps> = ({route}) => {
     const isFavorite = islikedSong.some(obj => obj._id === item._id);
 
     const isPlaying = currentSong?._id === item._id;
-    console.log('Item-->', item);
-    console.log('index-->', index);
 
     return (
       <View style={styles.playlistMusicContainer}>

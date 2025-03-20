@@ -10,7 +10,6 @@ import PlaylistDetails from '../Screens/PlaylistDetails';
 import AllSongs from '../Screens/AllSongs';
 
 import WebViewContent from '../Components/WebViewContent';
-import MusicPlayerScreen from '../Screens/MusicPlayerScreen';
 
 type MainStackProps = {
   language: string;
@@ -26,7 +25,6 @@ const MainStack = ({language, changeLanguage}: MainStackProps) => (
       screenOptions={{headerShown: false}}
       initialRouteName="BottomTabNavigator">
       <Stack.Screen name="BottomTabNavigator" component={BottomTabNavigator} />
-      <Stack.Screen name="Test" component={MusicPlayerScreen} />
 
       <Stack.Screen name="AboutApplication" component={AboutApplication} />
       <Stack.Screen name="HelpScreen" component={HelpScreen} />

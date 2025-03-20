@@ -41,10 +41,6 @@ const SignUp = () => {
   const confirmPasswordRef = useRef<TextInput>(null);
   const accessCodeRef = useRef<TextInput>(null);
   const handleSignUp = async () => {
-    console.log('Access Code:', accessCode);
-    console.log('Email:', email);
-    console.log('Password:', password);
-    console.log('Confirm Password:', confirmPassword);
     if (!email || !password || !confirmPassword || !accessCode) {
       Toasts('Error', 'Please fill all fields', 'error');
       return;
@@ -70,7 +66,6 @@ const SignUp = () => {
       if (!result?.error) {
         navigation.navigate('SignIn');
       }
-      console.log('Response for sign-up:', result);
     } catch (error) {
       console.error('Error in sign-up:', error);
       Toasts('Error', error, 'error');
@@ -109,7 +104,6 @@ const SignUp = () => {
               onSubmitEditing={() => passwordRef.current?.focus()}
               onChangeText={value => {
                 setEmail(value);
-                console.log('Access Code:', value);
               }}
             />
           </View>
@@ -123,7 +117,6 @@ const SignUp = () => {
               onSubmitEditing={() => confirmPasswordRef.current?.focus()}
               onChangeText={value => {
                 setPassword(value);
-                console.log('Access Code:', value);
               }}
             />
           </View>
@@ -137,7 +130,6 @@ const SignUp = () => {
               onSubmitEditing={() => accessCodeRef.current?.focus()}
               onChangeText={value => {
                 setConfirmPassword(value);
-                console.log('Access Code:', value);
               }}
             />
           </View>
@@ -151,7 +143,6 @@ const SignUp = () => {
               initialValue={accessCode}
               onChangeText={value => {
                 setAccessCode(value);
-                console.log('Access Code:', value);
               }}
             />
           </View>

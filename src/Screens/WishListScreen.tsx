@@ -65,7 +65,6 @@ const WishListScreen: React.FC = () => {
     try {
       const res = await getFavourites({});
       setFavorites(res?.data?.favourites);
-      console.log('responce for favourites in wishlist:', res);
       dispatch(setPlaylist(res?.data?.favourites));
       setIsLoading(false);
       const trackList = res?.data?.favourites.map(song => ({
@@ -87,7 +86,6 @@ const WishListScreen: React.FC = () => {
     try {
       const res = await getFavourites({});
       setFavorites(res?.data?.favourites);
-      console.log('responce for favourites in wishlist:', res);
       dispatch(setPlaylist(res?.data?.favourites));
       setIsLoading(false);
       const trackList = res?.data?.favourites.map(song => ({
@@ -124,12 +122,10 @@ const WishListScreen: React.FC = () => {
         dispatch(setCurrentSongg(nextSong));
         dispatch(setPlayingSongIndex(nextIndex));
         dispatch(togglePlaying(true));
-        console.log('current playing from F funtion', nextSong);
       } catch (error) {
         console.error('Error skipping to next song:', error);
       }
     } else {
-      console.log('You are at the last song in the playlist.');
       await TrackPlayer.skip(0);
       await TrackPlayer.play();
       dispatch(togglePlaying(true));
@@ -154,7 +150,6 @@ const WishListScreen: React.FC = () => {
         dispatch(setCurrentSongg(prevSong));
         dispatch(setPlayingSongIndex(prevIndex));
         dispatch(togglePlaying(true));
-        console.log('current playing from B funtion', prevSong);
       } catch (error) {
         console.error('Error skipping to previous song:', error);
       }
@@ -192,7 +187,6 @@ const WishListScreen: React.FC = () => {
   const handleToggleFavourite = async (id: string) => {
     try {
       const result = await handleFavorite(id);
-      console.log('favouriteeeeeeeeeeeeeeee', result);
       fetchFavourites();
     } catch (error) {}
   };
@@ -219,7 +213,6 @@ const WishListScreen: React.FC = () => {
     index: number;
   }) => {
     const isPlaying = currentSong?._id === item._id;
-    console.log('Item-->', item);
 
     return (
       <View style={styles.playlistMusicContainer}>

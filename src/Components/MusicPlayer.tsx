@@ -22,8 +22,6 @@ const MusicPlayer = () => {
   const {persistCurrentSong, isPlaying: currentPlaying} = useSelector(
     (state: RootState) => state.musicPlayer,
   );
-  console.log('persistCurrentSong', persistCurrentSong);
-  console.log('isPlaying and currentPlaying', currentPlaying);
 
   const [currentTime, setCurrentTime] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -115,8 +113,6 @@ const MusicPlayer = () => {
       {Song_Name: 'Song 3', artist: 'Artist 3', Song_Length: 220},
     ];
 
-    console.log('currentSong in getNextSong:', currentSong);
-
     const currentIndex = songs.findIndex(
       song => song.Song_Name === currentSong.Song_Name,
     );
@@ -136,8 +132,6 @@ const MusicPlayer = () => {
       {Song_Name: 'Song 2', artist: 'Artist 2', Song_Length: 210},
       {Song_Name: 'Song 3', artist: 'Artist 3', Song_Length: 220},
     ];
-
-    console.log('currentSong in getPreviousSong:', currentSong);
 
     const currentIndex = songs.findIndex(
       song => song.Song_Name === currentSong.Song_Name,

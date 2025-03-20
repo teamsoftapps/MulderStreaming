@@ -52,28 +52,22 @@ const AllSongs: React.FC = ({navigation}) => {
         acc[song._id] = true;
         return acc;
       }, {});
-      console.log('AllselectedSongs==>', allSelected);
 
       setCheckedSongs(allSelected);
     }
   };
 
   const handleAdd = async () => {
-    console.log('checked songs-->', checkedSongs);
-
     const selectedSongs = songs.filter((val, index) => checkedSongs[val?._id]);
-    console.log('Selected Songs---->:', selectedSongs);
     const newItem = {
       Playlist_Name: playlistName,
       SongId: selectedSongs.map(val => val._id),
     };
-    console.log('newItem--->', newItem);
 
     const result = await postPlaylist(newItem);
     if (result) {
       Toasts('Info', 'Playlist created successfully', 'success');
     }
-    console.log('added playlist ---->', result);
     navigation.navigate('MusicScreen');
   };
   const handleCancel = () => {

@@ -31,7 +31,6 @@ type ForgotPasswordScreenNavigationProp = StackNavigationProp<
 const MakeSelectonForgotPassword = () => {
   const route = useRoute();
   const {data} = route.params;
-  console.log('dataaaaa', data);
   const {t} = useTranslation();
   const navigation = useNavigation<ForgotPasswordScreenNavigationProp>();
   const [newPassword, setNewPassword] = useState('');
@@ -53,7 +52,6 @@ const MakeSelectonForgotPassword = () => {
       };
 
       const response = await passwordReset(payload);
-      console.log('Response from password reset:', response);
 
       if (response?.data) {
         await Toasts('Success', 'Password reset successful', 'success');

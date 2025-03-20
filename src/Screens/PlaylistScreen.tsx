@@ -74,10 +74,7 @@ const PlaylistScreen: React.FC = () => {
     setRefreshing(true);
     try {
       const res = await data();
-      console.log(
-        'getting albums --------------------------------------------:',
-        res.data,
-      );
+
       setAllAlbums(res?.data);
     } catch (error) {
       console.log('Errorr', error);
@@ -89,47 +86,14 @@ const PlaylistScreen: React.FC = () => {
   const getAlbums = async () => {
     try {
       const res = await data();
-      console.log(
-        'getting albums --------------------------------------------:',
-        res.data,
-      );
+
       setAllAlbums(res?.data);
     } catch (error) {
       console.log('Errorr', error);
     }
   };
 
-  // const getAlbums = async (): Promise<void> => {
-  //   try {
-  //     const res: ApiResponse = await data();
-
-  //     if (subcscriptionId === '635bcf0612d32838b423b227') {
-  //       const trailAlbum = res.data[10];
-  //       if (trailAlbum) {
-  //         setAllAlbums([trailAlbum]);
-  //       } else {
-  //         console.log('Trail album does not exist at index 10');
-  //         setAllAlbums([]); //
-  //       }
-  //     } else {
-  //       setAllAlbums(res.data);
-  //     }
-
-  //     if (res.data.length > 6) {
-  //       console.log('7th album:', res.data[6]);
-  //     } else {
-  //       console.log('Not enough albums for 7th element');
-  //     }
-
-  //     console.log('Albums fetched:', res);
-  //   } catch (error) {
-  //     console.error('Error in fetching albums:', error);
-  //     setAllAlbums([]);
-  //   }
-  // };
-
   const handleForward = async () => {
-    console.log('songs from redux', playlist);
     const trackList = playlist.map(song => ({
       id: song._id,
       url: `https://musicfilesforheroku.s3.us-west-1.amazonaws.com/uploads/${song.Song_File}`,
@@ -149,7 +113,6 @@ const PlaylistScreen: React.FC = () => {
         dispatch(setCurrentSongg(nextSong));
         dispatch(setPlayingSongIndex(nextIndex));
         dispatch(togglePlaying(true));
-        console.log('current playing from F funtion', nextSong);
       } catch (error) {
         console.error('Error skipping to next song:', error);
       }
@@ -178,7 +141,6 @@ const PlaylistScreen: React.FC = () => {
         dispatch(setCurrentSongg(prevSong));
         dispatch(setPlayingSongIndex(prevIndex));
         dispatch(togglePlaying(true));
-        console.log('current playing from B funtion', prevSong);
       } catch (error) {
         console.error('Error skipping to previous song:', error);
       }
