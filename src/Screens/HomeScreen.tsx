@@ -40,6 +40,7 @@ import {
   setPlayingSongIndex,
   togglePlaying,
 } from '../store/slices/songState';
+import * as RNLocalize from 'react-native-localize';
 import Lock from '../../Assets/images/lock.png';
 type HomeScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -79,6 +80,7 @@ const HomeScreen = () => {
   const [isDeleteItemId, setDeletedItemID] = useState('');
   const [refreshing, setRefreshing] = useState(false);
   const dispatch = useDispatch();
+  const deviceLanguage = RNLocalize.getLocales()[0].languageCode;
   const {persistCurrentSong, playlist, playingSongIndex} = useSelector(
     (state: RootState) => state.musicPlayer,
   );
@@ -105,19 +107,24 @@ const HomeScreen = () => {
   const getAlbums = async () => {
     try {
       const res = await data();
-      console.log(
-        'getting albums --------------------------------------------:',
-        res.data,
-      );
+      console.log('Albums===========>', res.data);
       setAllAlbums(res?.data);
-      const targetAlbum = res?.data.find(
-        album => album._id === '61710878ef45b9107c721284',
+      const allalbums = res.data;
+      const sortedAlbums = Array.from(allalbums).sort(
+        (a, b) => a.index - b.index,
       );
-      const remainingItems = res?.data.filter(
-        album => album._id !== '61710878ef45b9107c721284',
-      );
-      const updatedAlbums = [targetAlbum, ...remainingItems];
-      setsortedAlbums(updatedAlbums);
+      console.log('sortedAlbums===', sortedAlbums);
+      setsortedAlbums(sortedAlbums);
+      if (subcscriptionId === '635bcf0612d32838b423b227') {
+        const targetAlbum = res?.data.find(
+          album => album._id === '61710878ef45b9107c721284',
+        );
+        const remainingItems = res?.data.filter(
+          album => album._id !== '61710878ef45b9107c721284',
+        );
+        const updatedAlbums = [targetAlbum, ...remainingItems];
+        setsortedAlbums(updatedAlbums);
+      }
     } catch (error) {
       console.log('Errorr', error);
     }
@@ -126,53 +133,14 @@ const HomeScreen = () => {
   const onRefresh = async () => {
     setRefreshing(true);
     try {
-      const res = await data();
-      console.log('getting albums in home screen:', res.data);
-
-      setAllAlbums(res?.data);
-      const targetAlbum = res?.data.find(
-        album => album._id === '61710878ef45b9107c721284',
-      );
-      const remainingItems = res?.data.filter(
-        album => album._id !== '61710878ef45b9107c721284',
-      );
-      const updatedAlbums = [targetAlbum, ...remainingItems];
-      setsortedAlbums(updatedAlbums);
+      await getAllPlaylists();
+      await getAlbums();
     } catch (error) {
-      console.log('Errorr', error);
+      console.log('Error on refresh:', error);
     } finally {
       setRefreshing(false);
     }
   };
-
-  // const getAlbums = async (): Promise<void> => {
-  //   try {
-  //     const res: ApiResponse = await data();
-
-  //     if (!res?.data) {
-  //       throw new Error('No data returned from API');
-  //     }
-
-  // if (subcscriptionId === '635bcf0612d32838b423b227') {
-  //       if (res?.data.length > 10) {
-  //         const trailAlbum = res?.data[10];
-  //         if (trailAlbum) {
-  //           setAllAlbums([trailAlbum]);
-  //           console.log('Trail album:', trailAlbum);
-  //         }
-  //       } else {
-  //         console.log('Trail album does not exist at index 10');
-  //         setAllAlbums([]);
-  //       }
-  //     } else {
-  //       setAllAlbums(res?.data);
-  //       console.log('All Albums:', res?.data);
-  //     }
-  //   } catch (error) {
-  //     console.error('Error in fetching albums:', error);
-  //     setAllAlbums([]);
-  //   }
-  // };
 
   const handleCreateNewPlaylistPress = () => {
     setLoading(true);
@@ -408,7 +376,16 @@ const HomeScreen = () => {
   };
   return (
     <WrapperContainer style={styles.container}>
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            colors={['#1C1508']}
+            progressBackgroundColor={'#9D824F'}
+          />
+        }>
         <TopNavigationBar title={t('Music')} showBackButton={false} />
         <View
           style={{
@@ -460,117 +437,105 @@ const HomeScreen = () => {
             </TouchableOpacity>
           ) : null}
         </View>
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          refreshControl={
-            <RefreshControl
-              refreshing={refreshing}
-              onRefresh={onRefresh}
-              colors={['#1C1508']}
-              progressBackgroundColor={'#9D824F'}
-            />
-          }
-          contentContainerStyle={styles.scrollViewContent}>
-          <FlatList
-            horizontal
-            nestedScrollEnabled
-            showsHorizontalScrollIndicator={false}
-            ListEmptyComponent={listemptyComp}
-            data={sortedAlbums}
-            renderItem={({item, index}) => {
-              return (
-                <TouchableOpacity
-                  style={{
-                    width: responsiveWidth(28),
-                    paddingRight: responsiveWidth(2),
-                  }}
-                  key={index}
-                  activeOpacity={0.7}
-                  onPress={() => {
-                    if (
-                      subcscriptionId === '635bcf0612d32838b423b227' &&
-                      index === 0
-                    ) {
-                      navigation.navigate('AlbumScreen', {data: item});
-                    } else if (subcscriptionId !== '635bcf0612d32838b423b227') {
-                      navigation.navigate('AlbumScreen', {data: item});
-                    }
-                  }}
-                  disabled={
-                    subcscriptionId === '635bcf0612d32838b423b227' &&
-                    index !== 0
-                  }>
-                  <View
-                    style={{
-                      shadowRadius: responsiveHeight(3),
-                      width: responsiveWidth(28),
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      position: 'relative',
-                    }}>
-                    <Image
-                      source={{
-                        uri: `https://musicfilesforheroku.s3.us-west-1.amazonaws.com/uploads/${item.Album_Image}`,
-                      }}
-                      style={{
-                        width: responsiveWidth(26),
-                        height: responsiveHeight(13),
-                        borderRadius: responsiveHeight(3),
-                        resizeMode: 'cover',
-                      }}
-                    />
 
-                    {index !== 0 &&
-                      subcscriptionId === '635bcf0612d32838b423b227' && (
-                        <View
+        <FlatList
+          horizontal
+          nestedScrollEnabled
+          showsHorizontalScrollIndicator={false}
+          ListEmptyComponent={listemptyComp}
+          data={sortedAlbums}
+          renderItem={({item, index}) => {
+            return (
+              <TouchableOpacity
+                style={{
+                  width: responsiveWidth(28),
+                  paddingRight: responsiveWidth(2),
+                }}
+                key={index}
+                activeOpacity={0.7}
+                onPress={() => {
+                  if (
+                    subcscriptionId === '635bcf0612d32838b423b227' &&
+                    index === 0
+                  ) {
+                    navigation.navigate('AlbumScreen', {data: item});
+                  } else if (subcscriptionId !== '635bcf0612d32838b423b227') {
+                    navigation.navigate('AlbumScreen', {data: item});
+                  }
+                }}
+                disabled={
+                  subcscriptionId === '635bcf0612d32838b423b227' && index !== 0
+                }>
+                <View
+                  style={{
+                    shadowRadius: responsiveHeight(3),
+                    width: responsiveWidth(28),
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    position: 'relative',
+                  }}>
+                  <Image
+                    source={{
+                      uri: `https://musicfilesforheroku.s3.us-west-1.amazonaws.com/uploads/${item.Album_Image}`,
+                    }}
+                    style={{
+                      width: responsiveWidth(26),
+                      height: responsiveHeight(13),
+                      borderRadius: responsiveHeight(3),
+                      resizeMode: 'cover',
+                    }}
+                  />
+
+                  {index !== 0 &&
+                    subcscriptionId === '635bcf0612d32838b423b227' && (
+                      <View
+                        style={{
+                          position: 'absolute',
+                          width: responsiveWidth(26),
+                          height: responsiveHeight(13),
+                          backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                          borderRadius: responsiveHeight(3),
+                        }}
+                      />
+                    )}
+
+                  {index !== 0 &&
+                    subcscriptionId === '635bcf0612d32838b423b227' && (
+                      <View
+                        style={{
+                          position: 'absolute',
+                          top: '50%',
+                          left: '50%',
+                          transform: [
+                            {translateX: -responsiveWidth(3)},
+                            {translateY: -responsiveHeight(3)},
+                          ],
+                          zIndex: 10,
+                        }}>
+                        <Image
+                          tintColor={'#fff'}
+                          source={Lock}
                           style={{
-                            position: 'absolute',
-                            width: responsiveWidth(26),
-                            height: responsiveHeight(13),
-                            backgroundColor: 'rgba(0, 0, 0, 0.5)',
-                            borderRadius: responsiveHeight(3),
+                            width: responsiveWidth(6),
+                            height: responsiveWidth(6),
+                            resizeMode: 'contain',
                           }}
                         />
-                      )}
-
-                    {index !== 0 &&
-                      subcscriptionId === '635bcf0612d32838b423b227' && (
-                        <View
-                          style={{
-                            position: 'absolute',
-                            top: '50%',
-                            left: '50%',
-                            transform: [
-                              {translateX: -responsiveWidth(3)},
-                              {translateY: -responsiveHeight(3)},
-                            ],
-                            zIndex: 10,
-                          }}>
-                          <Image
-                            tintColor={'#fff'}
-                            source={Lock}
-                            style={{
-                              width: responsiveWidth(6),
-                              height: responsiveWidth(6),
-                              resizeMode: 'contain',
-                            }}
-                          />
-                        </View>
-                      )}
-                  </View>
-                  <Text
-                    style={{
-                      color: 'white',
-                      fontSize: responsiveFontSize(1.8),
-                      textAlign: 'center',
-                    }}>
-                    {item.Album_Name}
-                  </Text>
-                </TouchableOpacity>
-              );
-            }}
-          />
-        </ScrollView>
+                      </View>
+                    )}
+                </View>
+                <Text
+                  style={{
+                    color: 'white',
+                    fontSize: responsiveFontSize(1.8),
+                    textAlign: 'center',
+                  }}>
+                  {item.Album_Name}
+                </Text>
+              </TouchableOpacity>
+            );
+          }}
+        />
         <View
           style={{
             flex: 1,
@@ -622,18 +587,27 @@ const HomeScreen = () => {
           </TouchableOpacity>
         ) : null}
         <TouchableOpacity onPress={handleExclusiveContentWebView}>
-          <View
-            style={[
-              styles.createBTNview,
-              {
-                marginBottom: persistCurrentSong
-                  ? responsiveHeight(14)
-                  : responsiveHeight(2),
-                paddingVertical: responsiveHeight(2.4),
-              },
-            ]}>
-            <Text style={styles.createBTNTxt}>{t('Exclusive Content')}</Text>
-          </View>
+          {deviceLanguage === 'nl' ? (
+            <Image
+              resizeMode="center"
+              source={require('../../Assets/images/exclusiveNL.png')}
+              style={{
+                height: responsiveHeight(15),
+                width: '100%',
+                borderRadius: responsiveWidth(5),
+              }}
+            />
+          ) : (
+            <Image
+              resizeMode="cover"
+              source={require('../../Assets/images/exclusiveENG.png')}
+              style={{
+                height: responsiveHeight(15),
+                width: responsiveWidth(88),
+                borderRadius: responsiveWidth(3),
+              }}
+            />
+          )}
         </TouchableOpacity>
 
         <Modal

@@ -9,10 +9,6 @@ const CustomWebViewComponent = () => {
     <View style={styles.container}>
       <WebView
         originWhitelist={['*']}
-        // source={{
-        //   html: '<h1>Custom WebView Content</h1><p>This is a custom message inside the WebView.</p>',
-        // }}
-        // source={{uri: 'https://app.janmulder.us/'}}
         source={{
           uri: 'https://music-app-final-theta.vercel.app/extend-subscription',
         }}

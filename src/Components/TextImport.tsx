@@ -21,6 +21,7 @@ interface TextImportProps extends TextInputProps {
   editable?: boolean;
   style?: StyleProp<ViewStyle>;
   secureTextEntry?: boolean;
+  keyboard_Type?: any;
 }
 
 const TextImport = forwardRef<TextInput, TextImportProps>(
@@ -30,6 +31,7 @@ const TextImport = forwardRef<TextInput, TextImportProps>(
       placeholder,
       initialValue = '',
       editable = true,
+      keyboard_Type,
       onChangeText,
       secureTextEntry = false,
       style,
@@ -57,6 +59,7 @@ const TextImport = forwardRef<TextInput, TextImportProps>(
           }}
         />
         <TextInput
+          keyboardType={keyboard_Type}
           ref={ref}
           style={styles.input}
           placeholder={placeholder}

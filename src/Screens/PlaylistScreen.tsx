@@ -74,8 +74,12 @@ const PlaylistScreen: React.FC = () => {
     setRefreshing(true);
     try {
       const res = await data();
-
-      setAllAlbums(res?.data);
+      const allalbums = res.data;
+      const sortedAlbums = Array.from(allalbums).sort(
+        (a, b) => a.index - b.index,
+      );
+      console.log('sortedAlbums===', sortedAlbums);
+      setAllAlbums(sortedAlbums);
     } catch (error) {
       console.log('Errorr', error);
     } finally {
@@ -86,8 +90,12 @@ const PlaylistScreen: React.FC = () => {
   const getAlbums = async () => {
     try {
       const res = await data();
-
-      setAllAlbums(res?.data);
+      const allalbums = res.data;
+      const sortedAlbums = Array.from(allalbums).sort(
+        (a, b) => a.index - b.index,
+      );
+      console.log('sortedAlbums===', sortedAlbums);
+      setAllAlbums(sortedAlbums);
     } catch (error) {
       console.log('Errorr', error);
     }
@@ -174,13 +182,13 @@ const PlaylistScreen: React.FC = () => {
     return (
       <TouchableOpacity
         onPress={() => {
-          if (subscriptionId === '635bcf0612d32838b423b227' && index === 10) {
+          if (subscriptionId === '635bcf0612d32838b423b227' && index === 0) {
             navigation.navigate('AlbumScreen', {data: item});
           } else if (subscriptionId !== '635bcf0612d32838b423b227') {
             navigation.navigate('AlbumScreen', {data: item});
           }
         }}
-        disabled={subscriptionId === '635bcf0612d32838b423b227' && index !== 10}
+        disabled={subscriptionId === '635bcf0612d32838b423b227' && index !== 0}
         style={styles.playlistMusic}>
         <View style={{position: 'relative'}}>
           {/* Album Image */}
@@ -196,7 +204,7 @@ const PlaylistScreen: React.FC = () => {
             }}
           />
 
-          {isLocked && index !== 10 && (
+          {isLocked && index !== 0 && (
             <View
               style={{
                 position: 'absolute',
@@ -211,7 +219,7 @@ const PlaylistScreen: React.FC = () => {
             />
           )}
 
-          {isLocked && index !== 10 && (
+          {isLocked && index !== 0 && (
             <View
               style={{
                 position: 'absolute',

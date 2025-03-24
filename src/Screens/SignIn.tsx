@@ -90,12 +90,6 @@ const SignIn = ({setbool, changeLanguage}: SignInProps) => {
           }}>
           <View style={styles.maimHeading}>
             <Text style={styles.ianText}>IAN</Text>
-            {/* <Text style={[styles.ianText, {fontFamily: 'TrajanPro-Regular'}]}>
-              IAN
-            </Text> */}
-            {/* <Text style={[styles.logo, {fontFamily: 'TrajanPro-Regular'}]}>
-              MULDER
-            </Text> */}
             <Text style={styles.logo}> MULDER</Text>
           </View>
           <Text style={styles.welcomeBack}>{t('Welcome Back')}</Text>
@@ -115,6 +109,7 @@ const SignIn = ({setbool, changeLanguage}: SignInProps) => {
           </View>
           <View style={styles.inputContainer}>
             <TextImport
+              keyboard_Type="email-address"
               ref={passwordRef}
               imageSource={require('../../Assets/images/password.png')}
               placeholder="Password"

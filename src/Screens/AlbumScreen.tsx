@@ -67,6 +67,7 @@ const AlbumScreen: React.FC<AlbumScreenProps> = ({route}) => {
   const [trackList, setTrackList] = useState([]);
   const [currentSongIndex, setCurrentSongIndex] = useState(0);
   const [refreshing, setRefreshing] = useState(false);
+  const [sortedSongs, setsortedSongs] = useState([]);
   const {persistCurrentSong} = useSelector(
     (state: RootState) => state.musicPlayer,
   );
@@ -83,6 +84,7 @@ const AlbumScreen: React.FC<AlbumScreenProps> = ({route}) => {
 
     try {
       const res = await getAlbumsSongs(albumName);
+      console.log('songssss=======>', res?.data);
       const liked = await favoriteSongs();
       setIsLikedSong(liked?.data?.favourites);
       if (res?.data) {
@@ -115,13 +117,20 @@ const AlbumScreen: React.FC<AlbumScreenProps> = ({route}) => {
 
     try {
       const res = await getAlbumsSongs(albumName);
+      console.log('Songssss======>:', res?.data);
       const liked = await favoriteSongs();
       setIsLikedSong(liked?.data?.favourites);
+      const allSongs = res?.data[0];
+      const sortedSongs = Array.from(allSongs).sort(
+        (a, b) => a.Song_index - b.Song_index,
+      );
+      console.log('sortedSongs===', sortedSongs);
+      setAlbumSongs(sortedSongs);
       if (res?.data) {
         const songs = res?.data[0] || [];
         setAlbumImage(songs[0]?.Album_Image || '');
 
-        setAlbumSongs(songs);
+        setAlbumSongs(sortedSongs);
         setIsDataLoading(false);
         dispatch(setPlaylist(songs));
         const trackList = songs.map(song => ({
@@ -139,6 +148,7 @@ const AlbumScreen: React.FC<AlbumScreenProps> = ({route}) => {
       console.error('Error fetching songs:', err);
     }
   };
+
   const togglePlayMusic = async (song: PlaylistItem, index: number) => {
     if (persistCurrentSong?._id !== albumSongs[index]._id) {
       await TrackPlayer.reset();
@@ -234,11 +244,6 @@ const AlbumScreen: React.FC<AlbumScreenProps> = ({route}) => {
     item: PlaylistItem;
     index: number;
   }) => {
-    const isLastIndex = index === albumSongs?.length - 1;
-
-    if (isLastIndex) {
-      return null;
-    }
     const isFavorite = islikedSong.some(obj => obj._id === item._id);
     const isPlaying = currentSong?._id === item._id;
 

@@ -82,7 +82,7 @@ const SignUp = () => {
             alignItems: 'center',
             justifyContent: 'center',
             width: responsiveWidth(100),
-            height: responsiveHeight(95),
+            height: responsiveHeight(85),
             marginTop:
               Platform.OS === 'android'
                 ? responsiveHeight(4)
@@ -96,6 +96,7 @@ const SignUp = () => {
           <Text style={styles.loginText}>{t('Create an account')}</Text>
           <View style={styles.inputContainer}>
             <TextImport
+              keyboard_Type={'email-address'}
               ref={emailRef}
               imageSource={require('../../Assets/images/emalIMG.png')}
               placeholder={t('Email')}
@@ -120,7 +121,7 @@ const SignUp = () => {
               }}
             />
           </View>
-          <View style={styles.inputContainer}>
+          {/* <View style={styles.inputContainer}>
             <PasswordInput
               ref={confirmPasswordRef}
               imageSource={require('../../Assets/images/password.png')}
@@ -132,7 +133,7 @@ const SignUp = () => {
                 setConfirmPassword(value);
               }}
             />
-          </View>
+          </View> */}
           <View style={styles.inputContainer}>
             <TextImport
               ref={accessCodeRef}
@@ -181,20 +182,18 @@ const styles = StyleSheet.create({
   },
   logo: {
     fontSize: responsiveFontSize(6),
-    fontWeight: 'bold',
-    marginBottom: responsiveHeight(2),
-    fontFamily: 'serif',
+    marginBottom: responsiveHeight(1),
     color: '#FFF7D6',
+    fontFamily: 'TrajanPro-Bold',
   },
   ianText: {
-    fontWeight: 'bold',
     color: '#FFF7D6',
     fontSize: responsiveFontSize(2.5),
     textAlign: 'center',
     transform: [{rotate: '-90deg'}],
-    marginBottom: responsiveHeight(1.5),
-    fontFamily: 'serif',
-    marginRight: -responsiveWidth(5),
+    marginBottom: responsiveHeight(1),
+    marginRight: -responsiveWidth(6.5),
+    fontFamily: 'TrajanPro-Bold',
   },
   welcomeBack: {
     fontSize: responsiveFontSize(3.5),
