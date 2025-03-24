@@ -97,6 +97,7 @@ const SignIn = ({setbool, changeLanguage}: SignInProps) => {
 
           <View style={styles.inputContainer}>
             <TextImport
+              keyboard_Type="email-address"
               ref={emailRef}
               imageSource={require('../../Assets/images/emalIMG.png')}
               placeholder="Email"
@@ -109,7 +110,6 @@ const SignIn = ({setbool, changeLanguage}: SignInProps) => {
           </View>
           <View style={styles.inputContainer}>
             <TextImport
-              keyboard_Type="email-address"
               ref={passwordRef}
               imageSource={require('../../Assets/images/password.png')}
               placeholder="Password"
