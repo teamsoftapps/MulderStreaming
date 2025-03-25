@@ -22,14 +22,18 @@ function App(): React.JSX.Element {
   );
 
   useEffect(() => {
+    let wasConnected = true;
     const unsubscribe = NetInfo.addEventListener(state => {
-      if (!state.isConnected) {
+      if (!state.isConnected && wasConnected) {
         Toasts(
           'No Internet Connection!',
           'Please check your network settings.',
           'success',
         );
+      } else if (state.isConnected && !wasConnected) {
+        Toasts('Internet Restored!', 'You are back online', 'success');
       }
+      wasConnected = state.isConnected;
     });
 
     return () => unsubscribe();
