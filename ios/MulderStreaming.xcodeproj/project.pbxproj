@@ -11,9 +11,9 @@
 		3C65A1D3CC72BCE14462AC12 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 2EC580FB0FE556D32F224082 /* PrivacyInfo.xcprivacy */; };
 		761780ED2CA45674006654EE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761780EC2CA45674006654EE /* AppDelegate.swift */; };
 		7AB04BD987D054AD8091F047 /* Pods_MulderStreaming.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FD48D140B16E44AD0C066A6D /* Pods_MulderStreaming.framework */; };
+		8047B34AFFD84460BB4B73AC /* TrajanPro-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BD12BB7B05E943E7B396A300 /* TrajanPro-Regular.ttf */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		92F434B17A304342922E81D3 /* TrajanPro-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 6AA7C266989B448DBACB3492 /* TrajanPro-Bold.otf */; };
-		8047B34AFFD84460BB4B73AC /* TrajanPro-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BD12BB7B05E943E7B396A300 /* TrajanPro-Regular.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,13 +24,13 @@
 		2EC580FB0FE556D32F224082 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xml; name = PrivacyInfo.xcprivacy; path = MulderStreaming/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		3B4392A12AC88292D35C810B /* Pods-MulderStreaming.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MulderStreaming.debug.xcconfig"; path = "Target Support Files/Pods-MulderStreaming/Pods-MulderStreaming.debug.xcconfig"; sourceTree = "<group>"; };
 		5709B34CF0A7D63546082F79 /* Pods-MulderStreaming.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MulderStreaming.release.xcconfig"; path = "Target Support Files/Pods-MulderStreaming/Pods-MulderStreaming.release.xcconfig"; sourceTree = "<group>"; };
+		6AA7C266989B448DBACB3492 /* TrajanPro-Bold.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "TrajanPro-Bold.otf"; path = "../Assets/fonts/TrajanPro-Bold.otf"; sourceTree = "<group>"; };
 		761780EC2CA45674006654EE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = MulderStreaming/AppDelegate.swift; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = MulderStreaming/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		BD12BB7B05E943E7B396A300 /* TrajanPro-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "TrajanPro-Regular.ttf"; path = "../Assets/fonts/TrajanPro-Regular.ttf"; sourceTree = "<group>"; };
 		E517FAAF2D6FA57C006F003A /* libreact-native-splash-screen.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = "libreact-native-splash-screen.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		FD48D140B16E44AD0C066A6D /* Pods_MulderStreaming.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MulderStreaming.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		6AA7C266989B448DBACB3492 /* TrajanPro-Bold.otf */ = {isa = PBXFileReference; name = "TrajanPro-Bold.otf"; path = "../Assets/fonts/TrajanPro-Bold.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		BD12BB7B05E943E7B396A300 /* TrajanPro-Regular.ttf */ = {isa = PBXFileReference; name = "TrajanPro-Regular.ttf"; path = "../Assets/fonts/TrajanPro-Regular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -66,6 +66,15 @@
 				FD48D140B16E44AD0C066A6D /* Pods_MulderStreaming.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		4E6319B28A914475815CBF13 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				6AA7C266989B448DBACB3492 /* TrajanPro-Bold.otf */,
+				BD12BB7B05E943E7B396A300 /* TrajanPro-Regular.ttf */,
+			);
+			name = Resources;
 			sourceTree = "<group>";
 		};
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
@@ -106,16 +115,6 @@
 			);
 			path = Pods;
 			sourceTree = "<group>";
-		};
-		4E6319B28A914475815CBF13 /* Resources */ = {
-			isa = "PBXGroup";
-			children = (
-				6AA7C266989B448DBACB3492 /* TrajanPro-Bold.otf */,
-				BD12BB7B05E943E7B396A300 /* TrajanPro-Regular.ttf */,
-			);
-			name = Resources;
-			sourceTree = "<group>";
-			path = "";
 		};
 /* End PBXGroup section */
 

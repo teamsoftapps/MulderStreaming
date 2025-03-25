@@ -9,6 +9,9 @@ import {
   ActivityIndicator,
   Platform,
   TextInput,
+  KeyboardAvoidingView,
+  TouchableWithoutFeedback,
+  Keyboard,
 } from 'react-native';
 import {
   responsiveFontSize,
@@ -74,97 +77,86 @@ const SignUp = () => {
 
   return (
     <WrapperContainer barstatus={true} style={{flex: 1}} bgColor="#1c1508">
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <View
-          style={{
-            flex: 1,
-            padding: responsiveWidth(15),
-            alignItems: 'center',
-            justifyContent: 'center',
-            width: responsiveWidth(100),
-            height: responsiveHeight(85),
-            marginTop:
-              Platform.OS === 'android'
-                ? responsiveHeight(4)
-                : responsiveHeight(0),
-          }}>
-          <View style={styles.maimHeading}>
-            <Text style={styles.ianText}>IAN</Text>
-            <Text style={styles.logo}> MULDER</Text>
-          </View>
-          <Text style={styles.welcomeBack}>{t('Welcome Back')}</Text>
-          <Text style={styles.loginText}>{t('Create an account')}</Text>
-          <View style={styles.inputContainer}>
-            <TextImport
-              keyboard_Type={'email-address'}
-              ref={emailRef}
-              imageSource={require('../../Assets/images/emalIMG.png')}
-              placeholder={t('Email')}
-              initialValue={email}
-              returnKeyType="next"
-              onSubmitEditing={() => passwordRef.current?.focus()}
-              onChangeText={value => {
-                setEmail(value);
-              }}
-            />
-          </View>
-          <View style={styles.inputContainer}>
-            <PasswordInput
-              ref={passwordRef}
-              imageSource={require('../../Assets/images/password.png')}
-              placeholder={t('Password')}
-              initialValue={password}
-              returnKeyType="next"
-              onSubmitEditing={() => confirmPasswordRef.current?.focus()}
-              onChangeText={value => {
-                setPassword(value);
-              }}
-            />
-          </View>
-          {/* <View style={styles.inputContainer}>
-            <PasswordInput
-              ref={confirmPasswordRef}
-              imageSource={require('../../Assets/images/password.png')}
-              placeholder={t('Confirm password')}
-              initialValue={confirmPassword}
-              returnKeyType="next"
-              onSubmitEditing={() => accessCodeRef.current?.focus()}
-              onChangeText={value => {
-                setConfirmPassword(value);
-              }}
-            />
-          </View> */}
-          <View style={styles.inputContainer}>
-            <TextImport
-              ref={accessCodeRef}
-              imageSource={require('../../Assets/images/key.png')}
-              placeholder={t('Access key code')}
-              returnKeyType="done"
-              onSubmitEditing={handleSignUp}
-              initialValue={accessCode}
-              onChangeText={value => {
-                setAccessCode(value);
-              }}
-            />
-          </View>
-          <TouchableOpacity style={styles.button} onPress={handleSignUp}>
-            {isLoading ? (
-              <ActivityIndicator color="#fff" size={responsiveHeight(4)} />
-            ) : (
-              <Text style={styles.buttonText}>{t('Sign Up')}</Text>
-            )}
-          </TouchableOpacity>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={{flex: 1}}>
+        <TouchableWithoutFeedback>
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={{flexGrow: 0.5}}
+            keyboardShouldPersistTaps="handled">
+            <View
+              style={{
+                flex: 1,
+                padding: responsiveWidth(15),
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: responsiveWidth(100),
+                height: responsiveHeight(85),
+                marginTop: Platform.OS === 'android' ? responsiveHeight(4) : 0,
+              }}>
+              <View style={styles.maimHeading}>
+                <Text style={styles.ianText}>IAN</Text>
+                <Text style={styles.logo}> MULDER</Text>
+              </View>
+              <Text style={styles.welcomeBack}>{t('Welcome Back')}</Text>
+              <Text style={styles.loginText}>{t('Create an account')}</Text>
 
-          <Text style={styles.signupText}>
-            {t('Already have an account?')}{' '}
-            <Text
-              style={styles.signupLink}
-              onPress={() => navigation.navigate('SignIn')}>
-              {t('Sign In')}
-            </Text>
-          </Text>
-        </View>
-      </ScrollView>
+              <View style={styles.inputContainer}>
+                <TextImport
+                  keyboard_Type="email-address"
+                  ref={emailRef}
+                  imageSource={require('../../Assets/images/emalIMG.png')}
+                  placeholder={t('Email')}
+                  initialValue={email}
+                  returnKeyType="next"
+                  onSubmitEditing={() => passwordRef.current?.focus()}
+                  onChangeText={setEmail}
+                />
+              </View>
+              <View style={styles.inputContainer}>
+                <PasswordInput
+                  ref={passwordRef}
+                  imageSource={require('../../Assets/images/password.png')}
+                  placeholder={t('Password')}
+                  initialValue={password}
+                  returnKeyType="next"
+                  onSubmitEditing={() => confirmPasswordRef.current?.focus()}
+                  onChangeText={setPassword}
+                />
+              </View>
+              <View style={styles.inputContainer}>
+                <TextImport
+                  ref={accessCodeRef}
+                  imageSource={require('../../Assets/images/key.png')}
+                  placeholder={t('Access key code')}
+                  returnKeyType="done"
+                  onSubmitEditing={handleSignUp}
+                  initialValue={accessCode}
+                  onChangeText={setAccessCode}
+                />
+              </View>
+
+              <TouchableOpacity style={styles.button} onPress={handleSignUp}>
+                {isLoading ? (
+                  <ActivityIndicator color="#fff" size={responsiveHeight(4)} />
+                ) : (
+                  <Text style={styles.buttonText}>{t('Sign Up')}</Text>
+                )}
+              </TouchableOpacity>
+
+              <Text style={styles.signupText}>
+                {t('Already have an account?')}{' '}
+                <Text
+                  style={styles.signupLink}
+                  onPress={() => navigation.navigate('SignIn')}>
+                  {t('Sign In')}
+                </Text>
+              </Text>
+            </View>
+          </ScrollView>
+        </TouchableWithoutFeedback>
+      </KeyboardAvoidingView>
     </WrapperContainer>
   );
 };
@@ -191,7 +183,8 @@ const styles = StyleSheet.create({
     fontSize: responsiveFontSize(2.5),
     textAlign: 'center',
     transform: [{rotate: '-90deg'}],
-    marginBottom: responsiveHeight(1),
+    marginBottom:
+      Platform.OS === 'ios' ? responsiveHeight(3) : responsiveHeight(1),
     marginRight: -responsiveWidth(6.5),
     fontFamily: 'TrajanPro-Bold',
   },

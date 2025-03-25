@@ -25,7 +25,7 @@ import {
   responsiveHeight,
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
-import {RootState} from '../store';
+import {RootState} from '../store/store';
 import TrackPlayer, {State, useProgress} from 'react-native-track-player';
 import {useDispatch, useSelector} from 'react-redux';
 import {togglePlaying} from '../store/slices/songState';
@@ -47,7 +47,7 @@ interface BackgroundMusicPlayerProps {
   subtitle?: string;
   song_file?: string;
   lyrics?: string;
-  Song_Length: Number;
+  Song_Length: string;
   functionForForward?: () => void;
   functionForBackward?: () => void;
   togglePlayMusic?: () => void;
