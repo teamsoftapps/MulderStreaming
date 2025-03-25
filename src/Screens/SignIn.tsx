@@ -10,6 +10,8 @@ import {
   TextInput,
   Modal,
   Platform,
+  KeyboardAvoidingView,
+  TouchableWithoutFeedback,
 } from 'react-native';
 import {
   responsiveFontSize,
@@ -76,179 +78,189 @@ const SignIn = ({setbool, changeLanguage}: SignInProps) => {
 
   return (
     <WrapperContainer barstatus={true} style={{flex: 1}} bgColor="#1c1508">
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <View
-          style={{
-            flex: 1,
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: responsiveWidth(8),
-            marginTop:
-              Platform.OS === 'android'
-                ? responsiveHeight(10)
-                : responsiveHeight(5),
-          }}>
-          <View style={styles.maimHeading}>
-            <Text style={styles.ianText}>IAN</Text>
-            <Text style={styles.logo}> MULDER</Text>
-          </View>
-          <Text style={styles.welcomeBack}>{t('Welcome Back')}</Text>
-          <Text style={styles.loginText}>{t('Login with your account')}</Text>
-
-          <View style={styles.inputContainer}>
-            <TextImport
-              keyboard_Type="email-address"
-              ref={emailRef}
-              imageSource={require('../../Assets/images/emalIMG.png')}
-              placeholder="Email"
-              initialValue={email}
-              onChangeText={setEmail}
-              editable={!loading}
-              returnKeyType="next"
-              onSubmitEditing={() => passwordRef.current?.focus()}
-            />
-          </View>
-          <View style={styles.inputContainer}>
-            <TextImport
-              ref={passwordRef}
-              imageSource={require('../../Assets/images/password.png')}
-              placeholder="Password"
-              initialValue={password}
-              onChangeText={setPassword}
-              editable={!loading}
-              secureTextEntry={passwordVisible}
-              returnKeyType="done"
-              onSubmitEditing={Signin}
-            />
-          </View>
-          <TouchableOpacity
-            onPress={() => {
-              setPasswordVisible(!passwordVisible);
-            }}
-            style={{
-              width: '100%',
-              paddingHorizontal: responsiveWidth(3),
-              flexDirection: 'row',
-              justifyContent: 'flex-end',
-              alignItems: 'center',
-            }}>
-            <TouchableOpacity
-              onPress={() => {
-                setPasswordVisible(!passwordVisible);
-              }}
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={{flex: 1}}>
+        <TouchableWithoutFeedback>
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={{flexGrow: 1}}
+            keyboardShouldPersistTaps="handled">
+            <View
               style={{
-                height: responsiveWidth(6),
-                width: responsiveWidth(6),
-                borderColor: '#fff',
-                borderWidth: responsiveWidth(0.2),
-                borderRadius: responsiveWidth(1),
-                flexDirection: 'row',
-                justifyContent: 'center',
+                flex: 1,
                 alignItems: 'center',
+                justifyContent: 'center',
+                padding: responsiveWidth(8),
+                marginTop:
+                  Platform.OS === 'android'
+                    ? responsiveHeight(10)
+                    : responsiveHeight(5),
               }}>
-              {!passwordVisible ? (
-                <Image
-                  source={require('../../Assets/images/tick.png')}
-                  style={{
-                    height: responsiveWidth(4),
-                    width: responsiveWidth(4),
-                    tintColor: '#fff',
-                  }}
-                />
-              ) : null}
-            </TouchableOpacity>
-
-            <Text
-              style={{
-                color: '#fff',
-                fontSize: responsiveFontSize(1.6),
-                paddingLeft: responsiveWidth(1.5),
-              }}>
-              Show Password
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={[styles.button, loading && styles.disabledButton]}
-            onPress={Signin}
-            disabled={loading}>
-            {loading ? (
-              <ActivityIndicator color="#fff" size={responsiveHeight(4)} />
-            ) : (
-              <Text style={styles.buttonText}>{t('Sign In')}</Text>
-            )}
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.forgotPassword}
-            onPress={() => navigation.navigate('ForgotPassword')}
-            disabled={loading}>
-            <Text style={styles.forgotPasswordText}>
-              {t('Forgot Password?')}
-            </Text>
-          </TouchableOpacity>
-          <Text style={styles.signupText}>
-            {t("Don't have an account?")}{' '}
-            <Text
-              style={styles.signupLink}
-              onPress={() => navigation.navigate('SignUp')}
-              disabled={loading}>
-              {t('Sign Up Here')}
-            </Text>
-          </Text>
-
-          <Modal
-            animationType="slide"
-            transparent={true}
-            visible={modalVisible}
-            onRequestClose={() => setModalVisible(false)}>
-            <View style={styles.modalOverlay}>
-              <View style={styles.modalContainer}>
-                <Text style={styles.heading}>
-                  Do you want to renew Subscription?
-                </Text>
-
-                <View
-                  style={[
-                    styles.buttonContainer,
-                    {marginTop: responsiveHeight(2)},
-                  ]}>
-                  <TouchableOpacity
-                    onPress={() => setModalVisible(false)}
-                    style={{
-                      flex: 1,
-                      backgroundColor: '#1c1508',
-                      height: responsiveHeight(4),
-                      justifyContent: 'center',
-                      borderRadius: responsiveWidth(1.1),
-                    }}>
-                    <Text style={{textAlign: 'center', color: '#fff'}}>No</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    onPress={async () => {
-                      try {
-                        navigation.navigate('CustomWebViewContent');
-                        setModalVisible(false);
-                      } catch (error) {
-                        console.error('Error deleting playlist:', error);
-                      }
-                    }}
-                    style={{
-                      flex: 1,
-                      backgroundColor: '#1c1508',
-                      height: responsiveHeight(4),
-                      justifyContent: 'center',
-                      borderRadius: responsiveWidth(1.1),
-                    }}>
-                    <Text style={{textAlign: 'center', color: '#fff'}}>
-                      Yes
-                    </Text>
-                  </TouchableOpacity>
-                </View>
+              <View style={styles.maimHeading}>
+                <Text style={styles.ianText}>IAN</Text>
+                <Text style={styles.logo}> MULDER</Text>
               </View>
+              <Text style={styles.welcomeBack}>{t('Welcome Back')}</Text>
+              <Text style={styles.loginText}>
+                {t('Login with your account')}
+              </Text>
+
+              <View style={styles.inputContainer}>
+                <TextImport
+                  keyboard_Type="email-address"
+                  ref={emailRef}
+                  imageSource={require('../../Assets/images/emalIMG.png')}
+                  placeholder="Email"
+                  initialValue={email}
+                  onChangeText={setEmail}
+                  editable={!loading}
+                  returnKeyType="next"
+                  onSubmitEditing={() => passwordRef.current?.focus()}
+                />
+              </View>
+              <View style={styles.inputContainer}>
+                <TextImport
+                  ref={passwordRef}
+                  imageSource={require('../../Assets/images/password.png')}
+                  placeholder="Password"
+                  initialValue={password}
+                  onChangeText={setPassword}
+                  editable={!loading}
+                  secureTextEntry={passwordVisible}
+                  returnKeyType="done"
+                  onSubmitEditing={Signin}
+                />
+              </View>
+
+              <TouchableOpacity
+                onPress={() => setPasswordVisible(!passwordVisible)}
+                style={{
+                  width: '100%',
+                  paddingHorizontal: responsiveWidth(3),
+                  flexDirection: 'row',
+                  justifyContent: 'flex-end',
+                  alignItems: 'center',
+                }}>
+                <TouchableOpacity
+                  onPress={() => setPasswordVisible(!passwordVisible)}
+                  style={{
+                    height: responsiveWidth(6),
+                    width: responsiveWidth(6),
+                    borderColor: '#fff',
+                    borderWidth: responsiveWidth(0.2),
+                    borderRadius: responsiveWidth(1),
+                    flexDirection: 'row',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}>
+                  {!passwordVisible ? (
+                    <Image
+                      source={require('../../Assets/images/tick.png')}
+                      style={{
+                        height: responsiveWidth(4),
+                        width: responsiveWidth(4),
+                        tintColor: '#fff',
+                      }}
+                    />
+                  ) : null}
+                </TouchableOpacity>
+
+                <Text
+                  style={{
+                    color: '#fff',
+                    fontSize: responsiveFontSize(1.6),
+                    paddingLeft: responsiveWidth(1.5),
+                  }}>
+                  Show Password
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[styles.button, loading && styles.disabledButton]}
+                onPress={Signin}
+                disabled={loading}>
+                {loading ? (
+                  <ActivityIndicator color="#fff" size={responsiveHeight(4)} />
+                ) : (
+                  <Text style={styles.buttonText}>{t('Sign In')}</Text>
+                )}
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.forgotPassword}
+                onPress={() => navigation.navigate('ForgotPassword')}
+                disabled={loading}>
+                <Text style={styles.forgotPasswordText}>
+                  {t('Forgot Password?')}
+                </Text>
+              </TouchableOpacity>
+              <Text style={styles.signupText}>
+                {t("Don't have an account?")}{' '}
+                <Text
+                  style={styles.signupLink}
+                  onPress={() => navigation.navigate('SignUp')}
+                  disabled={loading}>
+                  {t('Sign Up Here')}
+                </Text>
+              </Text>
+
+              <Modal
+                animationType="slide"
+                transparent={true}
+                visible={modalVisible}
+                onRequestClose={() => setModalVisible(false)}>
+                <View style={styles.modalOverlay}>
+                  <View style={styles.modalContainer}>
+                    <Text style={styles.heading}>
+                      Do you want to renew Subscription?
+                    </Text>
+
+                    <View
+                      style={[
+                        styles.buttonContainer,
+                        {marginTop: responsiveHeight(2)},
+                      ]}>
+                      <TouchableOpacity
+                        onPress={() => setModalVisible(false)}
+                        style={{
+                          flex: 1,
+                          backgroundColor: '#1c1508',
+                          height: responsiveHeight(4),
+                          justifyContent: 'center',
+                          borderRadius: responsiveWidth(1.1),
+                        }}>
+                        <Text style={{textAlign: 'center', color: '#fff'}}>
+                          No
+                        </Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        onPress={async () => {
+                          try {
+                            navigation.navigate('CustomWebViewContent');
+                            setModalVisible(false);
+                          } catch (error) {
+                            console.error('Error deleting playlist:', error);
+                          }
+                        }}
+                        style={{
+                          flex: 1,
+                          backgroundColor: '#1c1508',
+                          height: responsiveHeight(4),
+                          justifyContent: 'center',
+                          borderRadius: responsiveWidth(1.1),
+                        }}>
+                        <Text style={{textAlign: 'center', color: '#fff'}}>
+                          Yes
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                </View>
+              </Modal>
             </View>
-          </Modal>
-        </View>
-      </ScrollView>
+          </ScrollView>
+        </TouchableWithoutFeedback>
+      </KeyboardAvoidingView>
     </WrapperContainer>
   );
 };
