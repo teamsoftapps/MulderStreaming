@@ -1,7 +1,14 @@
 import React, {useState} from 'react';
 import * as RNLocalize from 'react-native-localize';
 
-import {View, Text, StyleSheet, TouchableOpacity, Linking} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Linking,
+  Alert,
+} from 'react-native';
 import {
   responsiveFontSize,
   responsiveHeight,
@@ -42,10 +49,7 @@ const SettingScreen = () => {
     {code: 'nl', label: 'Dutch'},
   ];
   const handleEmailPress = () => {
-    // Get the device's default language
     const deviceLanguage = RNLocalize.getLocales()[0].languageCode;
-
-    // Choose email based on language
     const email =
       deviceLanguage === 'nl' ? 'app@ianmulder.us' : 'app@janmulder.us';
     const subject = 'Help Request';
@@ -117,15 +121,30 @@ const SettingScreen = () => {
 
       <TouchableOpacity
         activeOpacity={0.8}
-        onPress={async () => {
-          try {
-            await TrackPlayer.stop();
-            dispatch(togglePlaying(false));
-            dispatch(setCurrentSongg(null));
-            dispatch(clearUser());
-          } catch (error) {
-            console.error('Error during logout:', error);
-          }
+        onPress={() => {
+          Alert.alert(
+            t('Confirm Logout'),
+            t('Are you sure you want to log out?'),
+            [
+              {
+                text: t('No'),
+                style: 'cancel',
+              },
+              {
+                text: t('Yes'),
+                onPress: async () => {
+                  try {
+                    await TrackPlayer.stop();
+                    dispatch(togglePlaying(false));
+                    dispatch(setCurrentSongg(null));
+                    dispatch(clearUser());
+                  } catch (error) {
+                    console.error('Error during logout:', error);
+                  }
+                },
+              },
+            ],
+          );
         }}>
         <SettingMenu
           imageSource={require('../../Assets/images/logoutimg.png')}
