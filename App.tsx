@@ -9,11 +9,12 @@ import MainStack from './src/Navigation/MainStack';
 import {useSelector} from 'react-redux';
 import TrackPlayer, {Capability} from 'react-native-track-player';
 import BootSplash from 'react-native-bootsplash';
-const Stack = createNativeStackNavigator();
-
+import NetInfo from '@react-native-community/netinfo';
+import ToastMessage from './src/hooks/ToastMessage.js';
 function App(): React.JSX.Element {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [language, setLanguage] = useState<string>('');
+  const {Toasts} = ToastMessage();
   const userAuth = useSelector(state => state);
   const token = useSelector(state => state?.auth?.token?.data?.user?.token);
   const subscriptionId = useSelector(
@@ -21,14 +22,37 @@ function App(): React.JSX.Element {
   );
 
   useEffect(() => {
+    const unsubscribe = NetInfo.addEventListener(state => {
+      if (!state.isConnected) {
+        Toasts(
+          'No Internet Connection!',
+          'Please check your network settings.',
+          'success',
+        );
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  useEffect(() => {
     const init = async () => {
-      // …do multiple sync or async tasks
+      try {
+        // Perform any async initialization tasks here
+        console.log('Initializing app...');
+      } catch (error) {
+        console.error('Error during initialization:', error);
+      }
     };
 
-    init().finally(async () => {
-      await BootSplash.hide({fade: true});
-      console.log('BootSplash has been hidden successfully');
-    });
+    init()
+      .then(() => {
+        console.log('Initialization completed');
+      })
+      .finally(async () => {
+        await BootSplash.hide({fade: true});
+        console.log('BootSplash has been hidden successfully');
+      });
   }, []);
 
   console.log('Token:', userAuth?.auth?.token?.data?.user?.token);
