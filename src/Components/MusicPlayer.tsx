@@ -13,7 +13,7 @@ import {
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
 import {useSelector} from 'react-redux';
-import {RootState} from '../store';
+import {RootState} from '../store/store';
 
 const MusicPlayer = () => {
   const navigation = useNavigation();

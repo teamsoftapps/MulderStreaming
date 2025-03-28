@@ -36,4 +36,7 @@ export const store = configureStore({
       serializableCheck: false,
     }).concat(Auth.middleware),
 });
+
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;
 export const persistore = persistStore(store);

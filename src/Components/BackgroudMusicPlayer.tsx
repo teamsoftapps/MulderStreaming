@@ -14,7 +14,6 @@ import {
   PanResponder,
 } from 'react-native';
 import {CastButton, useRemoteMediaClient} from 'react-native-google-cast';
-
 import {AirplayButton, useExternalPlaybackAvailability} from 'react-airplay';
 import {
   responsiveHeight,
@@ -191,7 +190,7 @@ const BackgroundMusicPlayer: React.FC<BackgroundMusicPlayerProps> = ({
           {
             height: animation,
             backgroundColor,
-            paddingTop: isExpanded ? paddingtop : 0,
+            paddingTop: isExpanded ? Number(paddingtop) : 0,
             zIndex: !isExpanded ? 10000 : 0,
             borderRadius: !isExpanded ? responsiveWidth(3) : 0,
           },

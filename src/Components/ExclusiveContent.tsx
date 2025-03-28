@@ -32,7 +32,7 @@ const HorizontalFlatList: React.FC = () => {
 
   const fetchExclusive = async () => {
     try {
-      const res = await GetExclusiveContent();
+      const res = await GetExclusiveContent({});
       console.log('video data fetched==>', res?.data?.data);
       const fetchedData = res?.data?.data.map((item: any) => ({
         videolink: item.videolink,
@@ -47,21 +47,9 @@ const HorizontalFlatList: React.FC = () => {
   useEffect(() => {
     fetchExclusive();
   }, []);
-  // useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     const nextIndex = (currentIndex + 1) % isContent.length;
-  //     setCurrentIndex(nextIndex);
-  //     flatListRef.current?.scrollToIndex({
-  //       index: nextIndex,
-  //       animated: true,
-  //     });
-  //   }, 4000);
-
-  //   return () => clearInterval(interval);
-  // }, [currentIndex, isContent.length]);
 
   useEffect(() => {
-    if (isContent.length === 0) return; // Prevent interval from running when there is no data
+    if (isContent.length === 0) return;
 
     const interval = setInterval(() => {
       setCurrentIndex(prevIndex => {
