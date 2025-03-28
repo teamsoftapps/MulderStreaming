@@ -4,7 +4,6 @@ import BottomTabNavigator from './BottomTabNavigator';
 import AboutApplication from '../Screens/AboutApplication';
 import HelpScreen from '../Screens/HelpScreen';
 import AlbumScreen from '../Screens/AlbumScreen';
-import MusicPlayer from '../Components/MusicPlayer';
 import {StatusBar} from 'react-native';
 import PlaylistDetails from '../Screens/PlaylistDetails';
 import AllSongs from '../Screens/AllSongs';
@@ -31,7 +30,6 @@ const MainStack = ({language, changeLanguage}: MainStackProps) => (
       <Stack.Screen name="AlbumScreen" component={AlbumScreen} />
       <Stack.Screen name="PlaylistDetails" component={PlaylistDetails} />
       <Stack.Screen name="AllSongs" component={AllSongs} />
-      <Stack.Screen name="MusicPlayer" component={MusicPlayer} />
       <Stack.Screen name="WebViewContent" component={WebViewContent} />
     </Stack.Navigator>
   </>
