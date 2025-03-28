@@ -55,12 +55,10 @@ const SettingScreen = () => {
     const subject = 'Help Request';
     const body = '';
 
-    // Create mailto URL
     const mailtoURL = `mailto:${email}?subject=${encodeURIComponent(
       subject,
     )}&body=${encodeURIComponent(body)}`;
 
-    // Open email app
     Linking.openURL(mailtoURL).catch(err =>
       console.error('Error opening email app:', err),
     );

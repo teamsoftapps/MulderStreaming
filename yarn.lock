@@ -7324,6 +7324,11 @@ react-is@^17.0.1:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-17.0.2.tgz#e691d4a8e9c789365655539ab372762b0efb54f0"
   integrity sha512-w2GsyukL62IJnlaff/nRegPQR94C/XXamvMWmSHRJ4y7Ts/4ocGRmTHvOs8PSE6pB3dWOrD/nueuU5sduBsQ4w==
 
+react-native-alert-notification@^0.4.2:
+  version "0.4.2"
+  resolved "https://registry.yarnpkg.com/react-native-alert-notification/-/react-native-alert-notification-0.4.2.tgz#fabb1bc94e4f7d459dd8e47e8aed03a93651b8c7"
+  integrity sha512-98EQ+DtI7thEAHzoXMbN8dZRCFcoGXMRYYIKvooPPdASuuZIuON4oxCbJNDb6r6lebnPc/25JCD1tJPaoPNWnw==
+
 react-native-awesome-alerts@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/react-native-awesome-alerts/-/react-native-awesome-alerts-2.0.0.tgz#beb981ed50671c51fcd227c5bb6c58d4d493b681"
