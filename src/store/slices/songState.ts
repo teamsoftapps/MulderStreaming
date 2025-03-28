@@ -1,6 +1,7 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 
 interface PlaylistItem {
+  Song_index: number;
   _id: string;
   Song_Name: string;
   Song_File: string;

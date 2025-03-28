@@ -19,9 +19,10 @@ import {
   useAddPlaylistMutation,
   useGetAllSongsMutation,
 } from '../store/Api/Auth';
-import {useRoute} from '@react-navigation/native';
+import {useNavigation, useRoute} from '@react-navigation/native';
 import ToastMessage from '../hooks/ToastMessage.js';
-const AllSongs: React.FC = ({navigation}) => {
+const AllSongs: React.FC = () => {
+  const navigation = useNavigation();
   const route = useRoute();
   const {playlistName} = route.params || {};
   const [getAllSongs, {isLoading}] = useGetAllSongsMutation();
@@ -78,7 +79,7 @@ const AllSongs: React.FC = ({navigation}) => {
     try {
       const res = await getAllSongs();
       setSongs(res.data.data);
-      setFilteredSongs(res.data.data);
+      setFilteredSongs(res?.data?.data);
     } catch (error) {
       console.log('error in getting all songs:', error);
     }

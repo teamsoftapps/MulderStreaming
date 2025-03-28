@@ -8,7 +8,7 @@ export const Auth = createApi({
     prepareHeaders: (headers, {getState}) => {
       const token = (getState() as RootState).auth.token; // assuming token is a string now
       if (token) {
-        headers.set('Authorization', `Bearer ${token}`); // Use the token directly as a string
+        headers.set('Authorization', `Bearer ${token.data?.user?.token}`); // Use the token directly as a string
       }
       return headers;
     },

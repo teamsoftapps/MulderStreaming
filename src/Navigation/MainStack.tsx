@@ -24,7 +24,6 @@ const MainStack = ({language, changeLanguage}: MainStackProps) => (
       screenOptions={{headerShown: false}}
       initialRouteName="BottomTabNavigator">
       <Stack.Screen name="BottomTabNavigator" component={BottomTabNavigator} />
-
       <Stack.Screen name="AboutApplication" component={AboutApplication} />
       <Stack.Screen name="HelpScreen" component={HelpScreen} />
       <Stack.Screen name="AlbumScreen" component={AlbumScreen} />

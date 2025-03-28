@@ -23,7 +23,7 @@ import {
   useGetFavoriteMutation,
   useHandleFavoriteMutation,
 } from '../store/Api/Auth';
-import TrackPlayer, {Capability, State} from 'react-native-track-player';
+import TrackPlayer, {State} from 'react-native-track-player';
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '../store/store';
 import {
@@ -36,12 +36,13 @@ import {toggleFavorite} from '../store/slices/favoutiteSongs';
 
 interface PlaylistItem {
   _id: string;
+  Song_index: number;
   Song_Name: string;
   Song_File: string;
-  Album_Name: string;
   Song_Length: string;
-  Song_Lyrics: string;
+  Album_Name: string;
   Album_Image: string;
+  Song_Lyrics: string;
 }
 
 interface AlbumScreenProps {
@@ -85,7 +86,7 @@ const AlbumScreen: React.FC<AlbumScreenProps> = ({route}) => {
     try {
       const res = await getAlbumsSongs(albumName);
       console.log('songssss=======>', res?.data);
-      const liked = await favoriteSongs();
+      const liked = await favoriteSongs({});
       setIsLikedSong(liked?.data?.favourites);
       if (res?.data) {
         const songs = res?.data[0] || [];
@@ -118,28 +119,33 @@ const AlbumScreen: React.FC<AlbumScreenProps> = ({route}) => {
     try {
       const res = await getAlbumsSongs(albumName);
       console.log('Songssss======>:', res?.data);
-      const liked = await favoriteSongs();
-      setIsLikedSong(liked?.data?.favourites);
-      const allSongs = res?.data[0];
-      const sortedSongs = Array.from(allSongs).sort(
-        (a, b) => a.Song_index - b.Song_index,
-      );
+
+      const liked = await favoriteSongs({});
+      setIsLikedSong(liked?.data?.favourites || []);
+
+      const allSongs: PlaylistItem[] = [...(res?.data[0] || [])];
+
+      const sortedSongs = allSongs
+        .slice()
+        .sort((a, b) => a.Song_index - b.Song_index);
+
       console.log('sortedSongs===', sortedSongs);
       setAlbumSongs(sortedSongs);
-      if (res?.data) {
+
+      if (res?.data.length > 0) {
         const songs = res?.data[0] || [];
         setAlbumImage(songs[0]?.Album_Image || '');
-
         setAlbumSongs(sortedSongs);
         setIsDataLoading(false);
         dispatch(setPlaylist(songs));
+
         const trackList = songs.map(song => ({
           id: song._id,
           url: `https://musicfilesforheroku.s3.us-west-1.amazonaws.com/uploads/${song.Song_File}`,
           title: song.Song_Name,
           artist: 'Mulder',
           artwork: `https://musicfilesforheroku.s3.us-west-1.amazonaws.com/uploads/${song.Album_Image}`,
-          duration: parseFloat(song.Song_Length),
+          duration: parseFloat(song.Song_Length) || 0,
         }));
 
         setTrackList(trackList);
@@ -150,10 +156,16 @@ const AlbumScreen: React.FC<AlbumScreenProps> = ({route}) => {
   };
 
   const togglePlayMusic = async (song: PlaylistItem, index: number) => {
+    if (!song.Song_index) {
+      console.error('Error: Missing Song_index in PlaylistItem', song);
+      return;
+    }
+
     if (persistCurrentSong?._id !== albumSongs[index]._id) {
       await TrackPlayer.reset();
       await TrackPlayer.add(trackList);
     }
+
     if (currentSongIndex === index && persistCurrentSong == albumSongs[index]) {
       const state = await TrackPlayer.getState();
       if (state === State.Playing) {
@@ -244,8 +256,8 @@ const AlbumScreen: React.FC<AlbumScreenProps> = ({route}) => {
     item: PlaylistItem;
     index: number;
   }) => {
-    const isFavorite = islikedSong.some(obj => obj._id === item._id);
-    const isPlaying = currentSong?._id === item._id;
+    const isFavorite = islikedSong.some(obj => obj?._id === item?._id);
+    const isPlaying = currentSong?._id === item?._id;
 
     return (
       <View style={styles.playlistMusicContainer}>
@@ -378,7 +390,13 @@ const AlbumScreen: React.FC<AlbumScreenProps> = ({route}) => {
                   functionForBackward={handleBackward}
                   functionForForward={handleForward}
                   togglePlayMusic={() =>
-                    togglePlayMusic(persistCurrentSong, currentSongIndex)
+                    togglePlayMusic(
+                      {
+                        ...persistCurrentSong,
+                        Song_index: persistCurrentSong.Song_index ?? 0,
+                      },
+                      currentSongIndex,
+                    )
                   }
                   paddingtop={0}
                 />

@@ -8,11 +8,12 @@ export type RootStackParamList = {
   HomeScreen: undefined;
   AboutApplication: undefined;
   HelpScreen: undefined;
-  // AlbumScreen: {albumId: number};
   AlbumScreen: {data: any};
   MusicPlayer: undefined;
   BottomTabNavigator: undefined;
   PlaylistScreen: undefined;
   PlaylistDetails: {data: any};
   AllSongs: {playlistName: string} | undefined;
+  CustomWebViewContent: undefined;
+  MusicScreen: undefined;
 };
