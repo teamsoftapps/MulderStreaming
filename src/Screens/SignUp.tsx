@@ -96,8 +96,12 @@ const SignUp = () => {
                 marginTop: Platform.OS === 'android' ? responsiveHeight(4) : 0,
               }}>
               <View style={styles.maimHeading}>
-                <Text style={styles.ianText}>IAN</Text>
-                <Text style={styles.logo}> MULDER</Text>
+                <Text allowFontScaling={true} style={styles.ianText}>
+                  IAN
+                </Text>
+                <Text allowFontScaling={true} style={styles.logo}>
+                  MULDER
+                </Text>
               </View>
               <Text style={styles.welcomeBack}>{t('Welcome Back')}</Text>
               <Text style={styles.loginText}>{t('Create an account')}</Text>
@@ -186,7 +190,7 @@ const styles = StyleSheet.create({
     transform: [{rotate: '-90deg'}],
     marginBottom:
       Platform.OS === 'ios' ? responsiveHeight(3) : responsiveHeight(1),
-    marginRight: -responsiveWidth(6.5),
+    marginRight: -responsiveWidth(3),
     fontFamily: 'TrajanPro-Bold',
   },
   welcomeBack: {
