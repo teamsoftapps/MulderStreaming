@@ -83,7 +83,7 @@ const SignUp = () => {
         <TouchableWithoutFeedback>
           <ScrollView
             showsVerticalScrollIndicator={false}
-            // contentContainerStyle={{flexGrow: 1}}
+            contentContainerStyle={{flexGrow: 0.1}}
             keyboardShouldPersistTaps="handled">
             <View
               style={{
