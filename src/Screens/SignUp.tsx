@@ -96,10 +96,10 @@ const SignUp = () => {
                 marginTop: Platform.OS === 'android' ? responsiveHeight(4) : 0,
               }}>
               <View style={styles.maimHeading}>
-                <Text allowFontScaling={true} style={styles.ianText}>
+                <Text allowFontScaling={false} style={styles.ianText}>
                   IAN
                 </Text>
-                <Text allowFontScaling={true} style={styles.logo}>
+                <Text allowFontScaling={false} style={styles.logo}>
                   MULDER
                 </Text>
               </View>
@@ -176,6 +176,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
+    width: responsiveWidth(80),
   },
   logo: {
     fontSize: responsiveFontSize(6),

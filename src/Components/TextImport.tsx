@@ -59,7 +59,7 @@ const TextImport = forwardRef<TextInput, TextImportProps>(
           }}
         />
         <TextInput
-          allowFontScaling={true}
+          allowFontScaling={false}
           keyboardType={keyboard_Type}
           ref={ref}
           style={styles.input}
