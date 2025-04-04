@@ -95,7 +95,6 @@ const PasswordInput = forwardRef<TextInput, PasswordInputProps>(
           onChangeText={handleTextChange}
           secureTextEntry={secureText}
           placeholderTextColor="gray"
-          // Add these important props for iOS autofill
           textContentType={Platform.OS === 'ios' ? 'newPassword' : 'none'}
           autoComplete={Platform.OS === 'ios' ? 'password-new' : 'off'}
           importantForAutofill="yes"
