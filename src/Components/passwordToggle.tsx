@@ -1,4 +1,4 @@
-import React, {forwardRef, useState} from 'react';
+import React, {forwardRef, useState, useImperativeHandle} from 'react';
 import {
   Alert,
   Image,
@@ -10,6 +10,8 @@ import {
   StyleSheet,
   TouchableOpacity,
   Platform,
+  NativeSyntheticEvent,
+  TextInputFocusEventData,
 } from 'react-native';
 import {
   responsiveFontSize,
@@ -42,6 +44,8 @@ const PasswordInput = forwardRef<TextInput, PasswordInputProps>(
       initialValue = '',
       editable = true,
       onChangeText,
+      onFocus,
+      onBlur,
       style,
       ...rest
     },
@@ -50,14 +54,35 @@ const PasswordInput = forwardRef<TextInput, PasswordInputProps>(
     const [text, setText] = useState<string>(initialValue);
     const [secureText, setSecureText] = useState<boolean>(true);
     const [isGenerated, setIsGenerated] = useState<boolean>(false);
+    const inputRef = React.useRef<TextInput>(null);
+
+    // Pass the ref to the parent component
+    useImperativeHandle(ref, () => ({
+      focus: () => {
+        inputRef.current?.focus();
+      },
+      blur: () => {
+        inputRef.current?.blur();
+      },
+      clear: () => {
+        inputRef.current?.clear();
+        setText('');
+      },
+      isFocused: () => {
+        return inputRef.current?.isFocused() || false;
+      },
+      setNativeProps: (nativeProps: object) => {
+        inputRef.current?.setNativeProps(nativeProps);
+      },
+    }));
 
     const handleTextChange = (value: string) => {
       setText(value);
       onChangeText?.(value);
     };
 
-    const handleFocus = () => {
-      if (!isGenerated) {
+    const handleFocus = (e: NativeSyntheticEvent<TextInputFocusEventData>) => {
+      if (!isGenerated && Platform.OS === 'android') {
         Alert.alert(
           'Auto-generate Password',
           'Do you want to auto-generate a secure password?',
@@ -79,6 +104,14 @@ const PasswordInput = forwardRef<TextInput, PasswordInputProps>(
           ],
         );
       }
+
+      // Call the original onFocus handler if provided
+      onFocus?.(e);
+    };
+
+    const handleBlur = (e: NativeSyntheticEvent<TextInputFocusEventData>) => {
+      // Call the original onBlur handler if provided
+      onBlur?.(e);
     };
 
     return (
@@ -86,17 +119,19 @@ const PasswordInput = forwardRef<TextInput, PasswordInputProps>(
         <Image source={imageSource} style={styles.image} />
         <TextInput
           allowFontScaling={false}
-          ref={ref}
+          ref={inputRef}
           style={styles.input}
           placeholder={placeholder}
           value={text}
           editable={editable}
-          onFocus={Platform.OS === 'android' ? handleFocus : undefined}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
           onChangeText={handleTextChange}
           secureTextEntry={secureText}
           placeholderTextColor="gray"
-          textContentType={Platform.OS === 'ios' ? 'newPassword' : 'none'}
-          autoComplete={Platform.OS === 'ios' ? 'password-new' : 'off'}
+          // Set appropriate platform-specific textContentType and autoComplete
+          textContentType={Platform.OS === 'ios' ? 'newPassword' : 'password'}
+          autoComplete={Platform.OS === 'ios' ? 'password-new' : 'password'}
           importantForAutofill="yes"
           enablesReturnKeyAutomatically={true}
           keyboardType="default"

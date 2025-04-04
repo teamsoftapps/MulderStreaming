@@ -1,4 +1,4 @@
-import React, {forwardRef, useState} from 'react';
+import React, {forwardRef, useState, useImperativeHandle} from 'react';
 import {
   Image,
   StyleProp,
@@ -8,6 +8,8 @@ import {
   ViewStyle,
   StyleSheet,
   Platform,
+  NativeSyntheticEvent,
+  TextInputFocusEventData,
 } from 'react-native';
 import {
   responsiveFontSize,
@@ -23,6 +25,18 @@ interface TextImportProps extends TextInputProps {
   style?: StyleProp<ViewStyle>;
   secureTextEntry?: boolean;
   keyboard_Type?: any;
+  textContentType?: any;
+  autoComplete?: any;
+  importantForAutofill?: 'yes' | 'no' | 'auto';
+  inputMode?:
+    | 'none'
+    | 'text'
+    | 'decimal'
+    | 'numeric'
+    | 'tel'
+    | 'search'
+    | 'email'
+    | 'url';
 }
 
 const TextImport = forwardRef<TextInput, TextImportProps>(
@@ -35,16 +49,53 @@ const TextImport = forwardRef<TextInput, TextImportProps>(
       keyboard_Type,
       onChangeText,
       secureTextEntry = false,
+      textContentType,
+      autoComplete,
+      importantForAutofill = 'yes',
+      inputMode,
       style,
+      onFocus,
+      onBlur,
       ...rest
     },
     ref,
   ) => {
     const [text, setText] = useState<string>(initialValue);
+    const inputRef = React.useRef<TextInput>(null);
+
+    // Pass the ref to the parent component
+    useImperativeHandle(ref, () => ({
+      focus: () => {
+        inputRef.current?.focus();
+      },
+      blur: () => {
+        inputRef.current?.blur();
+      },
+      clear: () => {
+        inputRef.current?.clear();
+        setText('');
+      },
+      isFocused: () => {
+        return inputRef.current?.isFocused() || false;
+      },
+      setNativeProps: (nativeProps: object) => {
+        inputRef.current?.setNativeProps(nativeProps);
+      },
+    }));
 
     const handleTextChange = (value: string) => {
       setText(value);
       onChangeText?.(value);
+    };
+
+    const handleFocus = (e: NativeSyntheticEvent<TextInputFocusEventData>) => {
+      // Additional focus handling if needed
+      onFocus?.(e);
+    };
+
+    const handleBlur = (e: NativeSyntheticEvent<TextInputFocusEventData>) => {
+      // Additional blur handling if needed
+      onBlur?.(e);
     };
 
     return (
@@ -62,7 +113,7 @@ const TextImport = forwardRef<TextInput, TextImportProps>(
         <TextInput
           allowFontScaling={false}
           keyboardType={keyboard_Type}
-          ref={ref}
+          ref={inputRef}
           style={styles.input}
           placeholder={placeholder}
           value={text}
@@ -70,10 +121,13 @@ const TextImport = forwardRef<TextInput, TextImportProps>(
           onChangeText={handleTextChange}
           secureTextEntry={secureTextEntry}
           placeholderTextColor="gray"
-          textContentType={Platform.OS === 'ios' ? 'emailAddress' : 'none'}
-          autoComplete={Platform.OS === 'ios' ? 'email' : 'off'}
-          importantForAutofill="yes"
+          textContentType={textContentType}
+          autoComplete={autoComplete}
+          importantForAutofill={importantForAutofill}
+          inputMode={inputMode}
           enablesReturnKeyAutomatically={true}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
           {...rest}
         />
       </View>

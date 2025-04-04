@@ -114,10 +114,12 @@ const SignUp = () => {
                   returnKeyType="next"
                   onSubmitEditing={() => passwordRef.current?.focus()}
                   onChangeText={setEmail}
+                  // Properly configured for email input
                   textContentType="emailAddress"
-                  autoComplete="email"
+                  autoComplete={Platform.OS === 'ios' ? 'email' : 'email'}
                   importantForAutofill="yes"
                   autoCapitalize="none"
+                  inputMode="email"
                 />
               </View>
               <View style={styles.inputContainer}>
@@ -129,9 +131,15 @@ const SignUp = () => {
                   returnKeyType="next"
                   onSubmitEditing={() => accessCodeRef.current?.focus()}
                   onChangeText={setPassword}
-                  textContentType="newPassword"
-                  autoComplete="password-new"
+                  // Properly configured for password input
+                  textContentType={
+                    Platform.OS === 'ios' ? 'newPassword' : 'password'
+                  }
+                  autoComplete={
+                    Platform.OS === 'ios' ? 'password-new' : 'password'
+                  }
                   importantForAutofill="yes"
+                  secureTextEntry={true}
                 />
               </View>
               <View style={styles.inputContainer}>
@@ -144,9 +152,11 @@ const SignUp = () => {
                   initialValue={accessCode}
                   onChangeText={setAccessCode}
                   keyboard_Type="default"
+                  // Prevents interference with other fields' autofill
                   textContentType="none"
                   autoComplete="off"
                   importantForAutofill="no"
+                  autoCapitalize="characters"
                 />
               </View>
 
