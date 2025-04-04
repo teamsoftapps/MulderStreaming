@@ -371,10 +371,6 @@ const SignUp = () => {
                   returnKeyType="next"
                   onSubmitEditing={() => passwordRef.current?.focus()}
                   onChangeText={setEmail}
-                  textContentType="emailAddress" // iOS autofill suggestion for email
-                  autoComplete="email" // iOS autofill for email
-                  importantForAutofill="yes" // iOS autofill suggestion bar
-                  autoCapitalize="none"
                 />
               </View>
               <View style={styles.inputContainer}>

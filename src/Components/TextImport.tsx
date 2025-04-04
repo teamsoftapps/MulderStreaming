@@ -7,6 +7,7 @@ import {
   View,
   ViewStyle,
   StyleSheet,
+  Platform,
 } from 'react-native';
 import {
   responsiveFontSize,
@@ -69,6 +70,10 @@ const TextImport = forwardRef<TextInput, TextImportProps>(
           onChangeText={handleTextChange}
           secureTextEntry={secureTextEntry}
           placeholderTextColor="gray"
+          textContentType={Platform.OS === 'ios' ? 'emailAddress' : 'none'}
+          autoComplete={Platform.OS === 'ios' ? 'email' : 'off'}
+          // importantForAutofill="yes"
+          enablesReturnKeyAutomatically={true}
           {...rest}
         />
       </View>
