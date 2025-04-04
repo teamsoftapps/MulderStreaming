@@ -72,7 +72,7 @@ const TextImport = forwardRef<TextInput, TextImportProps>(
           placeholderTextColor="gray"
           textContentType={Platform.OS === 'ios' ? 'emailAddress' : 'none'}
           autoComplete={Platform.OS === 'ios' ? 'email' : 'off'}
-          // importantForAutofill="yes"
+          importantForAutofill="yes"
           enablesReturnKeyAutomatically={true}
           {...rest}
         />

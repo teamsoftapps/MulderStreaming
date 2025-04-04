@@ -373,6 +373,15 @@ const SignUp = () => {
                   onChangeText={setEmail}
                 />
               </View>
+              {Platform.OS === 'ios' ? (
+                <View pointerEvents="none">
+                  <TextInput
+                    focusable={false}
+                    style={{color: '#00000000'}}
+                    onChangeText={setEmail}
+                  />
+                </View>
+              ) : null}
               <View style={styles.inputContainer}>
                 <PasswordInput
                   ref={passwordRef}
