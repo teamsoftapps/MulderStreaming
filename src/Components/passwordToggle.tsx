@@ -95,10 +95,17 @@ const PasswordInput = forwardRef<TextInput, PasswordInputProps>(
           onChangeText={handleTextChange}
           secureTextEntry={secureText}
           placeholderTextColor="gray"
+          // Add these important props for iOS autofill
           textContentType={Platform.OS === 'ios' ? 'newPassword' : 'none'}
           autoComplete={Platform.OS === 'ios' ? 'password-new' : 'off'}
+          importantForAutofill="yes"
+          enablesReturnKeyAutomatically={true}
+          keyboardType="default"
+          returnKeyType={rest.returnKeyType}
+          onSubmitEditing={rest.onSubmitEditing}
           {...rest}
         />
+
         <TouchableOpacity
           onPress={() => setSecureText(!secureText)}
           style={styles.iconContainer}>

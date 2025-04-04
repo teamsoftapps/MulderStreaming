@@ -80,10 +80,11 @@ const SignUp = () => {
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={{flex: 1}}>
-        <TouchableWithoutFeedback>
+        <TouchableWithoutFeedback style={{flex: 1}}>
           <ScrollView
+            style={{flex: 1}}
             showsVerticalScrollIndicator={false}
-            contentContainerStyle={{flexGrow: 0.1}}
+            contentContainerStyle={{flexGrow: 0}}
             keyboardShouldPersistTaps="handled">
             <View
               style={{
@@ -108,6 +109,7 @@ const SignUp = () => {
 
               <View style={styles.inputContainer}>
                 <TextImport
+                  textContentType="emailAddress"
                   keyboard_Type="email-address"
                   ref={emailRef}
                   imageSource={require('../../Assets/images/emalIMG.png')}
@@ -127,7 +129,6 @@ const SignUp = () => {
                   returnKeyType="next"
                   onSubmitEditing={() => accessCodeRef.current?.focus()}
                   onChangeText={setPassword}
-                  textContentType="newPassword"
                 />
               </View>
               <View style={styles.inputContainer}>
