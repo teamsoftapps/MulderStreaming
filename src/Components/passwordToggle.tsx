@@ -102,6 +102,7 @@ const PasswordInput = forwardRef<TextInput, PasswordInputProps>(
           keyboardType="default"
           returnKeyType={rest.returnKeyType}
           onSubmitEditing={rest.onSubmitEditing}
+          autoCapitalize="none"
           {...rest}
         />
 

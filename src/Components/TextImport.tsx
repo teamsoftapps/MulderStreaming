@@ -74,6 +74,7 @@ const TextImport = forwardRef<TextInput, TextImportProps>(
           autoComplete={Platform.OS === 'ios' ? 'email' : 'off'}
           importantForAutofill="yes"
           enablesReturnKeyAutomatically={true}
+          autoCapitalize="none"
           {...rest}
         />
       </View>

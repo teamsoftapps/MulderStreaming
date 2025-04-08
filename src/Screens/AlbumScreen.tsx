@@ -359,7 +359,7 @@ const AlbumScreen: React.FC<AlbumScreenProps> = ({route}) => {
                       <Text style={{fontSize: responsiveFontSize(1.8)}}>
                         By Mulder {'\n\n'}
                         <Text style={{marginTop: responsiveHeight(1.8)}}>
-                          {albumSongs.length - 1} songs
+                          {albumSongs.length} songs
                         </Text>
                       </Text>
                     </Text>
