@@ -128,8 +128,8 @@ export const Auth = createApi({
         method: 'GET',
       }),
     }),
-    getExclusiveContent: builder.mutation({
-      query: () => ({
+    ExclusiveContent: builder.mutation({
+      query: body => ({
         url: '/api/getExclusiveContent',
         method: 'GET',
       }),
@@ -154,5 +154,5 @@ export const {
   useHandleFavoriteMutation,
   useGetFavoriteMutation,
   useConfirmUserMutation,
-  useGetExclusiveContentMutation,
+  useExclusiveContentMutation,
 } = Auth;

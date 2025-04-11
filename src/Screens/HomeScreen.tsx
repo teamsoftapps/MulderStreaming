@@ -1,5 +1,5 @@
 import {StackNavigationProp} from '@react-navigation/stack';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -28,8 +28,10 @@ import WrapperContainer from '../Components/WrapperContainer';
 import {useDispatch, useSelector} from 'react-redux';
 import {useFocusEffect} from '@react-navigation/native';
 import {
+  useExclusiveContentMutation,
   useGetAlbumsMutation,
   useGetAllUserPlaylistMutation,
+  useGetExclusiveContentQuery,
   useRemovePlaylistMutation,
 } from '../store/Api/Auth';
 import BackgroundMusicPlayer from '../Components/BackgroudMusicPlayer';
@@ -67,12 +69,16 @@ const HomeScreen = () => {
   const [data, {isLoading}] = useGetAlbumsMutation();
   const [modalVisible, setModalVisible] = useState(false);
   const [modalVisible2, setModalVisible2] = useState(false);
+  const [Cover_Image_NL, setCover_Image_NL] = useState('');
+  const [Cover_Image_ENG, setCover_Image_ENG] = useState('');
   console.log('suth data:', AuthData);
   const subcscriptionId = AuthData?.subscriptionID;
   const [dataSlice, setDataSlice] = useState([]);
   const [fetchAllPlaylists, {isLoading: playlistLoading}] =
     useGetAllUserPlaylistMutation();
   const [deletePlaylist] = useRemovePlaylistMutation();
+  const [ExclusiveContent, {isLoadingExclusive}] =
+    useExclusiveContentMutation();
   const [newPlaylistName, setNewPlaylistName] = useState('');
   const [loading, setLoading] = useState(false);
   const [loaderloading, setLoaderLoading] = useState(false);
@@ -89,6 +95,7 @@ const HomeScreen = () => {
       getAllPlaylists();
       setNewPlaylistName('');
       getAlbums();
+      getExclusiveContent();
     }, []),
   );
 
@@ -104,6 +111,17 @@ const HomeScreen = () => {
       console.log('Error:', error);
     }
   };
+
+  const getExclusiveContent = async () => {
+    try {
+      const result = await ExclusiveContent();
+      setCover_Image_NL(result.data.data[0].Cover_Image_NL);
+      setCover_Image_ENG(result.data.data[0].Cover_Image_ENG);
+    } catch (err) {
+      console.error('Failed to fetch:', err);
+    }
+  };
+
   const getAlbums = async () => {
     try {
       const res = await data();
@@ -586,29 +604,35 @@ const HomeScreen = () => {
             </View>
           </TouchableOpacity>
         ) : null}
-        <TouchableOpacity onPress={handleExclusiveContentWebView}>
-          {deviceLanguage === 'nl' ? (
-            <Image
-              resizeMode="center"
-              source={require('../../Assets/images/exclusiveNL.png')}
-              style={{
-                height: responsiveHeight(15),
-                width: '100%',
-                borderRadius: responsiveWidth(5),
-              }}
-            />
+        <View>
+          {isLoadingExclusive ? (
+            <ActivityIndicator size="large" color="#000" />
           ) : (
-            <Image
-              resizeMode="cover"
-              source={require('../../Assets/images/exclusiveENG.png')}
-              style={{
-                height: responsiveHeight(15),
-                width: responsiveWidth(88),
-                borderRadius: responsiveWidth(3),
-              }}
-            />
+            <TouchableOpacity onPress={handleExclusiveContentWebView}>
+              {deviceLanguage === 'nl' ? (
+                <Image
+                  resizeMode="center"
+                  source={{uri: Cover_Image_NL}}
+                  style={{
+                    height: responsiveHeight(15),
+                    width: '100%',
+                    borderRadius: responsiveWidth(5),
+                  }}
+                />
+              ) : (
+                <Image
+                  resizeMode="cover"
+                  source={{uri: Cover_Image_ENG}}
+                  style={{
+                    height: responsiveHeight(15),
+                    width: responsiveWidth(88),
+                    borderRadius: responsiveWidth(3),
+                  }}
+                />
+              )}
+            </TouchableOpacity>
           )}
-        </TouchableOpacity>
+        </View>
 
         <Modal
           animationType="slide"
