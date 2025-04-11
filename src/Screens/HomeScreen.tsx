@@ -153,6 +153,7 @@ const HomeScreen = () => {
     try {
       await getAllPlaylists();
       await getAlbums();
+      await getExclusiveContent();
     } catch (error) {
       console.log('Error on refresh:', error);
     } finally {
