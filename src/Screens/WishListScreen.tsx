@@ -262,6 +262,7 @@ const WishListScreen: React.FC = () => {
       <TopNavigationBar title={t('Liked')} showBackButton={true} />
 
       <ScrollView
+        bounces={false}
         showsVerticalScrollIndicator={false}
         refreshControl={
           <RefreshControl

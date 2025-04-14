@@ -370,6 +370,7 @@ const PlaylistDetails: React.FC<PlaylistDetailsProps> = ({route}) => {
         />
 
         <ScrollView
+          bounces={false}
           showsVerticalScrollIndicator={false}
           refreshControl={
             <RefreshControl
