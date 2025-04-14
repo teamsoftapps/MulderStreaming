@@ -198,7 +198,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     transform: [{rotate: '-90deg'}],
     marginBottom:
-      Platform.OS === 'ios' ? responsiveHeight(3) : responsiveHeight(1.5),
+      Platform.OS === 'ios' ? responsiveHeight(3) : responsiveHeight(1.7),
     marginRight:
       Platform.OS === 'ios' ? -responsiveWidth(3) : -responsiveWidth(1.5),
     fontFamily: 'TrajanPro-Bold',
