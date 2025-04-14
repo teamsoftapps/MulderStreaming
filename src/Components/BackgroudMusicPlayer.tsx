@@ -195,7 +195,7 @@ const BackgroundMusicPlayer: React.FC<BackgroundMusicPlayerProps> = ({
             borderRadius: !isExpanded ? responsiveWidth(3) : 0,
           },
         ]}>
-        <ScrollView showsVerticalScrollIndicator={false}>
+        <ScrollView bounces={false} showsVerticalScrollIndicator={false}>
           <TouchableOpacity
             disabled={isExpanded ? true : false}
             style={[

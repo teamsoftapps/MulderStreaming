@@ -31,7 +31,6 @@ import {
   useExclusiveContentMutation,
   useGetAlbumsMutation,
   useGetAllUserPlaylistMutation,
-  useGetExclusiveContentQuery,
   useRemovePlaylistMutation,
 } from '../store/Api/Auth';
 import BackgroundMusicPlayer from '../Components/BackgroudMusicPlayer';
@@ -583,9 +582,7 @@ const HomeScreen = () => {
               style={[
                 styles.createBTNview,
                 {
-                  marginBottom: persistCurrentSong
-                    ? responsiveHeight(14)
-                    : responsiveHeight(2),
+                  marginBottom: responsiveHeight(4),
                 },
               ]}>
               {loading ? (
@@ -604,7 +601,12 @@ const HomeScreen = () => {
             </View>
           </TouchableOpacity>
         ) : null}
-        <View>
+        <View
+          style={{
+            marginBottom: persistCurrentSong
+              ? responsiveHeight(14)
+              : responsiveHeight(2),
+          }}>
           {isLoadingExclusive ? (
             <ActivityIndicator size="large" color="#000" />
           ) : (
