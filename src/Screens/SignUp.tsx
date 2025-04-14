@@ -26,6 +26,7 @@ import WrapperContainer from '../Components/WrapperContainer';
 import {useSignUPMutation} from '../store/Api/Auth';
 import ToastMessage from '../hooks/ToastMessage.js';
 import PasswordInput from '../Components/passwordToggle';
+import * as RNLocalize from 'react-native-localize';
 
 type SignUpScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -43,6 +44,10 @@ const SignUp = () => {
   const emailRef = useRef<TextInput>(null);
   const passwordRef = useRef<TextInput>(null);
   const accessCodeRef = useRef<TextInput>(null);
+
+  const deviceLanguage = RNLocalize.getLocales()[0].languageCode;
+
+  const firstName = deviceLanguage === 'nl' ? 'JAN' : 'IAN';
 
   const handleSignUp = async () => {
     if (!email || !password || !accessCode) {
@@ -95,7 +100,7 @@ const SignUp = () => {
               }}>
               <View style={styles.maimHeading}>
                 <Text allowFontScaling={false} style={styles.ianText}>
-                  IAN
+                  {firstName}
                 </Text>
                 <Text allowFontScaling={false} style={styles.logo}>
                   MULDER
@@ -193,8 +198,9 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     transform: [{rotate: '-90deg'}],
     marginBottom:
-      Platform.OS === 'ios' ? responsiveHeight(3) : responsiveHeight(1),
-    marginRight: -responsiveWidth(3),
+      Platform.OS === 'ios' ? responsiveHeight(3) : responsiveHeight(1.5),
+    marginRight:
+      Platform.OS === 'ios' ? -responsiveWidth(3) : -responsiveWidth(1.5),
     fontFamily: 'TrajanPro-Bold',
   },
   welcomeBack: {

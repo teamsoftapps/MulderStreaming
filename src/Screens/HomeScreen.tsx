@@ -412,9 +412,7 @@ const HomeScreen = () => {
             justifyContent: 'center',
             alignItems: 'center',
             marginVertical: responsiveHeight(1),
-          }}>
-          {/* <ExclusiveContent /> */}
-        </View>
+          }}></View>
         <View
           style={{
             flex: 1,

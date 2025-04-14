@@ -28,6 +28,7 @@ import {useSignINMutation} from '../store/Api/Auth';
 import {useDispatch} from 'react-redux';
 import {setUser} from '../store/slices/authSlice';
 import ToastMessage from '../hooks/ToastMessage.js';
+import * as RNLocalize from 'react-native-localize';
 type props = StackNavigationProp<RootStackParamList, 'SignIn'>;
 type SignInProps = {
   setbool: (value: boolean) => void;
@@ -47,6 +48,10 @@ const SignIn = ({setbool, changeLanguage}: SignInProps) => {
   const [modalVisible, setModalVisible] = useState(false);
   const {Toasts} = ToastMessage();
   const [showModal, setShowModal] = useState(false);
+
+  const deviceLanguage = RNLocalize.getLocales()[0].languageCode;
+
+  const firstName = deviceLanguage === 'nl' ? 'JAN' : 'IAN';
 
   const Signin = async () => {
     let payload = {
@@ -98,7 +103,7 @@ const SignIn = ({setbool, changeLanguage}: SignInProps) => {
                     : responsiveHeight(5),
               }}>
               <View style={styles.maimHeading}>
-                <Text style={styles.ianText}>IAN</Text>
+                <Text style={styles.ianText}>{firstName}</Text>
                 <Text style={styles.logo}> MULDER</Text>
               </View>
               <Text style={styles.welcomeBack}>{t('Welcome Back')}</Text>
@@ -312,7 +317,8 @@ const styles = StyleSheet.create({
     transform: [{rotate: '-90deg'}],
     marginBottom:
       Platform.OS === 'ios' ? responsiveHeight(3) : responsiveHeight(1),
-    marginRight: -responsiveWidth(6.5),
+    marginRight:
+      Platform.OS === 'ios' ? -responsiveWidth(6.5) : -responsiveWidth(5),
     fontFamily: 'TrajanPro-Bold',
   },
   welcomeBack: {
