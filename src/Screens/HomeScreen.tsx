@@ -572,6 +572,7 @@ const HomeScreen = () => {
           </Text>
         </View>
         <FlatList
+          showsVerticalScrollIndicator={false}
           ListEmptyComponent={whenPlaylistEmpty}
           data={dataSlice}
           renderItem={renderedPlaylists}
