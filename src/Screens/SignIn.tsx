@@ -116,7 +116,7 @@ const SignIn = ({setbool, changeLanguage}: SignInProps) => {
                   keyboard_Type="email-address"
                   ref={emailRef}
                   imageSource={require('../../Assets/images/emalIMG.png')}
-                  placeholder="Email"
+                  placeholder={t('Email')}
                   initialValue={email}
                   onChangeText={setEmail}
                   editable={!loading}
@@ -128,7 +128,7 @@ const SignIn = ({setbool, changeLanguage}: SignInProps) => {
                 <TextImport
                   ref={passwordRef}
                   imageSource={require('../../Assets/images/password.png')}
-                  placeholder="Password"
+                  placeholder={t('Password')}
                   initialValue={password}
                   onChangeText={setPassword}
                   editable={!loading}
