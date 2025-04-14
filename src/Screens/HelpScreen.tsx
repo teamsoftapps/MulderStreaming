@@ -46,7 +46,7 @@ const HelpScreen = () => {
   return (
     <WrapperContainer style={styles.container}>
       <ImageBackground source={require('../../Assets/images/background.png')}>
-        <ScrollView showsVerticalScrollIndicator={false}>
+        <ScrollView bounces={false} showsVerticalScrollIndicator={false}>
           <View style={styles.TopContainer}>
             <TouchableOpacity onPress={() => navigation.goBack()}>
               <Image

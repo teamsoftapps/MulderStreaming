@@ -396,6 +396,7 @@ const HomeScreen = () => {
   return (
     <WrapperContainer style={styles.container}>
       <ScrollView
+        bounces={false}
         showsVerticalScrollIndicator={false}
         refreshControl={
           <RefreshControl

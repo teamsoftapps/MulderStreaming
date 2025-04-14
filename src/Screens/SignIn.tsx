@@ -119,15 +119,6 @@ const SignIn = ({setbool, changeLanguage}: SignInProps) => {
                   onSubmitEditing={() => passwordRef.current?.focus()}
                 />
               </View>
-              {/* {Platform.OS === 'ios' ? (
-                <View pointerEvents="none">
-                  <TextInput
-                    focusable={false}
-                    style={{color: '#00000000'}}
-                    onChangeText={setEmail}
-                  />
-                </View>
-              ) : null} */}
               <View style={styles.inputContainer}>
                 <TextImport
                   ref={passwordRef}

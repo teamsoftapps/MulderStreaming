@@ -290,6 +290,7 @@ const PlaylistScreen: React.FC = () => {
       <TopNavigationBar title={t('Albums')} showBackButton={true} />
 
       <ScrollView
+        bounces={false}
         showsVerticalScrollIndicator={false}
         refreshControl={
           <RefreshControl

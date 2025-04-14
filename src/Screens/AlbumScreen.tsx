@@ -326,6 +326,7 @@ const AlbumScreen: React.FC<AlbumScreenProps> = ({route}) => {
         ) : (
           <>
             <ScrollView
+              bounces={false}
               showsVerticalScrollIndicator={false}
               refreshControl={
                 <RefreshControl

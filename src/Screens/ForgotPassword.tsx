@@ -60,7 +60,7 @@ const ForgotPassword = () => {
 
   return (
     <WrapperContainer barstatus={true} style={{flex: 1}} bgColor="#1c1508">
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView bounces={false} showsVerticalScrollIndicator={false}>
         <View
           style={{
             flex: 1,

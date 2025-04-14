@@ -72,7 +72,7 @@ const MakeSelectonForgotPassword = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView bounces={false} showsVerticalScrollIndicator={false}>
         <View
           style={{
             flex: 1,
