@@ -76,7 +76,7 @@ const HomeScreen = () => {
   const [fetchAllPlaylists, {isLoading: playlistLoading}] =
     useGetAllUserPlaylistMutation();
   const [deletePlaylist] = useRemovePlaylistMutation();
-  const [ExclusiveContent, {isLoadingExclusive}] =
+  const [ExclusiveContent, {isLoading: isLoadingexclusive}] =
     useExclusiveContentMutation();
   const [newPlaylistName, setNewPlaylistName] = useState('');
   const [loading, setLoading] = useState(false);
@@ -578,7 +578,13 @@ const HomeScreen = () => {
           renderItem={renderedPlaylists}
         />
         {subcscriptionId !== '635bcf0612d32838b423b227' ? (
-          <TouchableOpacity onPress={handleCreateNewPlaylistPress}>
+          <TouchableOpacity
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+            onPress={handleCreateNewPlaylistPress}>
             <View
               style={[
                 styles.createBTNview,
@@ -607,19 +613,23 @@ const HomeScreen = () => {
             marginBottom: persistCurrentSong
               ? responsiveHeight(14)
               : responsiveHeight(2),
+            width: responsiveWidth(88),
+            justifyContent: 'center',
+            alignItems: 'center',
+            borderRadius: responsiveWidth(5),
           }}>
-          {isLoadingExclusive ? (
-            <ActivityIndicator size="large" color="#000" />
+          {isLoadingexclusive ? (
+            <ActivityIndicator size="large" color={'#9D824F'} />
           ) : (
             <TouchableOpacity onPress={handleExclusiveContentWebView}>
               {deviceLanguage === 'nl' ? (
                 <Image
-                  resizeMode="center"
+                  resizeMode="cover"
                   source={{uri: Cover_Image_NL}}
                   style={{
                     height: responsiveHeight(15),
-                    width: '100%',
-                    borderRadius: responsiveWidth(5),
+                    width: responsiveWidth(80),
+                    borderRadius: responsiveWidth(3),
                   }}
                 />
               ) : (
@@ -628,8 +638,8 @@ const HomeScreen = () => {
                   source={{uri: Cover_Image_ENG}}
                   style={{
                     height: responsiveHeight(15),
-                    width: responsiveWidth(88),
-                    borderRadius: responsiveWidth(3),
+                    width: responsiveWidth(80),
+                    borderRadius: responsiveWidth(5),
                   }}
                 />
               )}
@@ -939,7 +949,7 @@ const styles = StyleSheet.create({
     marginTop: responsiveHeight(2.5),
     flexDirection: 'row',
     gap: responsiveWidth(2),
-    width: '100%',
+    width: responsiveWidth(80),
     paddingVertical: responsiveHeight(1.5),
     marginVertical: responsiveHeight(2),
   },

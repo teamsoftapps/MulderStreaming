@@ -177,7 +177,7 @@ const SignIn = ({setbool, changeLanguage}: SignInProps) => {
                     fontSize: responsiveFontSize(1.6),
                     paddingLeft: responsiveWidth(1.5),
                   }}>
-                  Show Password
+                  {t('Show Password')}
                 </Text>
               </TouchableOpacity>
 
@@ -318,7 +318,7 @@ const styles = StyleSheet.create({
     marginBottom:
       Platform.OS === 'ios' ? responsiveHeight(3) : responsiveHeight(1.7),
     marginRight:
-      Platform.OS === 'ios' ? -responsiveWidth(6.5) : -responsiveWidth(5),
+      Platform.OS === 'ios' ? -responsiveWidth(6.5) : -responsiveWidth(6),
     fontFamily: 'TrajanPro-Bold',
   },
   welcomeBack: {

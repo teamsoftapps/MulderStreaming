@@ -12,6 +12,7 @@ import {
   KeyboardAvoidingView,
   TouchableWithoutFeedback,
   Keyboard,
+  Linking,
 } from 'react-native';
 import {
   responsiveFontSize,
@@ -106,8 +107,38 @@ const SignUp = () => {
                   MULDER
                 </Text>
               </View>
-              <Text style={styles.welcomeBack}>{t('Welcome Back')}</Text>
-              <Text style={styles.loginText}>{t('Create an account')}</Text>
+              {deviceLanguage === 'nl' ? (
+                <Text allowFontScaling={false} style={styles.welcomeBack}>
+                  Aanmelden
+                </Text>
+              ) : (
+                <Text allowFontScaling={false} style={styles.welcomeBack}>
+                  {t('Create your account')}
+                </Text>
+              )}
+              {deviceLanguage === 'nl' ? (
+                <Text allowFontScaling={false} style={styles.loginText}>
+                  {t('Heeft u nog niet geabonneerd?') + ' '}
+                  <Text
+                    style={[styles.loginText, {color: '#CCAA6B'}]}
+                    onPress={() =>
+                      Linking.openURL('https://www.ianmulder.us/streaming')
+                    }>
+                    {t('Klik hier')}
+                  </Text>
+                </Text>
+              ) : (
+                <Text allowFontScaling={false} style={styles.loginText}>
+                  {t("Don't have a subscription yet?") + ' '}
+                  <Text
+                    style={[styles.loginText, {color: '#CCAA6B'}]}
+                    onPress={() =>
+                      Linking.openURL('https://www.ianmulder.us/streaming')
+                    }>
+                    {t('Subscribe here')}
+                  </Text>
+                </Text>
+              )}
 
               <View style={styles.inputContainer}>
                 <TextImport
@@ -200,7 +231,7 @@ const styles = StyleSheet.create({
     marginBottom:
       Platform.OS === 'ios' ? responsiveHeight(3) : responsiveHeight(1.7),
     marginRight:
-      Platform.OS === 'ios' ? -responsiveWidth(3) : -responsiveWidth(1.5),
+      Platform.OS === 'ios' ? -responsiveWidth(3) : -responsiveWidth(2.5),
     fontFamily: 'TrajanPro-Bold',
   },
   welcomeBack: {
@@ -208,12 +239,17 @@ const styles = StyleSheet.create({
     color: '#f0f0f0',
     marginBottom: responsiveHeight(1),
     fontWeight: 'thin',
+    width: responsiveWidth(90),
+    textAlign: 'center',
   },
   loginText: {
     fontSize: responsiveFontSize(2),
     color: '#f0f0f0',
     marginBottom: responsiveHeight(4),
     fontWeight: 'thin',
+    width: responsiveWidth(90),
+    textAlign: 'center',
+    // backgroundColor: 'red',
   },
   inputContainer: {
     width: responsiveWidth(80),
