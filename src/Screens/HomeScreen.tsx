@@ -94,9 +94,12 @@ const HomeScreen = () => {
       getAllPlaylists();
       setNewPlaylistName('');
       getAlbums();
-      getExclusiveContent();
     }, []),
   );
+
+  useEffect(() => {
+    getExclusiveContent();
+  }, []);
 
   const getAllPlaylists = async () => {
     try {

@@ -29,8 +29,6 @@ import {
   setPlayingSongIndex,
   togglePlaying,
 } from '../store/slices/songState';
-import {Colors} from 'react-native/Libraries/NewAppScreen';
-
 interface AlbumScreenProps {
   navigate: any;
   route: {
@@ -59,10 +57,12 @@ const PlaylistScreen: React.FC = () => {
   const [currentSongIndex, setCurrentSongIndex] = useState(0);
   const [refreshing, setRefreshing] = useState(false);
   const dispatch = useDispatch();
+  const [sortedAlbums, setsortedAlbums] = useState([]);
   const subscriptionId = AuthData.subscriptionID;
   const {persistCurrentSong, playlist, playingSongIndex} = useSelector(
     (state: RootState) => state.musicPlayer,
   );
+  const subcscriptionId = AuthData?.subscriptionID;
 
   useFocusEffect(
     useCallback(() => {
@@ -73,15 +73,9 @@ const PlaylistScreen: React.FC = () => {
   const onRefresh = async () => {
     setRefreshing(true);
     try {
-      const res = await data();
-      const allalbums = res.data;
-      const sortedAlbums = Array.from(allalbums).sort(
-        (a, b) => a.index - b.index,
-      );
-      console.log('sortedAlbums===', sortedAlbums);
-      setAllAlbums(sortedAlbums);
+      await getAlbums();
     } catch (error) {
-      console.log('Errorr', error);
+      console.log('Error on refresh:', error);
     } finally {
       setRefreshing(false);
     }
@@ -90,12 +84,24 @@ const PlaylistScreen: React.FC = () => {
   const getAlbums = async () => {
     try {
       const res = await data();
+      console.log('Albums===========>', res.data);
+      setAllAlbums(res?.data);
       const allalbums = res.data;
       const sortedAlbums = Array.from(allalbums).sort(
         (a, b) => a.index - b.index,
       );
       console.log('sortedAlbums===', sortedAlbums);
-      setAllAlbums(sortedAlbums);
+      setsortedAlbums(sortedAlbums);
+      if (subcscriptionId === '635bcf0612d32838b423b227') {
+        const targetAlbum = res?.data.find(
+          album => album._id === '61710878ef45b9107c721284',
+        );
+        const remainingItems = res?.data.filter(
+          album => album._id !== '61710878ef45b9107c721284',
+        );
+        const updatedAlbums = [targetAlbum, ...remainingItems];
+        setsortedAlbums(updatedAlbums);
+      }
     } catch (error) {
       console.log('Errorr', error);
     }
@@ -177,114 +183,6 @@ const PlaylistScreen: React.FC = () => {
     );
   };
 
-  const renderedAlbums = ({item, index}) => {
-    const isLocked = subscriptionId === '635bcf0612d32838b423b227';
-    return (
-      <TouchableOpacity
-        onPress={() => {
-          if (subscriptionId === '635bcf0612d32838b423b227' && index === 0) {
-            navigation.navigate('AlbumScreen', {data: item});
-          } else if (subscriptionId !== '635bcf0612d32838b423b227') {
-            navigation.navigate('AlbumScreen', {data: item});
-          }
-        }}
-        disabled={subscriptionId === '635bcf0612d32838b423b227' && index !== 0}
-        style={styles.playlistMusic}>
-        <View style={{position: 'relative'}}>
-          {/* Album Image */}
-          <Image
-            source={{
-              uri: `https://musicfilesforheroku.s3.us-west-1.amazonaws.com/uploads/${item.Album_Image}`,
-            }}
-            style={{
-              width: responsiveWidth(15),
-              height: responsiveHeight(8),
-              resizeMode: 'cover',
-              marginRight: responsiveWidth(2.5),
-            }}
-          />
-
-          {isLocked && index !== 0 && (
-            <View
-              style={{
-                position: 'absolute',
-                width: responsiveWidth(15),
-                height: responsiveHeight(8),
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                backgroundColor: 'rgba(0, 0, 0, 0.4)',
-              }}
-            />
-          )}
-
-          {isLocked && index !== 0 && (
-            <View
-              style={{
-                position: 'absolute',
-                top: '50%',
-                left: '50%',
-                transform: [
-                  {translateX: -responsiveWidth(5)},
-                  {translateY: -responsiveWidth(3)},
-                ],
-                zIndex: 10,
-              }}>
-              <Image
-                tintColor={'#fff'}
-                source={require('../../Assets/images/lock.png')} // Lock icon
-                style={{
-                  width: responsiveWidth(6),
-                  height: responsiveWidth(6),
-                  resizeMode: 'contain',
-                }}
-              />
-            </View>
-          )}
-        </View>
-
-        {/* Album Name and Singer Name */}
-        <View
-          style={{
-            flexDirection: 'column',
-            gap: 2,
-            marginRight: responsiveWidth(20),
-            width: '40%',
-          }}>
-          <Text
-            style={{
-              color: '#F0F0F0',
-              fontSize: responsiveFontSize(2.1),
-              letterSpacing: 1,
-            }}>
-            {item.Album_Name}
-          </Text>
-          <Text style={{color: 'gray', fontSize: responsiveFontSize(1.8)}}>
-            {item.Singer_Name}
-          </Text>
-        </View>
-
-        {/* Play Button */}
-        <View
-          style={{
-            flexDirection: 'row',
-            gap: 4,
-            justifyContent: 'space-between',
-          }}>
-          <Image
-            source={require('../../Assets/images/playIcon.png')}
-            style={{
-              width: responsiveWidth(10),
-              height: responsiveHeight(4),
-              resizeMode: 'contain',
-              marginLeft: responsiveWidth(0.5),
-            }}
-          />
-        </View>
-      </TouchableOpacity>
-    );
-  };
   return (
     <WrapperContainer style={styles.container} bgColor="#1c1508">
       <TopNavigationBar title={t('Albums')} showBackButton={true} />
@@ -302,12 +200,123 @@ const PlaylistScreen: React.FC = () => {
         }
         contentContainerStyle={styles.scrollViewContent}>
         <FlatList
-          showsVerticalScrollIndicator={false}
-          data={isAlbums}
-          renderItem={renderedAlbums}
+          nestedScrollEnabled
+          showsHorizontalScrollIndicator={false}
           ListEmptyComponent={listemptyComp}
-          style={{
-            marginBottom: persistCurrentSong ? responsiveHeight(12) : 0,
+          data={sortedAlbums}
+          renderItem={({item, index}) => {
+            const isLocked = subscriptionId === '635bcf0612d32838b423b227';
+            return (
+              <TouchableOpacity
+                onPress={() => {
+                  if (
+                    subscriptionId === '635bcf0612d32838b423b227' &&
+                    index === 0
+                  ) {
+                    navigation.navigate('AlbumScreen', {data: item});
+                  } else if (subscriptionId !== '635bcf0612d32838b423b227') {
+                    navigation.navigate('AlbumScreen', {data: item});
+                  }
+                }}
+                disabled={
+                  subscriptionId === '635bcf0612d32838b423b227' && index !== 0
+                }
+                style={styles.playlistMusic}>
+                <View style={{position: 'relative'}}>
+                  {/* Album Image */}
+                  <Image
+                    source={{
+                      uri: `https://musicfilesforheroku.s3.us-west-1.amazonaws.com/uploads/${item.Album_Image}`,
+                    }}
+                    style={{
+                      width: responsiveWidth(15),
+                      height: responsiveHeight(8),
+                      resizeMode: 'cover',
+                      marginRight: responsiveWidth(2.5),
+                    }}
+                  />
+
+                  {isLocked && index !== 0 && (
+                    <View
+                      style={{
+                        position: 'absolute',
+                        width: responsiveWidth(15),
+                        height: responsiveHeight(8),
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        backgroundColor: 'rgba(0, 0, 0, 0.4)',
+                      }}
+                    />
+                  )}
+
+                  {isLocked && index !== 0 && (
+                    <View
+                      style={{
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        transform: [
+                          {translateX: -responsiveWidth(5)},
+                          {translateY: -responsiveWidth(3)},
+                        ],
+                        zIndex: 10,
+                      }}>
+                      <Image
+                        tintColor={'#fff'}
+                        source={require('../../Assets/images/lock.png')} // Lock icon
+                        style={{
+                          width: responsiveWidth(6),
+                          height: responsiveWidth(6),
+                          resizeMode: 'contain',
+                        }}
+                      />
+                    </View>
+                  )}
+                </View>
+
+                {/* Album Name and Singer Name */}
+                <View
+                  style={{
+                    flexDirection: 'column',
+                    gap: 2,
+                    marginRight: responsiveWidth(20),
+                    width: '40%',
+                  }}>
+                  <Text
+                    style={{
+                      color: '#F0F0F0',
+                      fontSize: responsiveFontSize(2.1),
+                      letterSpacing: 1,
+                    }}>
+                    {item.Album_Name}
+                  </Text>
+                  <Text
+                    style={{color: 'gray', fontSize: responsiveFontSize(1.8)}}>
+                    {item.Singer_Name}
+                  </Text>
+                </View>
+
+                {/* Play Button */}
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    gap: 4,
+                    justifyContent: 'space-between',
+                  }}>
+                  <Image
+                    source={require('../../Assets/images/playIcon.png')}
+                    style={{
+                      width: responsiveWidth(10),
+                      height: responsiveHeight(4),
+                      resizeMode: 'contain',
+                      marginLeft: responsiveWidth(0.5),
+                    }}
+                  />
+                </View>
+              </TouchableOpacity>
+            );
           }}
         />
       </ScrollView>
