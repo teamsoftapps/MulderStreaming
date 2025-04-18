@@ -13,6 +13,7 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   Linking,
+  Image,
 } from 'react-native';
 import {
   responsiveFontSize,
@@ -28,6 +29,8 @@ import {useSignUPMutation} from '../store/Api/Auth';
 import ToastMessage from '../hooks/ToastMessage.js';
 import PasswordInput from '../Components/passwordToggle';
 import * as RNLocalize from 'react-native-localize';
+import MulderLogo from '../../Assets/images/name.png';
+import MulderLogoDutch from '../../Assets/images/name_dutch.png';
 
 type SignUpScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -100,12 +103,19 @@ const SignUp = () => {
                 marginTop: Platform.OS === 'android' ? responsiveHeight(4) : 0,
               }}>
               <View style={styles.maimHeading}>
-                <Text allowFontScaling={false} style={styles.ianText}>
-                  {firstName}
-                </Text>
-                <Text allowFontScaling={false} style={styles.logo}>
-                  MULDER
-                </Text>
+                {deviceLanguage === 'nl' ? (
+                  <Image
+                    source={MulderLogoDutch}
+                    resizeMode="center"
+                    style={{height: responsiveHeight(10), width: '100%'}}
+                  />
+                ) : (
+                  <Image
+                    source={MulderLogo}
+                    resizeMode="center"
+                    style={{height: responsiveHeight(10), width: '100%'}}
+                  />
+                )}
               </View>
               {deviceLanguage === 'nl' ? (
                 <Text allowFontScaling={false} style={styles.welcomeBack}>

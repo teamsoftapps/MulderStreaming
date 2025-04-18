@@ -29,6 +29,9 @@ import {useDispatch} from 'react-redux';
 import {setUser} from '../store/slices/authSlice';
 import ToastMessage from '../hooks/ToastMessage.js';
 import * as RNLocalize from 'react-native-localize';
+import MulderLogo from '../../Assets/images/name.png';
+import MulderLogoDutch from '../../Assets/images/name_dutch.png';
+
 type props = StackNavigationProp<RootStackParamList, 'SignIn'>;
 type SignInProps = {
   setbool: (value: boolean) => void;
@@ -103,8 +106,22 @@ const SignIn = ({setbool, changeLanguage}: SignInProps) => {
                     : responsiveHeight(5),
               }}>
               <View style={styles.maimHeading}>
-                <Text style={styles.ianText}>{firstName}</Text>
-                <Text style={styles.logo}> MULDER</Text>
+                {deviceLanguage === 'nl' ? (
+                  <Image
+                    source={MulderLogoDutch}
+                    resizeMode="center"
+                    style={{
+                      height: responsiveHeight(10),
+                      width: '100%',
+                    }}
+                  />
+                ) : (
+                  <Image
+                    source={MulderLogo}
+                    resizeMode="center"
+                    style={{height: responsiveHeight(10), width: '100%'}}
+                  />
+                )}
               </View>
               <Text style={styles.welcomeBack}>{t('Welcome Back')}</Text>
               <Text style={styles.loginText}>
@@ -303,6 +320,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
+    width: '100%',
   },
   logo: {
     fontSize: responsiveFontSize(6),
