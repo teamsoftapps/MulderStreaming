@@ -72,8 +72,8 @@ const SignIn = ({setbool, changeLanguage}: SignInProps) => {
       }
     } catch (error) {
       console.log('Error', error);
-      Toasts('Error', error.data.message, 'error');
-      if (error.data.message === 'Your subscription hpired!') {
+      Toasts('Error', 'Your subscription has expired!', 'error');
+      if (error.data.message === 'Your subscription has been expired!') {
         setModalVisible(true);
       }
     } finally {
