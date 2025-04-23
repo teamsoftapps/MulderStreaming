@@ -104,7 +104,7 @@ const PlaylistDetails: React.FC<PlaylistDetailsProps> = ({route}) => {
       try {
         const res = await favoriteSongs();
         setplaylistSongs(res?.data?.favourites);
-        dispatch(setPlaylist(res?.data?.favourites));
+        // dispatch(setPlaylist(res?.data?.favourites));
         setIsLoading(false);
         const trackList = res?.data?.favourites.map(song => ({
           id: song._id,
@@ -135,7 +135,7 @@ const PlaylistDetails: React.FC<PlaylistDetailsProps> = ({route}) => {
 
         setplaylistSongs(songs);
 
-        dispatch(setPlaylist(songs));
+        // dispatch(setPlaylist(songs));
         dispatch(setPlayingSongIndex(null));
         setIsLoading(false);
         const trackList = songs.map(song => ({
@@ -167,7 +167,7 @@ const PlaylistDetails: React.FC<PlaylistDetailsProps> = ({route}) => {
 
         setplaylistSongs(songs);
 
-        dispatch(setPlaylist(songs));
+        // dispatch(setPlaylist(songs));
         dispatch(setPlayingSongIndex(null));
         setIsLoading(false);
         const trackList = songs.map(song => ({
@@ -189,6 +189,7 @@ const PlaylistDetails: React.FC<PlaylistDetailsProps> = ({route}) => {
     if (persistCurrentSong?._id !== song._id) {
       await TrackPlayer.reset();
       await TrackPlayer.add(trackList);
+      dispatch(setPlaylist(playlistSongs));
     }
     if (currentSongIndex === index && persistCurrentSong == song) {
       const state = await TrackPlayer.getState();
@@ -213,52 +214,94 @@ const PlaylistDetails: React.FC<PlaylistDetailsProps> = ({route}) => {
   };
 
   const handleForward = async () => {
-    await TrackPlayer.reset();
+    // await TrackPlayer.reset();
     await TrackPlayer.add(trackList);
-    if (currentSongIndex < playlistSongs.length - 1) {
-      const nextIndex = currentSongIndex + 1;
-      const nextSong = playlistSongs[nextIndex];
-
-      try {
-        await TrackPlayer.skip(nextIndex);
-        await TrackPlayer.play();
-        setCurrentSongIndex(nextIndex);
-        dispatch(setCurrentSongg(nextSong));
-        dispatch(setPlayingSongIndex(nextIndex));
-        dispatch(togglePlaying(true));
-      } catch (error) {
-        console.error('Error skipping to next song:', error);
-      }
-    } else {
-      await TrackPlayer.skip(0);
+    try {
+      await TrackPlayer.skipToNext();
       await TrackPlayer.play();
+
+      const currentTrackId = await TrackPlayer.getCurrentTrack();
+      const currentTrack = await TrackPlayer.getTrack(currentTrackId);
+
+      dispatch(setPlayingSongIndex(currentTrackId));
       dispatch(togglePlaying(true));
-      dispatch(setCurrentSongg(playlistSongs[0]));
-      setCurrentSongIndex(0);
-      dispatch(setPlayingSongIndex(0));
+      console.log('currentplaylist==>', playlist);
+      const matchingPlaylist = playlist.find(
+        item => item._id === currentTrack.id,
+      );
+      dispatch(setCurrentSongg(matchingPlaylist));
+      console.log('Matching Playlist:', matchingPlaylist);
+      console.log('Current playing from Forward:', currentTrack);
+    } catch (error) {
+      console.log('No next track available:', error);
     }
+    // if (currentSongIndex < albumSongs.length - 2) {
+    //   const nextIndex = currentSongIndex + 1;
+    //   const nextSong = albumSongs[nextIndex];
+
+    //   try {
+    //     await TrackPlayer.skip(nextIndex);
+    //     await TrackPlayer.play();
+    //     setCurrentSongIndex(nextIndex);
+    //     dispatch(setCurrentSongg(nextSong));
+    //     dispatch(setPlayingSongIndex(nextIndex));
+    //     dispatch(togglePlaying(true));
+    //     console.log('current playing from F funtion', nextSong);
+    //   } catch (error) {
+    //     console.error('Error skipping to next song:', error);
+    //   }
+    // } else {
+    //   console.log('You are at the last song in the playlist.');
+    //   await TrackPlayer.skip(0);
+    //   await TrackPlayer.play();
+    //   dispatch(togglePlaying(true));
+    //   dispatch(setCurrentSongg(albumSongs[0]));
+    //   setCurrentSongIndex(0);
+    //   dispatch(setPlayingSongIndex(0));
+    // }
   };
 
   const handleBackward = async () => {
-    if (currentSongIndex > 0) {
-      await TrackPlayer.reset();
-      await TrackPlayer.add(trackList);
-      const prevIndex = currentSongIndex - 1;
-      const prevSong = playlistSongs[prevIndex];
+    await TrackPlayer.add(trackList);
+    try {
+      await TrackPlayer.skipToPrevious();
+      await TrackPlayer.play();
 
-      try {
-        await TrackPlayer.skip(prevIndex);
-        await TrackPlayer.play();
-        setCurrentSongIndex(prevIndex);
-        dispatch(setCurrentSongg(prevSong));
-        dispatch(setPlayingSongIndex(prevIndex));
-        dispatch(togglePlaying(true));
-      } catch (error) {
-        console.error('Error skipping to previous song:', error);
-      }
-    } else {
-      console.log('You are at the first song in the playlist.');
+      const currentTrackId = await TrackPlayer.getCurrentTrack();
+      const currentTrack = await TrackPlayer.getTrack(currentTrackId);
+
+      // dispatch(setCurrentSongg(currentTrack));
+      dispatch(setPlayingSongIndex(currentTrackId));
+      dispatch(togglePlaying(true));
+      const matchingPlaylist = playlist.find(
+        item => item._id === currentTrack.id,
+      );
+      dispatch(setCurrentSongg(matchingPlaylist));
+      console.log('Current playing from Backward:', currentTrack);
+    } catch (error) {
+      console.log('No previous track available:', error);
     }
+    // if (currentSongIndex > 0) {
+    //   await TrackPlayer.reset();
+    //   await TrackPlayer.add(trackList);
+
+    //   const prevIndex = currentSongIndex - 1;
+    //   const prevSong = albumSongs[prevIndex];
+
+    //   try {
+    //     await TrackPlayer.skip(prevIndex);
+    //     await TrackPlayer.play();
+    //     setCurrentSongIndex(prevIndex);
+    //     dispatch(setCurrentSongg(prevSong));
+    //     dispatch(setPlayingSongIndex(prevIndex));
+    //     dispatch(togglePlaying(true));
+    //     console.log('current playing from B funtion', prevSong);
+    //   } catch (error) {
+    //     console.error('Error skipping to previous song:', error);
+    //   }
+    // } else {
+    //   console.log('You are at the first song in the playlist.');
+    // }
   };
 
   const toggleFavoriteHandler = async (id: string) => {
