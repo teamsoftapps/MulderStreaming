@@ -156,7 +156,7 @@ const AlbumScreen: React.FC<AlbumScreenProps> = ({route}) => {
   };
 
   const togglePlayMusic = async (song: PlaylistItem, index: number) => {
-    if (!song.Song_index) {
+    if (song.Song_index < 0) {
       console.error('Error: Missing Song_index in PlaylistItem', song);
       return;
     }
