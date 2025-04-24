@@ -113,7 +113,6 @@ const WishListScreen: React.FC = () => {
     await TrackPlayer.add(trackList);
     try {
       await TrackPlayer.skipToNext();
-      await TrackPlayer.play();
 
       const currentTrackId = await TrackPlayer.getCurrentTrack();
       const currentTrack = await TrackPlayer.getTrack(currentTrackId);
@@ -125,6 +124,7 @@ const WishListScreen: React.FC = () => {
         item => item._id === currentTrack.id,
       );
       dispatch(setCurrentSongg(matchingPlaylist));
+      await TrackPlayer.play();
       console.log('Matching Playlist:', matchingPlaylist);
       console.log('Current playing from Forward:', currentTrack);
     } catch (error) {
@@ -160,7 +160,6 @@ const WishListScreen: React.FC = () => {
     await TrackPlayer.add(trackList);
     try {
       await TrackPlayer.skipToPrevious();
-      await TrackPlayer.play();
 
       const currentTrackId = await TrackPlayer.getCurrentTrack();
       const currentTrack = await TrackPlayer.getTrack(currentTrackId);
@@ -172,6 +171,7 @@ const WishListScreen: React.FC = () => {
         item => item._id === currentTrack.id,
       );
       dispatch(setCurrentSongg(matchingPlaylist));
+      await TrackPlayer.play();
       console.log('Current playing from Backward:', currentTrack);
     } catch (error) {
       console.log('No previous track available:', error);
