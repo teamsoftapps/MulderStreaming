@@ -1,4 +1,4 @@
-import React, {useRef, useState, useEffect, useCallback} from 'react';
+import React, {useRef, useState, useEffect} from 'react';
 import {
   View,
   StyleSheet,
@@ -11,24 +11,19 @@ import {
   StyleProp,
   ViewStyle,
   BackHandler,
-  PanResponder,
 } from 'react-native';
-import {CastButton, useRemoteMediaClient} from 'react-native-google-cast';
-import {AirplayButton, useExternalPlaybackAvailability} from 'react-airplay';
+
 import {
   responsiveHeight,
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
-import {RootState} from '../store/store';
+import {RootState} from '../store';
 import TrackPlayer, {State, useProgress} from 'react-native-track-player';
 import {useDispatch, useSelector} from 'react-redux';
 import {togglePlaying} from '../store/slices/songState';
 import Slider from '@react-native-community/slider';
 import {Platform} from 'react-native';
-import {useTranslation} from 'react-i18next';
-import {useFocusEffect, useNavigation} from '@react-navigation/native';
-import {Gesture, GestureDetector} from 'react-native-gesture-handler';
-import {runOnJS} from 'react-native-reanimated';
+
 interface Track {
   _id: string;
   Song_Name: string;
@@ -42,7 +37,6 @@ interface BackgroundMusicPlayerProps {
   imageSource?: string;
   title?: string;
   subtitle?: string;
-  song_file?: string;
   lyrics?: string;
   Song_Length: string;
   functionForForward?: () => void;
@@ -63,13 +57,9 @@ const BackgroundMusicPlayer: React.FC<BackgroundMusicPlayerProps> = ({
   togglePlayMusic,
   paddingtop,
 }) => {
-  const client = useRemoteMediaClient();
   const [isMusicPlaying, setIsMusicPlaying] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const dispatch = useDispatch();
-  const {t} = useTranslation();
-  const isExternalPlaybackAvailable = useExternalPlaybackAvailability();
-  const navigation = useNavigation();
   const animation = useRef(
     new Animated.Value(Dimensions.get('window').height * 0.1),
   ).current;
@@ -81,19 +71,8 @@ const BackgroundMusicPlayer: React.FC<BackgroundMusicPlayerProps> = ({
     outputRange: ['#9D824F', '#1c1508'],
   });
 
-  const {isPlaying, persistCurrentSong} = useSelector(
-    (state: RootState) => state.musicPlayer,
-  );
+  const {isPlaying} = useSelector((state: RootState) => state.musicPlayer);
 
-  if (client) {
-    client.loadMedia({
-      mediaInfo: {
-        contentUrl: `<url id="cve4t987dlcfgnka047g" type="url" status="failed" title="" wc="0">https://musicfilesforheroku.s3.us-west-1.amazonaws.com/uploads/</url> ${persistCurrentSong.Song_File}`,
-        contentType: 'audio/mpeg',
-      },
-      autoplay: true,
-    });
-  }
   const toggleModalSize = () => {
     Animated.timing(animation, {
       toValue: isExpanded
@@ -108,7 +87,6 @@ const BackgroundMusicPlayer: React.FC<BackgroundMusicPlayerProps> = ({
 
   const {position} = useProgress(500);
   const SongDuration = convertTimeToSeconds(Song_Length);
-
   function convertTimeToSeconds(time) {
     const [minutes, seconds] = time.split(':').map(Number);
     return minutes * 60 + seconds;
@@ -119,11 +97,9 @@ const BackgroundMusicPlayer: React.FC<BackgroundMusicPlayerProps> = ({
     const secs = Math.floor(seconds % 60);
     return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
   };
-
   const onSliderValueChange = async value => {
     await TrackPlayer.seekTo(value);
   };
-
   const handlePlayPause = async () => {
     setIsMusicPlaying(!isMusicPlaying);
     const state = await TrackPlayer.getState();
@@ -136,260 +112,197 @@ const BackgroundMusicPlayer: React.FC<BackgroundMusicPlayerProps> = ({
     }
   };
 
-  useFocusEffect(
-    useCallback(() => {
-      const onBackPress = () => {
-        if (isExpanded) {
-          toggleModalSize();
-          return true;
-        }
-        return false;
-      };
-
-      if (Platform.OS === 'android') {
-        BackHandler.addEventListener('hardwareBackPress', onBackPress);
-      }
-
-      const unsubscribe = navigation.addListener('beforeRemove', e => {
-        if (isExpanded) {
-          e.preventDefault();
-          toggleModalSize();
-        }
-      });
-
-      return () => {
-        if (Platform.OS === 'android') {
-          BackHandler.removeEventListener('hardwareBackPress', onBackPress);
-        }
-        unsubscribe();
-      };
-    }, [isExpanded, navigation]),
-  );
-
-  const swipeDownGesture = Gesture.Pan().onEnd(event => {
-    if (event.translationY > 10) {
-      runOnJS(toggleModalSize)();
-    }
-  });
-
   useEffect(() => {
-    const checkSongCompletion = async () => {
-      if (position >= SongDuration && functionForForward) {
-        await functionForForward();
+    const backAction = () => {
+      if (isExpanded) {
+        toggleModalSize();
+        return true;
       }
+      return false;
     };
 
-    checkSongCompletion();
-  }, [position, SongDuration, functionForForward]);
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      backAction,
+    );
+
+    return () => backHandler.remove();
+  }, [isExpanded]);
 
   return (
-    <GestureDetector gesture={swipeDownGesture}>
-      <Animated.View
-        style={[
-          styles.modalContainer,
-          {
-            height: animation,
-            backgroundColor,
-            paddingTop: isExpanded ? Number(paddingtop) : 0,
-            zIndex: !isExpanded ? 10000 : 0,
-            borderRadius: !isExpanded ? responsiveWidth(3) : 0,
-          },
-        ]}>
-        <ScrollView bounces={false} showsVerticalScrollIndicator={false}>
-          <TouchableOpacity
-            disabled={isExpanded ? true : false}
-            style={[
-              styles.modalContent,
-              {
-                flexDirection: !isExpanded ? 'row' : 'column',
-                justifyContent: isExpanded ? null : 'center',
-              },
-            ]}
-            onPress={!isExpanded ? toggleModalSize : null}>
-            {isExpanded ? (
-              <View style={{width: '100%'}}>
-                <View style={styles.header}>
-                  <TouchableOpacity onPress={toggleModalSize}>
-                    <Image
-                      style={{marginRight: responsiveWidth(17)}}
-                      source={require('../../Assets/images/down.png')}
-                    />
-                  </TouchableOpacity>
-                  <Text
-                    style={[
-                      styles.headerTitle,
-                      {marginLeft: responsiveWidth(4)},
-                    ]}>
-                    {t('Now Playing')}
-                  </Text>
-                </View>
-                {imageSource ? (
+    <Animated.View
+      style={[
+        styles.modalContainer,
+        {
+          height: animation,
+          backgroundColor,
+          paddingTop: isExpanded ? paddingtop : 0,
+          zIndex: !isExpanded ? 10000 : 0,
+          borderRadius: !isExpanded ? responsiveWidth(3) : 0,
+        },
+      ]}>
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <TouchableOpacity
+          disabled={isExpanded ? true : false}
+          style={[
+            styles.modalContent,
+            {
+              flexDirection: !isExpanded ? 'row' : 'column',
+              justifyContent: isExpanded ? null : 'center',
+            },
+          ]}
+          onPress={!isExpanded ? toggleModalSize : null}>
+          {isExpanded ? (
+            <View style={{width: '100%'}}>
+              <View style={styles.header}>
+                <TouchableOpacity onPress={toggleModalSize}>
                   <Image
-                    source={{uri: imageSource}}
-                    style={[
-                      styles.extendedimage,
-                      {
-                        width: '100%',
-                        height: responsiveHeight(40),
-                      },
-                    ]}
+                    style={{marginRight: responsiveWidth(17)}}
+                    source={require('../../Assets/images/down.png')}
                   />
-                ) : (
-                  <View style={styles.imagePlaceholder}>
-                    <Text style={styles.placeholderText}>No Image</Text>
-                  </View>
-                )}
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                  }}>
-                  <View
-                    style={{width: '70%', marginVertical: responsiveHeight(2)}}>
-                    <Text numberOfLines={1} style={styles.titleExpanded}>
-                      {title}
-                    </Text>
-                    <Text style={styles.subtitleExpanded}>{subtitle}</Text>
-                  </View>
-                  {Platform.OS === 'ios' && (
-                    <View>
-                      {isExternalPlaybackAvailable && (
-                        <AirplayButton
-                          prioritizesVideoDevices={false}
-                          tintColor={'#fff'}
-                          activeTintColor={'blue'}
-                          style={{
-                            width: 24,
-                            height: 24,
-                          }}
-                        />
-                      )}
-                    </View>
-                  )}
-                  {Platform.OS === 'android' && (
-                    <View>
-                      <CastButton
-                        style={{width: 24, height: 24, tintColor: 'white'}}
-                      />
-                    </View>
-                  )}
-                </View>
-                <Slider
-                  style={{width: '100%'}}
-                  minimumValue={0}
-                  maximumValue={SongDuration}
-                  value={position}
-                  onValueChange={onSliderValueChange}
-                  minimumTrackTintColor="white"
-                  maximumTrackTintColor="gray"
-                  thumbTintColor="white"
+                </TouchableOpacity>
+                <Text
+                  style={[
+                    styles.headerTitle,
+                    {marginLeft: responsiveWidth(4)},
+                  ]}>
+                  Now Playing
+                </Text>
+              </View>
+              {imageSource ? (
+                <Image
+                  source={{uri: imageSource}}
+                  style={[
+                    styles.extendedimage,
+                    {width: '100%', height: responsiveHeight(40)},
+                  ]}
                 />
-                <View style={styles.progressContainer}>
-                  <View style={styles.progressBar}></View>
+              ) : (
+                <View style={styles.imagePlaceholder}>
+                  <Text style={styles.placeholderText}>No Image</Text>
+                </View>
+              )}
+              <View
+                style={{width: '100%', marginVertical: responsiveHeight(2)}}>
+                <Text numberOfLines={1} style={styles.titleExpanded}>
+                  {title}
+                </Text>
+                <Text style={styles.subtitleExpanded}>{subtitle}</Text>
+              </View>
+              <Slider
+                style={{width: '100%'}}
+                minimumValue={0}
+                maximumValue={SongDuration}
+                value={position}
+                onValueChange={onSliderValueChange}
+                minimumTrackTintColor="white"
+                maximumTrackTintColor="gray"
+                thumbTintColor="white"
+              />
+              <View style={styles.progressContainer}>
+                <View style={styles.progressBar}></View>
 
-                  <View style={styles.timeContainer}>
-                    <Text style={styles.timeText}>{formatTime(position)}</Text>
-                    <Text style={styles.timeText}>{Song_Length}</Text>
-                  </View>
+                <View style={styles.timeContainer}>
+                  <Text style={styles.timeText}>{formatTime(position)}</Text>
+                  <Text style={styles.timeText}>{Song_Length}</Text>
                 </View>
               </View>
+            </View>
+          ) : (
+            <View style={[styles.Container]}>
+              {imageSource ? (
+                <Image source={{uri: imageSource}} style={styles.image} />
+              ) : (
+                <View style={styles.imagePlaceholder}>
+                  <Text style={styles.placeholderText}>No Image</Text>
+                </View>
+              )}
+              <View style={{width: '65%'}}>
+                <Text numberOfLines={1} style={styles.title}>
+                  {title}
+                </Text>
+                <Text style={styles.subtitle}>{subtitle}</Text>
+              </View>
+            </View>
+          )}
+
+          <View
+            style={[styles.controls, isExpanded && styles.controlsExpanded]}>
+            <TouchableOpacity onPress={functionForBackward}>
+              <Image
+                source={require('../../Assets/images/backward-solid.png')}
+                style={[
+                  styles.controlIcon,
+                  isExpanded ? styles.controlIconExpanded : null,
+                  {tintColor: isExpanded ? '#fff' : '#000'},
+                ]}
+              />
+            </TouchableOpacity>
+
+            {isExpanded ? (
+              <TouchableOpacity
+                style={{
+                  height: responsiveWidth(13),
+                  width: responsiveWidth(13),
+                  borderRadius: responsiveWidth(7),
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}
+                onPress={handlePlayPause}>
+                <Image
+                  source={
+                    isPlaying
+                      ? require('../../Assets/images/whitePause.png')
+                      : require('../../Assets/images/whitePlay.png')
+                  }
+                  style={[styles.playPauseIconExpanded]}
+                />
+              </TouchableOpacity>
             ) : (
-              <View style={[styles.Container]}>
-                {imageSource ? (
-                  <Image source={{uri: imageSource}} style={styles.image} />
-                ) : (
-                  <View style={styles.imagePlaceholder}>
-                    <Text style={styles.placeholderText}>No Image</Text>
-                  </View>
-                )}
-                <View style={{width: '65%'}}>
-                  <Text numberOfLines={1} style={styles.title}>
-                    {title}
-                  </Text>
-                  <Text style={styles.subtitle}>{subtitle}</Text>
-                </View>
-              </View>
+              <TouchableOpacity
+                style={{
+                  height: responsiveWidth(16),
+                  width: responsiveWidth(14),
+                  borderRadius: responsiveWidth(7),
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}
+                onPress={handlePlayPause}>
+                <Image
+                  source={
+                    isPlaying
+                      ? require('../../Assets/images/play.png')
+                      : require('../../Assets/images/blackpause.png')
+                  }
+                  style={[
+                    styles.playPauseIcon,
+                    isExpanded ? styles.playPauseIconExpanded : null,
+                    {tintColor: isExpanded ? '#fff' : '#000'},
+                  ]}
+                />
+              </TouchableOpacity>
             )}
 
-            <View
-              style={[styles.controls, isExpanded && styles.controlsExpanded]}>
-              <TouchableOpacity onPress={functionForBackward}>
-                <Image
-                  source={require('../../Assets/images/backward-solid.png')}
-                  style={[
-                    styles.controlIcon,
-                    isExpanded ? styles.controlIconExpanded : null,
-                    {tintColor: isExpanded ? '#fff' : '#000'},
-                  ]}
-                />
-              </TouchableOpacity>
+            <TouchableOpacity onPress={functionForForward}>
+              <Image
+                source={require('../../Assets/images/farward-solid.png')}
+                style={[
+                  styles.controlIcon,
+                  isExpanded ? styles.controlIconExpanded : null,
+                  {tintColor: isExpanded ? '#fff' : '#000'},
+                ]}
+              />
+            </TouchableOpacity>
+          </View>
 
-              {isExpanded ? (
-                <TouchableOpacity
-                  style={{
-                    height: responsiveWidth(13),
-                    width: responsiveWidth(13),
-                    borderRadius: responsiveWidth(7),
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}
-                  onPress={handlePlayPause}>
-                  <Image
-                    source={
-                      isPlaying
-                        ? require('../../Assets/images/whitePause.png')
-                        : require('../../Assets/images/whitePlay.png')
-                    }
-                    style={[styles.playPauseIconExpanded]}
-                  />
-                </TouchableOpacity>
-              ) : (
-                <TouchableOpacity
-                  style={{
-                    height: responsiveWidth(16),
-                    width: responsiveWidth(14),
-                    borderRadius: responsiveWidth(7),
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}
-                  onPress={handlePlayPause}>
-                  <Image
-                    source={
-                      isPlaying
-                        ? require('../../Assets/images/play.png')
-                        : require('../../Assets/images/blackpause.png')
-                    }
-                    style={[
-                      styles.playPauseIcon,
-                      isExpanded ? styles.playPauseIconExpanded : null,
-                      {tintColor: isExpanded ? '#fff' : '#000'},
-                    ]}
-                  />
-                </TouchableOpacity>
-              )}
-
-              <TouchableOpacity onPress={functionForForward}>
-                <Image
-                  source={require('../../Assets/images/farward-solid.png')}
-                  style={[
-                    styles.controlIcon,
-                    isExpanded ? styles.controlIconExpanded : null,
-                    {tintColor: isExpanded ? '#fff' : '#000'},
-                  ]}
-                />
-              </TouchableOpacity>
+          {isExpanded ? (
+            <View style={styles.lyricsContainer}>
+              <Text style={styles.lyrics}>{lyrics}</Text>
             </View>
-
-            {isExpanded ? (
-              <View style={styles.lyricsContainer}>
-                <Text style={styles.lyrics}>{lyrics}</Text>
-              </View>
-            ) : null}
-          </TouchableOpacity>
-        </ScrollView>
-      </Animated.View>
-    </GestureDetector>
+          ) : null}
+        </TouchableOpacity>
+      </ScrollView>
+    </Animated.View>
   );
 };
 
