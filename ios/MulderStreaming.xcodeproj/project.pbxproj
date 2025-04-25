@@ -297,11 +297,9 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = "";
-				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 6QDJK47T5P;
 				INFOPLIST_FILE = MulderStreaming/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -318,7 +316,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = org.mulderStreaming;
 				PRODUCT_NAME = MulderStreaming;
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "mulder stream";
 				SWIFT_VERSION = 5.0;
 				SplashScreen = "$(SRCROOT)/../node_modules/react-native-splash-screen/ios\n$(SRCROOT)/../node_modules/react-native-splash-screen/ios\n$(SRCROOT)/../node_modules/react-native-splash-screen/ios\n$(SRCROOT)/../node_modules/react-native-splash-screen/ios\n$(SRCROOT)/../node_modules/react-native-splash-screen/ios\n$(SRCROOT)/../node_modules/react-native-splash-screen/ios\n$(SRCROOT)/../node_modules/react-native-splash-screen/ios\n$(SRCROOT)/../node_modules/react-native-splash-screen/ios\n$(SRCROOT)/../node_modules/react-native-splash-screen/ios\n$(SRCROOT)/../node_modules/react-native-splash-screen/ios\n";
 				VERSIONING_SYSTEM = "apple-generic";

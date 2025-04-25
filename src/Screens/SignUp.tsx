@@ -106,7 +106,7 @@ const SignUp = () => {
                 {deviceLanguage === 'nl' ? (
                   <Image
                     source={MulderLogoDutch}
-                    resizeMode="center"
+                    resizeMode="stretch"
                     style={{height: responsiveHeight(10), width: '100%'}}
                   />
                 ) : (
