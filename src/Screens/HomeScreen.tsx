@@ -70,7 +70,6 @@ const HomeScreen = () => {
   const [modalVisible2, setModalVisible2] = useState(false);
   const [Cover_Image_NL, setCover_Image_NL] = useState('');
   const [Cover_Image_ENG, setCover_Image_ENG] = useState('');
-  console.log('suth data:', AuthData);
   const subcscriptionId = AuthData?.subscriptionID;
   const [dataSlice, setDataSlice] = useState([]);
   const [fetchAllPlaylists, {isLoading: playlistLoading}] =
@@ -106,8 +105,6 @@ const HomeScreen = () => {
       const userId = 'user-id';
       const res = await fetchAllPlaylists(userId);
 
-      console.log('playlists: ', res.data.result);
-
       setDataSlice(res.data.result);
     } catch (error) {
       console.log('Error:', error);
@@ -127,13 +124,11 @@ const HomeScreen = () => {
   const getAlbums = async () => {
     try {
       const res = await data();
-      console.log('Albums===========>', res.data);
       setAllAlbums(res?.data);
       const allalbums = res.data;
       const sortedAlbums = Array.from(allalbums).sort(
         (a, b) => a.index - b.index,
       );
-      console.log('sortedAlbums===', sortedAlbums);
       setsortedAlbums(sortedAlbums);
       if (subcscriptionId === '635bcf0612d32838b423b227') {
         const targetAlbum = res?.data.find(
@@ -176,7 +171,6 @@ const HomeScreen = () => {
   };
 
   const handleForward = async () => {
-    console.log('songs from redux', playlist);
     const trackList = playlist.map(song => ({
       id: song._id,
       url: `https://musicfilesforheroku.s3.us-west-1.amazonaws.com/uploads/${song.Song_File}`,
@@ -196,7 +190,6 @@ const HomeScreen = () => {
         dispatch(setCurrentSongg(nextSong));
         dispatch(setPlayingSongIndex(nextIndex));
         dispatch(togglePlaying(true));
-        console.log('current playing from F funtion', nextSong);
       } catch (error) {
         console.error('Error skipping to next song:', error);
       }
@@ -225,7 +218,6 @@ const HomeScreen = () => {
         dispatch(setCurrentSongg(prevSong));
         dispatch(setPlayingSongIndex(prevIndex));
         dispatch(togglePlaying(true));
-        console.log('current playing from B funtion', prevSong);
       } catch (error) {
         console.error('Error skipping to previous song:', error);
       }

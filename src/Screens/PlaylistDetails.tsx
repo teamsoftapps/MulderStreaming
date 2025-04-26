@@ -224,14 +224,11 @@ const PlaylistDetails: React.FC<PlaylistDetailsProps> = ({route}) => {
 
       dispatch(setPlayingSongIndex(currentTrackId));
       dispatch(togglePlaying(true));
-      console.log('currentplaylist==>', playlist);
       const matchingPlaylist = playlist.find(
         item => item._id === currentTrack.id,
       );
       dispatch(setCurrentSongg(matchingPlaylist));
       await TrackPlayer.play();
-      console.log('Matching Playlist:', matchingPlaylist);
-      console.log('Current playing from Forward:', currentTrack);
     } catch (error) {
       console.log('No next track available:', error);
     }
@@ -277,7 +274,6 @@ const PlaylistDetails: React.FC<PlaylistDetailsProps> = ({route}) => {
       );
       dispatch(setCurrentSongg(matchingPlaylist));
       await TrackPlayer.play();
-      console.log('Current playing from Backward:', currentTrack);
     } catch (error) {
       console.log('No previous track available:', error);
     }

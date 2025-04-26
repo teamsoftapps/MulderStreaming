@@ -33,7 +33,6 @@ const HorizontalFlatList: React.FC = () => {
   const fetchExclusive = async () => {
     try {
       const res = await GetExclusiveContent({});
-      console.log('video data fetched==>', res?.data?.data);
       const fetchedData = res?.data?.data.map((item: any) => ({
         videolink: item.videolink,
         thumbnail: item.thumbnail,

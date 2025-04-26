@@ -39,24 +39,18 @@ function App(): React.JSX.Element {
   useEffect(() => {
     const init = async () => {
       try {
-        console.log('Initializing app...');
       } catch (error) {
         console.error('Error during initialization:', error);
       }
     };
 
     init()
-      .then(() => {
-        console.log('Initialization completed');
-      })
+      .then(() => {})
       .finally(async () => {
         await BootSplash.hide({fade: true});
-        console.log('BootSplash has been hidden successfully');
       });
   }, []);
 
-  console.log('Token:', userAuth?.auth?.token?.data?.user?.token);
-  console.log('user Auth:asas', userAuth?.auth?.token?.data?.user);
   useEffect(() => {
     const defaultLanguage = getDefaultLanguage();
     setLanguage(defaultLanguage);

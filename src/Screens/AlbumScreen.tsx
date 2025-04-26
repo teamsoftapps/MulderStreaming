@@ -85,7 +85,6 @@ const AlbumScreen: React.FC<AlbumScreenProps> = ({route}) => {
 
     try {
       const res = await getAlbumsSongs(albumName);
-      console.log('songssss=======>', res?.data);
       const liked = await favoriteSongs({});
       setIsLikedSong(liked?.data?.favourites);
       if (res?.data) {
@@ -118,7 +117,6 @@ const AlbumScreen: React.FC<AlbumScreenProps> = ({route}) => {
 
     try {
       const res = await getAlbumsSongs(albumName);
-      console.log('Songssss======>:', res?.data);
 
       const liked = await favoriteSongs({});
       setIsLikedSong(liked?.data?.favourites || []);
@@ -129,7 +127,6 @@ const AlbumScreen: React.FC<AlbumScreenProps> = ({route}) => {
         .slice()
         .sort((a, b) => a.Song_index - b.Song_index);
 
-      console.log('sortedSongs===', sortedSongs);
       setAlbumSongs(sortedSongs);
 
       if (res?.data.length > 0) {
@@ -199,14 +196,11 @@ const AlbumScreen: React.FC<AlbumScreenProps> = ({route}) => {
 
       dispatch(setPlayingSongIndex(currentTrackId));
       dispatch(togglePlaying(true));
-      console.log('currentplaylist==>', playlist);
       const matchingPlaylist = playlist.find(
         item => item._id === currentTrack.id,
       );
       dispatch(setCurrentSongg(matchingPlaylist));
       await TrackPlayer.play();
-      console.log('Matching Playlist:', matchingPlaylist);
-      console.log('Current playing from Forward:', currentTrack);
     } catch (error) {
       console.log('No next track available:', error);
     }
@@ -252,7 +246,6 @@ const AlbumScreen: React.FC<AlbumScreenProps> = ({route}) => {
       );
       dispatch(setCurrentSongg(matchingPlaylist));
       await TrackPlayer.play();
-      console.log('Current playing from Backward:', currentTrack);
     } catch (error) {
       console.log('No previous track available:', error);
     }
@@ -281,7 +274,6 @@ const AlbumScreen: React.FC<AlbumScreenProps> = ({route}) => {
   const toggleFavoriteHandler = async (id: string) => {
     try {
       const result = await handleFavorite(id);
-      console.log('favouriteeeeeeeeeeeeeeee', result);
       getSongs();
       if (result) {
         dispatch(toggleFavorite(id));

@@ -39,11 +39,7 @@ module.exports = async function () {
       if (trackId !== null) {
         const track = await TrackPlayer.getTrack(trackId);
 
-        console.log('Current track data:', track);
         const {playlist} = store.getState().musicPlayer;
-        console.log('Current Playlist==>', playlist);
-      } else {
-        console.log('No track is currently playing.');
       }
     } catch (error) {
       console.error('Error getting current track:', error);
@@ -57,18 +53,12 @@ module.exports = async function () {
       const {playlist} = store.getState().musicPlayer;
       const id = track.id;
       const currentIndex = playlist.findIndex(song => song._id === id);
-      console.log('Current Playlist==>', playlist);
-      console.log('Current track data:', track);
-      console.log('CurrentIndex===>', currentIndex);
 
       if (currentIndex < playlist.length - 1) {
         const nextIndex = currentIndex + 1;
         const nextSong = playlist[nextIndex];
         await TrackPlayer.skip(nextIndex);
         store.dispatch(setCurrentSongg(nextSong));
-        console.log('Next song data:', nextSong);
-      } else {
-        console.log('You are at the last song in the playlist.');
       }
     } catch (error) {
       console.error('Error skipping to the next track:', error);
@@ -82,18 +72,12 @@ module.exports = async function () {
       const {playlist} = store.getState().musicPlayer;
       const id = track.id;
       const currentIndex = playlist.findIndex(song => song._id === id);
-      console.log('Current Playlist==>', playlist);
-      console.log('Current track data:', track);
-      console.log('CurrentIndex===>', currentIndex);
 
       if (currentIndex > 0) {
         const prevIndex = currentIndex - 1;
         const prevSong = playlist[prevIndex];
         await TrackPlayer.skip(prevIndex);
         store.dispatch(setCurrentSongg(prevSong));
-        console.log('Previous song data:', prevSong);
-      } else {
-        console.log('You are at the first song in the playlist.');
       }
     } catch (error) {
       console.error('Error skipping to the previous track:', error);

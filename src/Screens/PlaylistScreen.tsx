@@ -84,13 +84,11 @@ const PlaylistScreen: React.FC = () => {
   const getAlbums = async () => {
     try {
       const res = await data();
-      console.log('Albums===========>', res.data);
       setAllAlbums(res?.data);
       const allalbums = res.data;
       const sortedAlbums = Array.from(allalbums).sort(
         (a, b) => a.index - b.index,
       );
-      console.log('sortedAlbums===', sortedAlbums);
       setsortedAlbums(sortedAlbums);
       if (subcscriptionId === '635bcf0612d32838b423b227') {
         const targetAlbum = res?.data.find(
@@ -130,8 +128,6 @@ const PlaylistScreen: React.FC = () => {
       } catch (error) {
         console.error('Error skipping to next song:', error);
       }
-    } else {
-      console.log('You are at the last song in the playlist.');
     }
   };
 
@@ -158,8 +154,6 @@ const PlaylistScreen: React.FC = () => {
       } catch (error) {
         console.error('Error skipping to previous song:', error);
       }
-    } else {
-      console.log('You are at the first song in the playlist.');
     }
   };
 
