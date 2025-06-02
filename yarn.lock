@@ -7380,11 +7380,6 @@ react-native-gesture-handler@^2.20.0:
     hoist-non-react-statics "^3.3.0"
     invariant "^2.2.4"
 
-react-native-google-cast@^4.8.3:
-  version "4.8.3"
-  resolved "https://registry.yarnpkg.com/react-native-google-cast/-/react-native-google-cast-4.8.3.tgz#b7572972add806f44f44267a5079e343472766bf"
-  integrity sha512-2s/dBr+YYSXYTo7Btx9Az9yOPjnr2GQ8GWU+qDXMsHijrYDafe9uIj7RWFFmx7cL/4RSICx1RwC3vUkHSqaWEA==
-
 react-native-is-edge-to-edge@1.1.6, react-native-is-edge-to-edge@^1.1.6:
   version "1.1.6"
   resolved "https://registry.yarnpkg.com/react-native-is-edge-to-edge/-/react-native-is-edge-to-edge-1.1.6.tgz#69ec13f70d76e9245e275eed4140d0873a78f902"
