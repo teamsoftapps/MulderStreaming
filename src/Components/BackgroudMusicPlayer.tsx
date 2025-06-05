@@ -1,4 +1,4 @@
-import React, {useRef, useState, useEffect} from 'react';
+import React, {useMemo, useRef, useState, useEffect} from 'react';
 import {
   View,
   StyleSheet,
@@ -86,12 +86,15 @@ const BackgroundMusicPlayer: React.FC<BackgroundMusicPlayerProps> = ({
   };
 
   const {position} = useProgress(500);
-  const SongDuration = convertTimeToSeconds(Song_Length);
+  const SongDuration = useMemo(
+    () => convertTimeToSeconds(Song_Length),
+    [Song_Length],
+  );
   function convertTimeToSeconds(time) {
     const [minutes, seconds] = time.split(':').map(Number);
     return minutes * 60 + seconds;
   }
-
+  const [hasCalledForward, setHasCalledForward] = useState(false);
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = Math.floor(seconds % 60);
@@ -128,6 +131,16 @@ const BackgroundMusicPlayer: React.FC<BackgroundMusicPlayerProps> = ({
 
     return () => backHandler.remove();
   }, [isExpanded]);
+  useEffect(() => {
+    if (Math.floor(position) >= SongDuration && !hasCalledForward) {
+      setHasCalledForward(true);
+      functionForForward?.();
+    }
+
+    if (position < SongDuration && hasCalledForward) {
+      setHasCalledForward(false);
+    }
+  }, [position, SongDuration, hasCalledForward]);
 
   return (
     <Animated.View
@@ -198,6 +211,7 @@ const BackgroundMusicPlayer: React.FC<BackgroundMusicPlayerProps> = ({
                 minimumTrackTintColor="white"
                 maximumTrackTintColor="gray"
                 thumbTintColor="white"
+                disabled={position < 4}
               />
               <View style={styles.progressContainer}>
                 <View style={styles.progressBar}></View>
