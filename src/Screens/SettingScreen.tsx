@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import * as RNLocalize from 'react-native-localize';
 
 import {
@@ -27,6 +27,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {clearUser} from '../store/slices/authSlice';
 import TrackPlayer from 'react-native-track-player';
 import {setCurrentSongg, togglePlaying} from '../store/slices/songState';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 type SettingsScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
   'AboutApplication',
@@ -63,14 +64,48 @@ const SettingScreen = () => {
       console.error('Error opening email app:', err),
     );
   };
-  const changeLanguage = (langCode: string): void => {
+  // const changeLanguage = (langCode: string): void => {
+  //   i18n.changeLanguage(langCode);
+  //   const selectedLang = availableLanguages.find(
+  //     lang => lang.code === langCode,
+  //   );
+  //   if (selectedLang) setSelectedLanguage(selectedLang.label);
+  //   setAlertVisible(false);
+  // };
+
+  const changeLanguage = async (langCode: string): Promise<void> => {
     i18n.changeLanguage(langCode);
     const selectedLang = availableLanguages.find(
       lang => lang.code === langCode,
     );
     if (selectedLang) setSelectedLanguage(selectedLang.label);
+
+    try {
+      await AsyncStorage.setItem('appLanguage', langCode); // 💾 save selection
+    } catch (error) {
+      console.error('Error saving language:', error);
+    }
+
     setAlertVisible(false);
   };
+
+  useEffect(() => {
+    const loadSavedLanguage = async () => {
+      try {
+        const savedLang = await AsyncStorage.getItem('appLanguage');
+        if (savedLang) {
+          i18n.changeLanguage(savedLang);
+          const selectedLang = availableLanguages.find(
+            lang => lang.code === savedLang,
+          );
+          if (selectedLang) setSelectedLanguage(selectedLang.label);
+        }
+      } catch (error) {
+        console.error('Error loading saved language:', error);
+      }
+    };
+    loadSavedLanguage();
+  }, []);
 
   const handleBiography = () => {
     const url = 'https://www.ianmulder.us/biography';

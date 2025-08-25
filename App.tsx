@@ -11,11 +11,11 @@ import NetInfo from '@react-native-community/netinfo';
 import ToastMessage from './src/hooks/ToastMessage.js';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {StyleSheet} from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 function App(): React.JSX.Element {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [language, setLanguage] = useState<string>('');
   const {Toasts} = ToastMessage();
-  const userAuth = useSelector(state => state);
   const token = useSelector(state => state?.auth?.token?.data?.user?.token);
 
   useEffect(() => {
@@ -52,9 +52,22 @@ function App(): React.JSX.Element {
   }, []);
 
   useEffect(() => {
-    const defaultLanguage = getDefaultLanguage();
-    setLanguage(defaultLanguage);
-    i18n.changeLanguage(defaultLanguage);
+    const initLanguage = async () => {
+      try {
+        const savedLang = await AsyncStorage.getItem('appLanguage');
+        const defaultLanguage = savedLang ?? getDefaultLanguage();
+        setLanguage(defaultLanguage);
+        i18n.changeLanguage(defaultLanguage);
+      } catch (error) {
+        console.error('Error loading language:', error);
+      }
+    };
+
+    initLanguage();
+    // const defaultLanguage = getDefaultLanguage();
+    // setLanguage(defaultLanguage);
+    // i18n.changeLanguage(defaultLanguage);
+
     const setupTrackPlayer = async () => {
       try {
         await TrackPlayer.setupPlayer();
@@ -81,10 +94,21 @@ function App(): React.JSX.Element {
     setupTrackPlayer();
   }, []);
 
-  const changeLanguage = (langCode: string | null) => {
-    const newLang = langCode ?? getDefaultLanguage();
-    setLanguage(newLang);
-    i18n.changeLanguage(newLang);
+  // const changeLanguage = (langCode: string | null) => {
+  //   const newLang = langCode ?? getDefaultLanguage();
+  //   setLanguage(newLang);
+  //   i18n.changeLanguage(newLang);
+  // };
+
+  const changeLanguage = async (langCode: string | null) => {
+    try {
+      const newLang = langCode ?? getDefaultLanguage();
+      setLanguage(newLang);
+      i18n.changeLanguage(newLang);
+      await AsyncStorage.setItem('appLanguage', newLang); // 💾 persist selection
+    } catch (error) {
+      console.error('Error saving language:', error);
+    }
   };
 
   return (

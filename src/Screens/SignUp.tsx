@@ -31,7 +31,7 @@ import PasswordInput from '../Components/passwordToggle';
 import * as RNLocalize from 'react-native-localize';
 import MulderLogo from '../../Assets/images/name.png';
 import MulderLogoDutch from '../../Assets/images/name_dutch.png';
-
+import i18n from '../Components/i18next';
 type SignUpScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
   'SignUp'
@@ -49,7 +49,9 @@ const SignUp = () => {
   const passwordRef = useRef<TextInput>(null);
   const accessCodeRef = useRef<TextInput>(null);
 
-  const deviceLanguage = RNLocalize.getLocales()[0].languageCode;
+  const deviceLanguage = i18n.language.split('-')[0];
+
+  console.log('deviceLanguage', deviceLanguage);
 
   const firstName = deviceLanguage === 'nl' ? 'JAN' : 'IAN';
 
@@ -117,6 +119,7 @@ const SignUp = () => {
                   />
                 )}
               </View>
+
               {deviceLanguage === 'nl' ? (
                 <Text allowFontScaling={false} style={styles.welcomeBack}>
                   Aanmelden
@@ -126,6 +129,7 @@ const SignUp = () => {
                   {t('Create your account')}
                 </Text>
               )}
+
               {deviceLanguage === 'nl' ? (
                 <Text allowFontScaling={false} style={styles.loginText}>
                   {t('Heeft u nog niet geabonneerd?') + ' '}
