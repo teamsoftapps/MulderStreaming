@@ -26,7 +26,7 @@ import {useTranslation} from 'react-i18next';
 import WrapperContainer from '../Components/WrapperContainer';
 import {useSignINMutation} from '../store/Api/Auth';
 import {useDispatch} from 'react-redux';
-import {setUser} from '../store/slices/authSlice';
+import {setToken, setUser} from '../store/slices/authSlice';
 import ToastMessage from '../hooks/ToastMessage.js';
 import * as RNLocalize from 'react-native-localize';
 import MulderLogo from '../../Assets/images/name.png';
@@ -65,6 +65,8 @@ const SignIn = ({setbool, changeLanguage}: SignInProps) => {
     try {
       const res = await signIN(payload).unwrap();
       if (res?.data) {
+        console.log('responce from signIn:', res?.data);
+        dispatch(setToken(res?.data?.user?.token));
         dispatch(setUser(res));
         Toasts('Info', 'Logged in successfully!', 'success');
       } else {

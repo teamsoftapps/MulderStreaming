@@ -1,10 +1,8 @@
-import {NavigatorScreenParams} from '@react-navigation/native';
-
 export type RootStackParamList = {
   SignIn: undefined;
   SignUp: undefined;
-  ForgotPassword: undefined;
-  MakeSelectionForgotPassword: undefined;
+  ForgotPassword: {email: string};
+  MakeSelectionForgotPassword: {data: any};
   HomeScreen: undefined;
   AboutApplication: undefined;
   HelpScreen: undefined;
@@ -13,7 +11,9 @@ export type RootStackParamList = {
   BottomTabNavigator: undefined;
   PlaylistScreen: undefined;
   PlaylistDetails: {data: any};
-  AllSongs: {playlistName: string} | undefined;
+  AllSongs: {playlistName: string | any} | undefined;
   CustomWebViewContent: undefined;
   MusicScreen: undefined;
+  CheckSubscriptionCode: {email: string};
+  WebViewContent: undefined;
 };

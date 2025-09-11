@@ -9,13 +9,14 @@ import PlaylistDetails from '../Screens/PlaylistDetails';
 import AllSongs from '../Screens/AllSongs';
 
 import WebViewContent from '../Components/WebViewContent';
+import {RootStackParamList} from '../Components/Type';
 
 type MainStackProps = {
   language: string;
   changeLanguage: (langCode: string | null) => void;
 };
 
-const Stack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const MainStack = ({language, changeLanguage}: MainStackProps) => (
   <>

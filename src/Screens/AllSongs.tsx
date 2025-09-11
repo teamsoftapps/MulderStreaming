@@ -20,10 +20,19 @@ import {
   useGetAllSongsMutation,
 } from '../store/Api/Auth';
 import {useNavigation, useRoute} from '@react-navigation/native';
+import type {RouteProp} from '@react-navigation/native';
 import ToastMessage from '../hooks/ToastMessage.js';
+import {RootStackParamList} from '../Components/Type';
+import {StackNavigationProp} from '@react-navigation/stack/lib/typescript/src';
+
+type AllSongsRouteProp = RouteProp<RootStackParamList, 'AllSongs'>;
+type AllSongsNavigationProp = StackNavigationProp<
+  RootStackParamList,
+  'AllSongs'
+>;
 const AllSongs: React.FC = () => {
-  const navigation = useNavigation();
-  const route = useRoute();
+  const navigation = useNavigation<AllSongsNavigationProp>();
+  const route = useRoute<AllSongsRouteProp>();
   const {playlistName} = route.params || {};
   const [getAllSongs, {isLoading}] = useGetAllSongsMutation();
   const [postPlaylist, {isLoading: postplaylistloading}] =
@@ -77,7 +86,7 @@ const AllSongs: React.FC = () => {
   };
   const gettingAllSongs = async () => {
     try {
-      const res = await getAllSongs();
+      const res = await getAllSongs({}).unwrap();
       setSongs(res.data.data);
       setFilteredSongs(res?.data?.data);
     } catch (error) {

@@ -32,20 +32,6 @@ module.exports = async function () {
     // logCurrentTrack();
   });
 
-  const logCurrentTrack = async () => {
-    try {
-      const trackId = await TrackPlayer.getCurrentTrack();
-
-      if (trackId !== null) {
-        const track = await TrackPlayer.getTrack(trackId);
-
-        const {playlist} = store.getState().musicPlayer;
-      }
-    } catch (error) {
-      console.error('Error getting current track:', error);
-    }
-  };
-
   const skipToNextTrack = async () => {
     try {
       const trackId = await TrackPlayer.getCurrentTrack();

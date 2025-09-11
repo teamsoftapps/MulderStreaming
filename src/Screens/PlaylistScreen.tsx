@@ -22,7 +22,7 @@ import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import {useGetAlbumsMutation} from '../store/Api/Auth';
 import BackgroundMusicPlayer from '../Components/BackgroudMusicPlayer';
 import {useDispatch, useSelector} from 'react-redux';
-import {RootState} from '../store';
+import {RootState} from '../store/store';
 import TrackPlayer from 'react-native-track-player';
 import {
   setCurrentSongg,
@@ -40,17 +40,11 @@ interface AlbumScreenProps {
   };
 }
 
-interface Album {
-  Album_Name: string;
-  Album_Image: string;
-  [key: string]: any;
-}
-interface ApiResponse {
-  data: Album[];
-}
 const PlaylistScreen: React.FC = () => {
   const {t} = useTranslation();
-  const AuthData = useSelector(state => state?.auth?.token?.data?.user);
+  const AuthData = useSelector(
+    state => (state as RootState).auth?.token?.data?.user,
+  );
   const navigation = useNavigation<AlbumScreenProps>();
   const [isAlbums, setAllAlbums] = useState([]);
   const [data, {isLoading}] = useGetAlbumsMutation();
@@ -83,11 +77,11 @@ const PlaylistScreen: React.FC = () => {
 
   const getAlbums = async () => {
     try {
-      const res = await data();
+      const res = await data({});
       setAllAlbums(res?.data);
       const allalbums = res.data;
       const sortedAlbums = Array.from(allalbums).sort(
-        (a, b) => a.index - b.index,
+        (a: any, b: any) => a.index - b.index,
       );
       setsortedAlbums(sortedAlbums);
       if (subcscriptionId === '635bcf0612d32838b423b227') {
@@ -157,8 +151,6 @@ const PlaylistScreen: React.FC = () => {
     }
   };
 
-  const togglePlayMusic = async (song: PlaylistItem, index: number) => {};
-
   const listemptyComp = () => {
     return (
       <View style={{alignItems: 'center', justifyContent: 'center'}}>
@@ -217,7 +209,6 @@ const PlaylistScreen: React.FC = () => {
                 }
                 style={styles.playlistMusic}>
                 <View style={{position: 'relative'}}>
-                  {/* Album Image */}
                   <Image
                     source={{
                       uri: `https://musicfilesforheroku.s3.us-west-1.amazonaws.com/uploads/${item.Album_Image}`,
@@ -259,7 +250,7 @@ const PlaylistScreen: React.FC = () => {
                       }}>
                       <Image
                         tintColor={'#fff'}
-                        source={require('../../Assets/images/lock.png')} // Lock icon
+                        source={require('../../Assets/images/lock.png')}
                         style={{
                           width: responsiveWidth(6),
                           height: responsiveWidth(6),
@@ -270,7 +261,6 @@ const PlaylistScreen: React.FC = () => {
                   )}
                 </View>
 
-                {/* Album Name and Singer Name */}
                 <View
                   style={{
                     flexDirection: 'column',
@@ -292,7 +282,6 @@ const PlaylistScreen: React.FC = () => {
                   </Text>
                 </View>
 
-                {/* Play Button */}
                 <View
                   style={{
                     flexDirection: 'row',
@@ -320,16 +309,13 @@ const PlaylistScreen: React.FC = () => {
           <BackgroundMusicPlayer
             paddingtop={responsiveHeight(9)}
             imageSource={`https://musicfilesforheroku.s3.us-west-1.amazonaws.com/uploads/${persistCurrentSong.Album_Image}`}
-            song_file={persistCurrentSong.Song_File}
             title={persistCurrentSong.Song_Name}
             Song_Length={persistCurrentSong.Song_Length}
             subtitle="Mulder"
             lyrics={persistCurrentSong.Song_Lyrics}
             functionForBackward={handleBackward}
             functionForForward={handleForward}
-            togglePlayMusic={() =>
-              togglePlayMusic(persistCurrentSong, currentSongIndex)
-            }
+            togglePlayMusic={() => {}}
           />
         </View>
       )}

@@ -28,6 +28,7 @@ import {clearUser} from '../store/slices/authSlice';
 import TrackPlayer from 'react-native-track-player';
 import {setCurrentSongg, togglePlaying} from '../store/slices/songState';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {RootState} from '../store/store';
 type SettingsScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
   'AboutApplication',
@@ -43,7 +44,9 @@ const SettingScreen = () => {
   const navigation = useNavigation<SettingsScreenNavigationProp>();
   const [alertVisible, setAlertVisible] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState('English');
-  const AuthData = useSelector(state => state?.auth?.token?.data?.user);
+  const AuthData = useSelector(
+    state => (state as RootState).auth?.token?.data?.user,
+  );
   const dispatch = useDispatch();
   const availableLanguages: LanguageOption[] = [
     {code: 'en', label: 'English'},

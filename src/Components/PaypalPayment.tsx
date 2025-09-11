@@ -15,11 +15,11 @@ const PayPalPayment = () => {
       console.error(error);
     }
   };
-  const onPaymentSuccess = data => {
+  const onPaymentSuccess = (data: any) => {
     // Handle the successful payment response
     Alert.alert('Payment Success', JSON.stringify(data));
   };
-  const onPaymentError = error => {
+  const onPaymentError = (error: any) => {
     // Handle the payment error response
     Alert.alert('Payment Error', JSON.stringify(error));
   };

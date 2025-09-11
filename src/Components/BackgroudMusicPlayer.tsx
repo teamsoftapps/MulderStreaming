@@ -17,22 +17,13 @@ import {
   responsiveHeight,
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
-import {RootState} from '../store';
+import {RootState} from '../store/store';
 import TrackPlayer, {State, useProgress} from 'react-native-track-player';
 import {useDispatch, useSelector} from 'react-redux';
 import {togglePlaying} from '../store/slices/songState';
 import Slider from '@react-native-community/slider';
 import {Platform} from 'react-native';
 
-interface Track {
-  _id: string;
-  Song_Name: string;
-  Song_File: string;
-  Album_Name: string;
-  Song_Length: string;
-  Song_Lyrics: string;
-  Album_Image: string;
-}
 interface BackgroundMusicPlayerProps {
   imageSource?: string;
   title?: string;
@@ -43,7 +34,7 @@ interface BackgroundMusicPlayerProps {
   functionForBackward?: () => void;
   togglePlayMusic?: () => void;
   style?: StyleProp<ViewStyle>;
-  paddingtop?: Number;
+  paddingtop?: number;
 }
 
 const BackgroundMusicPlayer: React.FC<BackgroundMusicPlayerProps> = ({

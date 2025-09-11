@@ -1,14 +1,21 @@
 import {fetchBaseQuery, createApi} from '@reduxjs/toolkit/query/react';
 import {BaseUrl} from '../../config/Service';
 import {RootState} from '../store';
+
+interface SignUpResponse {
+  status?: string;
+  message?: string;
+}
+
 export const Auth = createApi({
   reducerPath: 'Authentication',
   baseQuery: fetchBaseQuery({
     baseUrl: BaseUrl,
     prepareHeaders: (headers, {getState}) => {
-      const token = (getState() as RootState).auth.token; // assuming token is a string now
+      const token = (getState() as RootState).auth.loginToken; // assuming token is a string now
+      console.log('token in auth api:', token);
       if (token) {
-        headers.set('Authorization', `Bearer ${token.data?.user?.token}`); // Use the token directly as a string
+        headers.set('Authorization', `Bearer ${token}`); // Use the token directly as a string
       }
       return headers;
     },
@@ -21,7 +28,11 @@ export const Auth = createApi({
         body,
       }),
     }),
-    signUP: builder.mutation({
+    // signUP: builder.mutation({
+    signUP: builder.mutation<
+      SignUpResponse,
+      {email: string; password: string; code: string}
+    >({
       query: body => ({
         url: '/api/signup',
         method: 'POST',

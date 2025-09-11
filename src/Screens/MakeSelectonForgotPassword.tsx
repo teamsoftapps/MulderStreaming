@@ -17,22 +17,26 @@ import {
 } from 'react-native-responsive-dimensions';
 import {RootStackParamList} from '../Components/Type';
 import {useNavigation, useRoute} from '@react-navigation/native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import TextImport from '../Components/TextImport';
 import {useTranslation} from 'react-i18next';
 import {useResetPasswordMutation} from '../store/Api/Auth';
 import ToastMessage from '../hooks/ToastMessage.js';
 import TopNavigationBar from '../Components/TopNavigationBar';
-type ForgotPasswordScreenNavigationProp = StackNavigationProp<
+import type {RouteProp} from '@react-navigation/native';
+type MakeSelectionForgotPasswordNavigationProp = StackNavigationProp<
   RootStackParamList,
-  'ForgotPassword'
+  'MakeSelectionForgotPassword'
+>;
+type MakeSelectionForgotPasswordRouteProp = RouteProp<
+  RootStackParamList,
+  'MakeSelectionForgotPassword'
 >;
 
 const MakeSelectonForgotPassword = () => {
-  const route = useRoute();
+  const route = useRoute<MakeSelectionForgotPasswordRouteProp>();
   const {data} = route.params;
   const {t} = useTranslation();
-  const navigation = useNavigation<ForgotPasswordScreenNavigationProp>();
+  const navigation = useNavigation<MakeSelectionForgotPasswordNavigationProp>();
   const [newPassword, setNewPassword] = useState('');
   const [verificationCode, setVerificationCode] = useState('');
   const [passwordReset, {isLoading}] = useResetPasswordMutation();

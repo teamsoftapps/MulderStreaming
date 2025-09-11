@@ -1,6 +1,18 @@
 // {
 //   "extends": "@react-native/typescript-config/tsconfig.json"
 // }
+// {
+//   "compilerOptions": {
+//     "esModuleInterop": true,
+//     "allowSyntheticDefaultImports": true,
+//     "jsx": "react-native",
+//     "moduleResolution": "node",
+//     "baseUrl": "./",
+//     "paths": {
+//       "*": ["node_modules/*"]
+//     }
+//   }
+// }
 {
   "compilerOptions": {
     "esModuleInterop": true,
@@ -8,8 +20,33 @@
     "jsx": "react-native",
     "moduleResolution": "node",
     "baseUrl": "./",
+    "resolveJsonModule": true,
     "paths": {
-      "*": ["node_modules/*"]
+      "*": ["node_modules/*"],
+      "Assets/*": ["Assets/*"] // Add this to help resolve Assets imports
     }
-  }
+  },
+  "include": ["src/**/*", "types/**/*", "locales/**/*"],
+  "exclude": ["node_modules", "dist", "build"]
 }
+
+// {
+//   "compilerOptions": {
+//     "esModuleInterop": true,
+//     "allowSyntheticDefaultImports": true,
+//     "jsx": "react-native",
+//     "moduleResolution": "node",
+//     "baseUrl": "./",
+//     "paths": {
+//       "*": ["node_modules/*"],
+//       "Assets/*": ["Assets/*"]
+//     },
+//     "strict": true,
+//     "skipLibCheck": true,
+//     "noEmit": true,
+//     "resolveJsonModule": true, // Ensure this is true
+//     "isolatedModules": true
+//   },
+//   "include": ["src/**/*", "types/**/*", "locales/**/*"], // Add locales/**/* to include JSON files
+//   "exclude": ["node_modules", "dist", "build"]
+// }

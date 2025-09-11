@@ -26,7 +26,7 @@ import {
 } from '../store/Api/Auth';
 import TrackPlayer, {State} from 'react-native-track-player';
 import {useDispatch, useSelector} from 'react-redux';
-import {RootState} from '../store';
+import {RootState} from '../store/store';
 import {
   setCurrentSongg,
   setPlayingSongIndex,
@@ -36,15 +36,16 @@ import {
 import {toggleFavorite} from '../store/slices/favoutiteSongs';
 import TopNavigationBar from '../Components/TopNavigationBar';
 
-interface PlaylistItem {
+export interface PlaylistItem {
   _id: string;
   Song_Name: string;
-  Album_id: string;
+  Album_id?: string;
   Song_File: string;
   Album_Name: string;
   Song_Length: string;
   Song_Lyrics: string;
   Album_Image: string;
+  Song_index?: number; // Optional, as it may not always be present
 }
 
 interface PlaylistDetailsProps {
@@ -52,6 +53,8 @@ interface PlaylistDetailsProps {
     params: {
       data: {
         _id: string;
+        Playlist_Name: string;
+        Is_Created_By_Admin: boolean;
       };
     };
   };
@@ -70,7 +73,7 @@ const PlaylistDetails: React.FC<PlaylistDetailsProps> = ({route}) => {
   const [handleFavorite] = useHandleFavoriteMutation();
   const [trackList, setTrackList] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
-  const {persistCurrentSong, playlist, playingSongIndex} = useSelector(
+  const {persistCurrentSong, playlist} = useSelector(
     (state: RootState) => state.musicPlayer,
   );
 
@@ -93,16 +96,13 @@ const PlaylistDetails: React.FC<PlaylistDetailsProps> = ({route}) => {
       {cancelable: true},
     );
   };
-  const favorites = useSelector(
-    (state: RootState) => state.favorites.favorites,
-  );
 
   const playlistId = route?.params?.data?._id || '';
 
   const fetchFavorites = async () => {
     if (route?.params?.data?.Playlist_Name == 'Your Favorites') {
       try {
-        const res = await favoriteSongs();
+        const res = await favoriteSongs({});
         setplaylistSongs(res?.data?.favourites);
         // dispatch(setPlaylist(res?.data?.favourites));
         setIsLoading(false);
@@ -127,7 +127,7 @@ const PlaylistDetails: React.FC<PlaylistDetailsProps> = ({route}) => {
     if (!playlistId) return;
     try {
       const res = await getPlaylistSongs(playlistId);
-      const liked = await favoriteSongs();
+      const liked = await favoriteSongs({});
       setIsLikedSong(liked?.data?.favourites);
 
       if (res?.data) {
@@ -159,7 +159,7 @@ const PlaylistDetails: React.FC<PlaylistDetailsProps> = ({route}) => {
     if (!playlistId) return;
     try {
       const res = await getPlaylistSongs(playlistId);
-      const liked = await favoriteSongs();
+      const liked = await favoriteSongs({});
       setIsLikedSong(liked?.data?.favourites);
 
       if (res?.data) {
@@ -185,13 +185,40 @@ const PlaylistDetails: React.FC<PlaylistDetailsProps> = ({route}) => {
     }
   };
 
+  // const togglePlayMusic = async (song: PlaylistItem, index: number) => {
+  //   if (persistCurrentSong?._id !== song._id) {
+  //     await TrackPlayer.reset();
+  //     await TrackPlayer.add(trackList);
+  //     dispatch(setPlaylist(playlistSongs));
+  //   }
+  //   if (currentSongIndex === index && persistCurrentSong == song) {
+  //     const state = await TrackPlayer.getState();
+  //     if (state === State.Playing) {
+  //       await TrackPlayer.pause();
+  //       dispatch(togglePlaying(false));
+  //     } else {
+  //       await TrackPlayer.add(trackList);
+  //       await TrackPlayer.skip(index);
+  //       await TrackPlayer.play();
+  //       dispatch(setPlayingSongIndex(index));
+  //       dispatch(togglePlaying(true));
+  //     }
+  //   } else {
+  //     await TrackPlayer.skip(index);
+  //     await TrackPlayer.play();
+  //     setCurrentSongIndex(index);
+  //     dispatch(setPlayingSongIndex(index));
+  //     dispatch(setCurrentSongg(song));
+  //     dispatch(togglePlaying(true));
+  //   }
+  // };
   const togglePlayMusic = async (song: PlaylistItem, index: number) => {
     if (persistCurrentSong?._id !== song._id) {
       await TrackPlayer.reset();
       await TrackPlayer.add(trackList);
       dispatch(setPlaylist(playlistSongs));
     }
-    if (currentSongIndex === index && persistCurrentSong == song) {
+    if (currentSongIndex === index && persistCurrentSong?._id === song._id) {
       const state = await TrackPlayer.getState();
       if (state === State.Playing) {
         await TrackPlayer.pause();
@@ -212,7 +239,6 @@ const PlaylistDetails: React.FC<PlaylistDetailsProps> = ({route}) => {
       dispatch(togglePlaying(true));
     }
   };
-
   const handleForward = async () => {
     // await TrackPlayer.reset();
     await TrackPlayer.add(trackList);
@@ -436,7 +462,6 @@ const PlaylistDetails: React.FC<PlaylistDetailsProps> = ({route}) => {
           <View style={{marginBottom: responsiveHeight(1)}}>
             <BackgroundMusicPlayer
               imageSource={`https://musicfilesforheroku.s3.us-west-1.amazonaws.com/uploads/${persistCurrentSong.Album_Image}`}
-              song_file={persistCurrentSong.Song_File}
               title={persistCurrentSong.Song_Name}
               Song_Length={persistCurrentSong.Song_Length}
               subtitle="Mulder"

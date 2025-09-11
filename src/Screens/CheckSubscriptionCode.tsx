@@ -17,6 +17,7 @@ import {
 } from 'react-native-responsive-dimensions';
 import {RootStackParamList} from '../Components/Type';
 import {useNavigation, useRoute} from '@react-navigation/native';
+import type {RouteProp} from '@react-navigation/native';
 import TextImport from '../Components/TextImport';
 import {useTranslation} from 'react-i18next';
 import {useConfirmUserMutation} from '../store/Api/Auth';
@@ -26,7 +27,10 @@ type ForgotPasswordScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
   'ForgotPassword'
 >;
-
+type CheckSubscriptionCodeRouteProp = RouteProp<
+  RootStackParamList,
+  'CheckSubscriptionCode'
+>;
 const CheckSubscriptionCode = () => {
   const {t} = useTranslation();
   const navigation = useNavigation<ForgotPasswordScreenNavigationProp>();
@@ -34,7 +38,7 @@ const CheckSubscriptionCode = () => {
 
   const [confirmUser, {isLoading}] = useConfirmUserMutation();
   const {Toasts} = ToastMessage();
-  const route = useRoute();
+  const route = useRoute<CheckSubscriptionCodeRouteProp>();
   const [email, setEmail] = useState(route.params?.email || '');
 
   useEffect(() => {

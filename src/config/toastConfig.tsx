@@ -5,7 +5,7 @@ import Toast, {
   InfoToast,
 } from 'react-native-toast-message';
 const toastConfig = {
-  success: props => (
+  success: (props: any) => (
     <BaseToast
       {...props}
       style={{borderLeftColor: '#CCAA6B', backgroundColor: '#1c1508'}}
@@ -17,7 +17,7 @@ const toastConfig = {
       }}
     />
   ),
-  error: props => (
+  error: (props: any) => (
     <ErrorToast
       {...props}
       style={{borderLeftColor: '#CCAA6B', backgroundColor: '#1c1508'}}
@@ -32,7 +32,7 @@ const toastConfig = {
       }}
     />
   ),
-  info: props => (
+  info: (props: any) => (
     <InfoToast
       {...props}
       style={{borderLeftColor: '#CCAA6B', backgroundColor: '#1c1508'}}

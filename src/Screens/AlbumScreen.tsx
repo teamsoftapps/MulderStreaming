@@ -415,7 +415,6 @@ const AlbumScreen: React.FC<AlbumScreenProps> = ({route}) => {
               <View style={{marginBottom: responsiveHeight(1)}}>
                 <BackgroundMusicPlayer
                   imageSource={`https://musicfilesforheroku.s3.us-west-1.amazonaws.com/uploads/${persistCurrentSong.Album_Image}`}
-                  song_file={persistCurrentSong.Song_File}
                   title={persistCurrentSong.Song_Name}
                   Song_Length={persistCurrentSong.Song_Length}
                   subtitle="Mulder"

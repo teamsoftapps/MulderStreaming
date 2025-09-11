@@ -28,7 +28,6 @@ import WrapperContainer from '../Components/WrapperContainer';
 import {useSignUPMutation} from '../store/Api/Auth';
 import ToastMessage from '../hooks/ToastMessage.js';
 import PasswordInput from '../Components/passwordToggle';
-import * as RNLocalize from 'react-native-localize';
 import MulderLogo from '../../Assets/images/name.png';
 import MulderLogoDutch from '../../Assets/images/name_dutch.png';
 import i18n from '../Components/i18next';
@@ -36,6 +35,18 @@ type SignUpScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
   'SignUp'
 >;
+
+interface SignUpResponse {
+  status?: string;
+  message?: string;
+}
+
+interface SignUpError {
+  data?: {
+    message?: string;
+  };
+  status?: number;
+}
 
 const SignUp = () => {
   const navigation = useNavigation<SignUpScreenNavigationProp>();
@@ -53,33 +64,61 @@ const SignUp = () => {
 
   console.log('deviceLanguage', deviceLanguage);
 
-  const firstName = deviceLanguage === 'nl' ? 'JAN' : 'IAN';
-
+  // const handleSignUp = async () => {
+  //   if (!email || !password || !accessCode) {
+  //     Toasts('Error', 'Please fill all fields', 'error');
+  //     return;
+  //   }
+  //   const payload = {
+  //     email: email,
+  //     password: password,
+  //     code: accessCode.toUpperCase(),
+  //   };
+  //   try {
+  //     const result = await signUp(payload);
+  //     Toasts(
+  //       result.data?.status === 'success'
+  //         ? 'Account Created!'
+  //         : 'Invalid Code!',
+  //       result?.error?.data?.message || result?.data?.message,
+  //       'success',
+  //     );
+  //     if (!result?.error) {
+  //       navigation.navigate('SignIn');
+  //     }
+  //   } catch (error) {
+  //     console.error('Error in sign-up:', error);
+  //     Toasts('Error', error, 'error');
+  //   }
+  // };
   const handleSignUp = async () => {
     if (!email || !password || !accessCode) {
       Toasts('Error', 'Please fill all fields', 'error');
       return;
     }
     const payload = {
-      email: email,
-      password: password,
+      email: email.toLowerCase(), // Normalize email
+      password,
       code: accessCode.toUpperCase(),
     };
     try {
-      const result = await signUp(payload);
+      const result = await signUp(payload).unwrap(); // Use .unwrap() for RTK Query
+      const successResponse = result as SignUpResponse;
       Toasts(
-        result.data?.status === 'success'
+        successResponse.status === 'success'
           ? 'Account Created!'
           : 'Invalid Code!',
-        result?.error?.data?.message || result?.data?.message,
+        successResponse.message || 'Success',
         'success',
       );
-      if (!result?.error) {
-        navigation.navigate('SignIn');
-      }
-    } catch (error) {
-      console.error('Error in sign-up:', error);
-      Toasts('Error', error, 'error');
+      navigation.navigate('SignIn');
+    } catch (error: any) {
+      const errorResponse = error as SignUpError;
+      Toasts(
+        'Error',
+        errorResponse.data?.message || 'An error occurred during sign-up',
+        'error',
+      );
     }
   };
 

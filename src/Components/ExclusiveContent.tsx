@@ -14,7 +14,7 @@ import {
   responsiveHeight,
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
-import {useGetExclusiveContentMutation} from '../store/Api/Auth';
+import {useExclusiveContentMutation} from '../store/Api/Auth';
 
 interface Item {
   videolink: string;
@@ -25,7 +25,7 @@ interface Item {
 const HorizontalFlatList: React.FC = () => {
   const flatListRef = useRef<FlatList>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [GetExclusiveContent] = useGetExclusiveContentMutation();
+  const [GetExclusiveContent] = useExclusiveContentMutation();
   const [isContent, setContent] = useState<Item[]>([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedVideo, setSelectedVideo] = useState('');

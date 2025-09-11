@@ -1,7 +1,7 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 
 interface PlaylistItem {
-  Song_index: number;
+  Song_index?: number;
   _id: string;
   Song_Name: string;
   Song_File: string;
@@ -16,7 +16,7 @@ interface SongState {
   playlist: PlaylistItem[];
   persistCurrentSong: PlaylistItem | null;
   isPlaying: boolean;
-  playingSongIndex: Number;
+  playingSongIndex: number;
 }
 
 const initialState: SongState = {
@@ -39,7 +39,7 @@ const songStateSlice = createSlice({
     togglePlaying: (state, action: PayloadAction<boolean>) => {
       state.isPlaying = action.payload;
     },
-    setPlayingSongIndex: (state, action: PayloadAction<Number>) => {
+    setPlayingSongIndex: (state, action: PayloadAction<number>) => {
       state.playingSongIndex = action.payload;
     },
   },

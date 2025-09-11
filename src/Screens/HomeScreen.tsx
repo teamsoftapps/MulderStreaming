@@ -34,7 +34,7 @@ import {
   useRemovePlaylistMutation,
 } from '../store/Api/Auth';
 import BackgroundMusicPlayer from '../Components/BackgroudMusicPlayer';
-import {RootState} from '../store';
+import {RootState} from '../store/store';
 import TrackPlayer from 'react-native-track-player';
 import {
   setCurrentSongg,
@@ -54,14 +54,12 @@ interface Album {
   [key: string]: any;
 }
 
-interface ApiResponse {
-  data: Album[];
-}
-
 const HomeScreen = () => {
   const {t} = useTranslation();
   const navigation = useNavigation<HomeScreenNavigationProp>();
-  const AuthData = useSelector(state => state?.auth?.token?.data?.user);
+  const AuthData = useSelector(
+    state => (state as RootState).auth?.token?.data?.user,
+  );
   const [isAlbums, setAllAlbums] = useState([]);
   const [sortedAlbums, setsortedAlbums] = useState([]);
 
@@ -113,7 +111,7 @@ const HomeScreen = () => {
 
   const getExclusiveContent = async () => {
     try {
-      const result = await ExclusiveContent();
+      const result = await ExclusiveContent({});
       setCover_Image_NL(result.data.data[0].Cover_Image_NL);
       setCover_Image_ENG(result.data.data[0].Cover_Image_ENG);
     } catch (err) {
@@ -123,11 +121,11 @@ const HomeScreen = () => {
 
   const getAlbums = async () => {
     try {
-      const res = await data();
+      const res = await data({});
       setAllAlbums(res?.data);
       const allalbums = res.data;
       const sortedAlbums = Array.from(allalbums).sort(
-        (a, b) => a.index - b.index,
+        (a: any, b: any) => a.index - b.index,
       );
       setsortedAlbums(sortedAlbums);
       if (subcscriptionId === '635bcf0612d32838b423b227') {
@@ -225,8 +223,6 @@ const HomeScreen = () => {
       console.log('You are at the first song in the playlist.');
     }
   };
-
-  const togglePlayMusic = async (song: PlaylistItem, index: number) => {};
 
   const handleCreateUserPlaylist = () => {
     setModalVisible(false);
@@ -797,16 +793,13 @@ const HomeScreen = () => {
           <BackgroundMusicPlayer
             paddingtop={responsiveHeight(9)}
             imageSource={`https://musicfilesforheroku.s3.us-west-1.amazonaws.com/uploads/${persistCurrentSong.Album_Image}`}
-            song_file={persistCurrentSong.Song_File}
             title={persistCurrentSong.Song_Name}
             Song_Length={persistCurrentSong.Song_Length}
             subtitle="Mulder"
             lyrics={persistCurrentSong.Song_Lyrics}
             functionForBackward={handleBackward}
             functionForForward={handleForward}
-            togglePlayMusic={() =>
-              togglePlayMusic(persistCurrentSong, currentSongIndex)
-            }
+            togglePlayMusic={() => {}}
           />
         </View>
       )}
