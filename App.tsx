@@ -12,29 +12,34 @@ import ToastMessage from './src/hooks/ToastMessage.js';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {StyleSheet} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {RootState} from './src/store/store.js';
+
 function App(): React.JSX.Element {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [language, setLanguage] = useState<string>('');
   const {Toasts} = ToastMessage();
-  const token = useSelector(state => state?.auth?.token?.data?.user?.token);
+  const token = useSelector(
+    (state: RootState) => state.auth?.token?.data?.user?.token,
+  );
 
   useEffect(() => {
-    let wasConnected = true;
+    let wasConnected: boolean = true;
     const unsubscribe = NetInfo.addEventListener(state => {
-      if (!state.isConnected && wasConnected) {
+      const isConnected = state.isConnected ?? false;
+      if (!isConnected && wasConnected) {
         Toasts(
           'No Internet Connection!',
           'Please check your network settings.',
-          'success',
+          'error',
         );
-      } else if (state.isConnected && !wasConnected) {
+      } else if (isConnected && !wasConnected) {
         Toasts('Internet Restored!', 'You are back online', 'success');
       }
-      wasConnected = state.isConnected;
+      wasConnected = isConnected;
     });
 
     return () => unsubscribe();
-  }, []);
+  }, [Toasts]);
 
   useEffect(() => {
     const init = async () => {
@@ -44,11 +49,9 @@ function App(): React.JSX.Element {
       }
     };
 
-    init()
-      .then(() => {})
-      .finally(async () => {
-        await BootSplash.hide({fade: true});
-      });
+    init().finally(async () => {
+      await BootSplash.hide({fade: true});
+    });
   }, []);
 
   useEffect(() => {
@@ -63,16 +66,10 @@ function App(): React.JSX.Element {
       }
     };
 
-    initLanguage();
-    // const defaultLanguage = getDefaultLanguage();
-    // setLanguage(defaultLanguage);
-    // i18n.changeLanguage(defaultLanguage);
-
     const setupTrackPlayer = async () => {
       try {
         await TrackPlayer.setupPlayer();
         await TrackPlayer.updateOptions({
-          stopWithApp: true,
           capabilities: [
             Capability.Play,
             Capability.Pause,
@@ -91,30 +88,27 @@ function App(): React.JSX.Element {
       }
     };
 
+    initLanguage();
     setupTrackPlayer();
   }, []);
-
-  // const changeLanguage = (langCode: string | null) => {
-  //   const newLang = langCode ?? getDefaultLanguage();
-  //   setLanguage(newLang);
-  //   i18n.changeLanguage(newLang);
-  // };
 
   const changeLanguage = async (langCode: string | null) => {
     try {
       const newLang = langCode ?? getDefaultLanguage();
       setLanguage(newLang);
       i18n.changeLanguage(newLang);
-      await AsyncStorage.setItem('appLanguage', newLang); // 💾 persist selection
+      await AsyncStorage.setItem('appLanguage', newLang);
     } catch (error) {
       console.error('Error saving language:', error);
     }
   };
 
+  const isLoggedIn = !!token;
+
   return (
     <GestureHandlerRootView style={styles.container}>
       <NavigationContainer>
-        {token ? (
+        {isLoggedIn ? (
           <MainStack language={language} changeLanguage={changeLanguage} />
         ) : (
           <AuthStack
