@@ -108,7 +108,7 @@ const SignIn = ({setbool, changeLanguage}: SignInProps) => {
                 {deviceLanguage === 'nl' ? (
                   <Image
                     source={MulderLogoDutch}
-                    resizeMode="stretch"
+                    resizeMode="contain"
                     style={{
                       height: responsiveHeight(10),
                       width: '100%',
@@ -117,7 +117,7 @@ const SignIn = ({setbool, changeLanguage}: SignInProps) => {
                 ) : (
                   <Image
                     source={MulderLogo}
-                    resizeMode="center"
+                    resizeMode="contain"
                     style={{height: responsiveHeight(10), width: '100%'}}
                   />
                 )}
