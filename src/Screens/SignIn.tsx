@@ -31,7 +31,7 @@ import ToastMessage from '../hooks/ToastMessage.js';
 import * as RNLocalize from 'react-native-localize';
 import MulderLogo from '../../Assets/images/name.png';
 import MulderLogoDutch from '../../Assets/images/name_dutch.png';
-
+import i18n from '../Components/i18next';
 type props = StackNavigationProp<RootStackParamList, 'SignIn'>;
 type SignInProps = {
   setbool: (value: boolean) => void;
@@ -52,7 +52,10 @@ const SignIn = ({setbool, changeLanguage}: SignInProps) => {
   const {Toasts} = ToastMessage();
   const [showModal, setShowModal] = useState(false);
 
-  const deviceLanguage = RNLocalize.getLocales()[0].languageCode;
+  // const deviceLanguage = RNLocalize.getLocales()[0].languageCode;
+  const deviceLanguage = i18n.language.split('-')[0];
+
+  console.log('dsdsdsdsdsds', t);
 
   const firstName = deviceLanguage === 'nl' ? 'JAN' : 'IAN';
 
