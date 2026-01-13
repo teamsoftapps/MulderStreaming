@@ -31,6 +31,7 @@ import PasswordInput from '../Components/passwordToggle';
 import MulderLogo from '../../Assets/images/name.png';
 import MulderLogoDutch from '../../Assets/images/name_dutch.png';
 import i18n from '../Components/i18next';
+import SafariView from 'react-native-safari-view';
 type SignUpScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
   'SignUp'
@@ -63,34 +64,6 @@ const SignUp = () => {
   const deviceLanguage = i18n.language.split('-')[0];
 
   console.log('deviceLanguage', deviceLanguage);
-
-  // const handleSignUp = async () => {
-  //   if (!email || !password || !accessCode) {
-  //     Toasts('Error', 'Please fill all fields', 'error');
-  //     return;
-  //   }
-  //   const payload = {
-  //     email: email,
-  //     password: password,
-  //     code: accessCode.toUpperCase(),
-  //   };
-  //   try {
-  //     const result = await signUp(payload);
-  //     Toasts(
-  //       result.data?.status === 'success'
-  //         ? 'Account Created!'
-  //         : 'Invalid Code!',
-  //       result?.error?.data?.message || result?.data?.message,
-  //       'success',
-  //     );
-  //     if (!result?.error) {
-  //       navigation.navigate('SignIn');
-  //     }
-  //   } catch (error) {
-  //     console.error('Error in sign-up:', error);
-  //     Toasts('Error', error, 'error');
-  //   }
-  // };
   const handleSignUp = async () => {
     if (!email || !password || !accessCode) {
       Toasts('Error', 'Please fill all fields', 'error');
@@ -121,6 +94,17 @@ const SignUp = () => {
       );
     }
   };
+
+  const openSubscriptionPage = async () => {
+  try {
+    SafariView.show({
+      url: 'https://www.ianmulder.us/streaming',
+      fromBottom: true,
+    });
+  } catch (error) {
+    console.error('SafariView error:', error);
+  }
+};
 
   return (
     <WrapperContainer barstatus={true} style={{flex: 1}} bgColor="#1c1508">
@@ -174,9 +158,7 @@ const SignUp = () => {
                   {t('Heeft u nog niet geabonneerd?') + ' '}
                   <Text
                     style={[styles.loginText, {color: '#CCAA6B'}]}
-                    onPress={() =>
-                      Linking.openURL('https://www.ianmulder.us/streaming')
-                    }>
+                    onPress={openSubscriptionPage}>
                     {t('Klik hier')}
                   </Text>
                 </Text>

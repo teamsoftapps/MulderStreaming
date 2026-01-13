@@ -32,6 +32,7 @@ import * as RNLocalize from 'react-native-localize';
 import MulderLogo from '../../Assets/images/name.png';
 import MulderLogoDutch from '../../Assets/images/name_dutch.png';
 import i18n from '../Components/i18next';
+import SafariView from 'react-native-safari-view';
 type props = StackNavigationProp<RootStackParamList, 'SignIn'>;
 type SignInProps = {
   setbool: (value: boolean) => void;
@@ -260,10 +261,13 @@ const SignIn = ({setbool, changeLanguage}: SignInProps) => {
                       <TouchableOpacity
                         onPress={async () => {
                           try {
-                            navigation.navigate('CustomWebViewContent');
+                            SafariView.show({
+                              url: 'https://www.ianmulder.us/streaming',
+                              fromBottom: true,
+                            });
                             setModalVisible(false);
                           } catch (error) {
-                            console.error('Error deleting playlist:', error);
+                            console.error('SafariView error:', error);
                           }
                         }}
                         style={{
