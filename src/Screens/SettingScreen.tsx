@@ -29,6 +29,8 @@ import TrackPlayer from 'react-native-track-player';
 import {setCurrentSongg, togglePlaying} from '../store/slices/songState';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {RootState} from '../store/store';
+import {useDeleteAccountMutation} from '../store/Api/Auth';
+
 type SettingsScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
   'AboutApplication',
@@ -47,6 +49,11 @@ const SettingScreen = () => {
   const AuthData = useSelector(
     state => (state as RootState).auth?.token?.data?.user,
   );
+  const token = useSelector(
+    state => (state as RootState).auth?.token?.data?.user?.token,
+  );
+  const [deleteAccount] = useDeleteAccountMutation();
+  console.log('Auth data in setting screen.', token);
   const dispatch = useDispatch();
   const availableLanguages: LanguageOption[] = [
     {code: 'en', label: 'English'},
@@ -117,6 +124,36 @@ const SettingScreen = () => {
     );
   };
 
+  const handleDelete = () => {
+    Alert.alert(
+      'Delete Account',
+      'This will permanently delete your account and all associated data. This action cannot be undone.',
+      [
+        {text: 'Cancel', style: 'cancel'},
+        {
+          text: 'Delete',
+          style: 'destructive',
+          onPress: confirmDelete,
+        },
+      ],
+    );
+  };
+
+  const confirmDelete = async () => {
+    try {
+      const response = await deleteAccount().unwrap();
+
+      dispatch(clearUser()); // clear token + user state
+
+      Alert.alert(
+        'Account Deleted',
+        'Your account has been permanently deleted.',
+      );
+    } catch (error) {
+      Alert.alert('Error', 'Unable to delete account. Please try again.');
+    }
+  };
+
   return (
     <WrapperContainer style={styles.container}>
       <TopNavigationBar title={t('Settings')} showBackButton={true} />
@@ -152,6 +189,28 @@ const SettingScreen = () => {
         <SettingMenu
           imageSource={require('../../Assets/images/help.png')}
           mainText={t('Help')}
+        />
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        activeOpacity={0.8}
+        onPress={() => {
+          Alert.alert(
+            'Delete Account',
+            'This will permanently delete your account and all associated data. This action cannot be undone.',
+            [
+              {text: 'Cancel', style: 'cancel'},
+              {
+                text: 'Delete',
+                style: 'destructive',
+                onPress: confirmDelete,
+              },
+            ],
+          );
+        }}>
+        <SettingMenu
+          imageSource={require('../../Assets/images/delete.png')}
+          mainText={t('Delete Account')}
         />
       </TouchableOpacity>
 

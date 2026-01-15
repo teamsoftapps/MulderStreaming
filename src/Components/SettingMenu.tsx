@@ -30,6 +30,7 @@ const SettingMenu: React.FC<SettingMenuProps> = ({
           paddingBottom: responsiveHeight(1.8),
         }}>
         <Image
+          tintColor={'#fff'}
           source={imageSource}
           style={{
             width: responsiveWidth(6.5),

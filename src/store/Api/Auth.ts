@@ -145,6 +145,15 @@ export const Auth = createApi({
         method: 'GET',
       }),
     }),
+    DeleteAccount: builder.mutation<
+  { success: boolean; message: string }, // response type
+  void                                      // argument type (IMPORTANT)
+>({
+  query: () => ({
+    url: '/api/delete-account',
+    method: 'DELETE',
+  }),
+}),
   }),
 });
 
@@ -166,4 +175,5 @@ export const {
   useGetFavoriteMutation,
   useConfirmUserMutation,
   useExclusiveContentMutation,
+  useDeleteAccountMutation
 } = Auth;
